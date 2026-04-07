@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUM AI MASTERY — Maîtrise l'IA. Bâtis ton Empire.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #040407;
+    --surface: #0c0c14;
+    --border: rgba(255,255,255,0.07);
+    --accent: #7B5EA7;
+    --accent2: #00E5FF;
+    --accent3: #FF3CAC;
+    --text: #E8E8F0;
+    --muted: #6B6B80;
+    --gold: #F5C842;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(4,4,7,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.12em;
+    color: white;
+  }
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-cta {
+    background: var(--accent2);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 10px 24px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(123,94,167,0.18) 0%, rgba(0,229,255,0.06) 40%, transparent 70%);
+    pointer-events: none;
+    animation: pulse 6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.7; }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.25);
+    padding: 8px 18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(42px, 8vw, 92px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: #fff;
+    animation: fadeUp 0.9s ease 0.1s both;
+    max-width: 1000px;
+  }
+
+  .hero h1 .line2 {
+    display: block;
+    background: linear-gradient(90deg, var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2.2vw, 20px);
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.65;
+    max-width: 620px;
+    margin: 28px auto 0;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+  .hero-sub strong { color: var(--text); font-weight: 500; }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 48px;
+    animation: fadeUp 1s ease 0.35s both;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent2), #0090FF);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 18px 48px;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 40px rgba(0,229,255,0.25);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 60px rgba(0,229,255,0.4);
+  }
+
+  .btn-secondary {
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    padding: 18px 32px;
+    text-decoration: none;
+    background: rgba(255,255,255,0.04);
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.08); }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    padding: 48px 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(12,12,20,0.6);
+    animation: fadeUp 1s ease 0.5s both;
+  }
+
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    display: block;
+  }
+  .stat-num span { color: var(--accent2); }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  /* PROBLEM SECTION */
+  .problem {
+    padding: 100px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .problem-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .problem-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    background: rgba(255,60,172,0.05);
+    border: 1px solid rgba(255,60,172,0.12);
+    font-size: 15px;
+    color: #C0C0CC;
+    line-height: 1.5;
+  }
+
+  .problem-list li::before {
+    content: '✗';
+    color: var(--accent3);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .solution-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .solution-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    background: rgba(0,229,255,0.04);
+    border: 1px solid rgba(0,229,255,0.12);
+    font-size: 15px;
+    color: #C0C0CC;
+    line-height: 1.5;
+  }
+
+  .solution-list li::before {
+    content: '✓';
+    color: var(--accent2);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* MODULES */
+  .modules-section {
+    padding: 100px 24px;
+    background: var(--surface);
+  }
+
+  .modules-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .modules-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2px;
+  }
+
+  .module-card {
+    background: var(--bg);
+    padding: 36px 32px;
+    border: 1px solid var(--border);
+    transition: border-color 0.25s, background 0.25s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .module-card:hover { background: rgba(123,94,167,0.06); border-color: rgba(123,94,167,0.3); }
+  .module-card:hover::before { transform: scaleX(1); }
+
+  .module-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .module-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .module-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .module-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.05);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* FOR WHO */
+  .forwhom {
+    padding: 100px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 56px;
+  }
+
+  .profile-card {
+    padding: 32px 24px;
+    background: rgba(12,12,20,0.8);
+    border: 1px solid var(--border);
+    text-align: left;
+    transition: border-color 0.2s;
+  }
+  .profile-card:hover { border-color: var(--accent); }
+
+  .profile-emoji { font-size: 28px; margin-bottom: 16px; display: block; }
+  .profile-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .profile-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* AUTOMATION */
+  .automation {
+    padding: 100px 24px;
+    background: var(--surface);
+  }
+
+  .automation-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .flow-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: rgba(4,4,7,0.8);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .flow-step + .flow-step {
+    border-top: none;
+  }
+
+  .flow-step::after {
+    content: '↓';
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--accent2);
+    font-size: 16px;
+    z-index: 2;
+  }
+
+  .flow-step:last-child::after { display: none; }
+
+  .flow-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(123,94,167,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .flow-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .flow-text strong { color: var(--accent2); font-weight: 500; }
+
+  /* PRICING */
+  .pricing {
+    padding: 100px 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 56px;
+  }
+
+  .price-card {
+    padding: 48px 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-align: left;
+    position: relative;
+  }
+
+  .price-card.featured {
+    background: rgba(123,94,167,0.08);
+    border-color: var(--accent);
+  }
+
+  .price-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    white-space: nowrap;
+  }
+
+  .price-tier {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .price-amount {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 52px;
+    color: #fff;
+    line-height: 1;
+  }
+  .price-amount span { font-size: 22px; color: var(--muted); font-weight: 400; }
+
+  .price-features {
+    list-style: none;
+    margin: 28px 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .price-features li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: #B0B0C0;
+    line-height: 1.5;
+  }
+
+  .price-features li::before {
+    content: '→';
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  .btn-buy {
+    display: block;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+  }
+
+  .btn-buy-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: transparent;
+  }
+  .btn-buy-outline:hover { background: rgba(255,255,255,0.05); }
+
+  .btn-buy-filled {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    border: none;
+    box-shadow: 0 0 40px rgba(123,94,167,0.35);
+  }
+  .btn-buy-filled:hover { box-shadow: 0 0 60px rgba(123,94,167,0.5); transform: translateY(-1px); }
+
+  /* GUARANTEE */
+  .guarantee {
+    text-align: center;
+    padding: 60px 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,229,255,0.02);
+  }
+
+  .guarantee-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .guarantee-icon { font-size: 40px; margin-bottom: 20px; display: block; }
+
+  /* CTA FINAL */
+  .cta-final {
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-final::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-final h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(36px, 6vw, 68px);
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  .cta-final p {
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 48px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+  }
+
+  footer .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    font-size: 18px;
+    color: white;
+  }
+  footer .logo span { color: var(--accent2); }
+
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .problem { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+    .automation-inner { grid-template-columns: 1fr; gap: 48px; padding: 0; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .stats-bar { gap: 32px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+  }
+
+  /* COUNTDOWN */
+  .countdown {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 32px 0;
+    flex-wrap: wrap;
+  }
+
+  .count-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .count-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    color: var(--accent2);
+    display: block;
+    line-height: 1;
+  }
+
+  .count-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* SCARCITY */
+  .scarcity-bar {
+    background: rgba(255,60,172,0.06);
+    border: 1px solid rgba(255,60,172,0.2);
+    padding: 16px 32px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    letter-spacing: 0.08em;
+    animation: fadeUp 1s ease 0.6s both;
+  }
+
+  .scarcity-bar strong { color: #fff; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">NEXUM<span>//</span>AI</div>
+  <a href="#pricing" class="nav-cta">Rejoindre →</a>
+</nav>
+
+<!-- SCARCITY -->
+<div class="scarcity-bar" style="margin-top:64px;">
+  🔥 <strong>Accès Early Bird actif</strong> — Prix augmente dans : <span id="urgency-text">72h</span>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">Formation IA • Nexum Community</div>
+
+  <h1>
+    Maîtrise Claude & l'IA.
+    <span class="line2">Bâtis ton Empire.</span>
+  </h1>
+
+  <p class="hero-sub">
+    La première formation <strong>100% autonome</strong> qui t'apprend à créer des sites, apps, automatisations, et business entiers grâce à l'IA — sans coder, sans expérience.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#pricing" class="btn-primary">Accéder à la Formation →</a>
+    <a href="#modules" class="btn-secondary">Voir le programme</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-num">8<span>+</span></span>
+    <span class="stat-label">Modules complets</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">30<span>+</span></span>
+    <span class="stat-label">Cas pratiques réels</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">100<span>%</span></span>
+    <span class="stat-label">Accès à vie</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num"><span>#</span>1</span>
+    <span class="stat-label">Communauté Nexum</span>
+  </div>
+</div>
+
+<!-- PROBLEM / SOLUTION -->
+<section style="padding: 100px 0; background: var(--bg);">
+  <div class="problem reveal">
+    <div>
+      <span class="section-tag">Le problème</span>
+      <h2 class="section-title">Tu rates la plus grande révolution économique de l'histoire</h2>
+      <ul class="problem-list">
+        <li>Tu entends parler d'IA partout mais tu ne sais pas par où commencer</li>
+        <li>Tu passes des heures à chercher des infos dispersées sur YouTube et Twitter</li>
+        <li>Les formations classiques sont trop techniques, trop chères, trop lentes</li>
+        <li>Pendant que tu attends, tes concurrents automatisent déjà tout leur business</li>
+      </ul>
+    </div>
+    <div>
+      <span class="section-tag">La solution Nexum</span>
+      <h2 class="section-title">Tout ce que Claude peut faire. En une seule formation.</h2>
+      <ul class="solution-list">
+        <li>Crée des sites web professionnels complets en quelques heures</li>
+        <li>Automatise tes tâches répétitives et libère ton temps</li>
+        <li>Développe des apps et des jeux sans ligne de code</li>
+        <li>Lance et scale des business entiers pilotés par l'IA</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules-section" id="modules">
+  <div class="modules-inner">
+    <div class="modules-header reveal">
+      <span class="section-tag">Le Programme</span>
+      <h2 class="section-title">8 Modules. Du zéro à l'empire.</h2>
+      <p class="section-desc" style="margin: 0 auto;">Chaque module est conçu pour être appliqué immédiatement. Pas de théorie inutile — que des résultats concrets.</p>
+    </div>
+
+    <div class="modules-grid">
+
+      <div class="module-card reveal">
+        <span class="module-num">MODULE 01</span>
+        <div class="module-title">Comment fonctionne Claude & l'IA</div>
+        <p class="module-desc">Comprends la logique derrière les LLMs, comment "parler" à l'IA pour obtenir exactement ce que tu veux, et les bases du prompt engineering.</p>
+        <div class="module-tags">
+          <span class="tag">Fondamentaux</span>
+          <span class="tag">Prompt Engineering</span>
+        </div>
+      </div>
+
+      <div class="module-card reveal">
+        <span class="module-num">MODULE 02</span>
+        <div class="module-title">Créer un Site Web Complet</div>
+        <p class="module-desc">De la landing page au site e-commerce, génère des sites professionnels avec Claude. Design, copywriting, SEO — tout avec l'IA.</p>
+        <div class="module-tags">
+          <span class="tag">HTML/CSS</span>
+          <span class="tag">React</span>
+          <span class="tag">Shopify</span>
+        </div>
+      </div>
+
+      <div class="module-card reveal">
+        <span class="module-num">MODULE 03</span>
+        <div class="module-title">Automatisations & Workflows IA</div>
+        <p class="module-desc">Connecte Claude à Make.com, Zapier, n8n. Crée des systèmes qui travaillent 24h/24 à ta place — emails, leads, contenu, reporting.</p>
+        <div class="module-tags">
+          <span class="tag">Make.com</span>
+          <span class="tag">n8n</span>
+          <span class="tag">API</span>
+        </div>
+      </div>
+
+      <div class="module-card reveal">
+        <span class="module-num">MODULE 04</span>
+        <div class="module-title">Développer une Application</div>
+        <p class="module-desc">Crée des applications web et mobiles fonctionnelles avec Claude. De l'idée au produit déployé en ligne, sans être développeur.</p>
+        <div class="module-tags">
+          <span class="tag">Web App</span>
+          <span class="tag">Déploiement</span>
+          <span class="tag">SaaS</span>
+        </div>
+      </div>
+
+      <div class="module-card reveal">
+        <span class="module-num">MODULE 05</span>
+        <div class="module-title">Développer un Jeu Vidéo</div>
+        <p class="module-desc">Conçois et code des jeux entiers avec Claude. Logique, gameplay, graphismes — de l'arcade au jeu web multijoueur.</p>
+        <div class="module-tags">
+          <span class="tag">Game Design</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Unity</span>
+        </div>
+      </div>
+
+      <div class="module-card reveal">
+        <span class="module-num">MODULE 06</span>
+        <div class="module-title">Marketing & Contenu IA</div>
+        <p class="module-desc">Génère des scripts TikTok, posts Instagram, emails, publicités, et stratégies complètes en minutes. Multiplie ta production par 10.</p>
+        <div class="module-tags">
+          <span class="tag">TikTok</span>
+          <span class="tag">Copywriting</span>
+          <span class="tag">Ads</span>
+        </div>
+      </div>
+
+      <div class="module-card reveal">
+        <span class="module-num">MODULE 07</span>
+        <div class="module-title">Business Models avec l'IA</div>
+        <p class="module-desc">Les 7 modèles économiques les plus rentables à lancer avec l'IA aujourd'hui : agence, SaaS, formation, e-commerce, contenu, freelance, et plus.</p>
+        <div class="module-tags">
+          <span class="tag">Agence IA</span>
+          <span class="tag">SaaS</span>
+          <span class="tag">E-commerce</span>
+        </div>
+      </div>
+
+      <div class="module-card reveal">
+        <span class="module-num">MODULE 08</span>
+        <div class="module-title">Prompt Engineering Avancé</div>
+        <p class="module-desc">Maîtrise les techniques avancées : chain of thought, few-shot prompting, system prompts, agents IA autonomes et workflows complexes.</p>
+        <div class="module-tags">
+          <span class="tag">Avancé</span>
+          <span class="tag">Agents</span>
+          <span class="tag">CoT</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="forwhom">
+  <div class="reveal">
+    <span class="section-tag">Pour qui ?</span>
+    <h2 class="section-title">Cette formation est faite pour toi si...</h2>
+  </div>
+
+  <div class="profiles-grid reveal">
+    <div class="profile-card">
+      <span class="profile-emoji">🚀</span>
+      <div class="profile-name">Entrepreneur en herbe</div>
+      <p class="profile-desc">Tu veux lancer ton business avec le moins de ressources possible et l'IA comme levier principal.</p>
+    </div>
+    <div class="profile-card">
+      <span class="profile-emoji">💼</span>
+      <div class="profile-name">Freelance & Créatif</div>
+      <p class="profile-desc">Tu veux multiplier ta productivité, tes tarifs, et la qualité de tes livrables avec l'IA.</p>
+    </div>
+    <div class="profile-card">
+      <span class="profile-emoji">🏪</span>
+      <div class="profile-name">Chef d'entreprise TPE/PME</div>
+      <p class="profile-desc">Tu veux automatiser tes opérations, ton marketing, et ton service client pour scaler.</p>
+    </div>
+    <div class="profile-card">
+      <span class="profile-emoji">📱</span>
+      <div class="profile-name">Créateur de contenu</div>
+      <p class="profile-desc">Tu veux créer plus de contenu de qualité en moins de temps et monétiser ton audience.</p>
+    </div>
+  </div>
+</section>
+
+<!-- AUTOMATION FLOW -->
+<section class="automation">
+  <div class="automation-inner reveal">
+    <div>
+      <span class="section-tag">Le Système</span>
+      <h2 class="section-title">Une formation qui tourne seule, 24h/24</h2>
+      <p class="section-desc">Tout le parcours est automatisé. De la découverte à la conversion, le système travaille pendant que tu dors.</p>
+      <br>
+      <p style="font-size:14px; color: var(--muted); line-height:1.8;">
+        → Contenu TikTok/Instagram généré par IA<br>
+        → Tunnel de vente automatique<br>
+        → Accès formation délivré instantanément<br>
+        → Séquence emails sur 7 jours<br>
+        → Invitation Discord Nexum automatique<br>
+        → Agent IA pour les relances et questions<br>
+      </p>
+    </div>
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <div class="flow-icon">📱</div>
+        <div class="flow-text"><strong>TikTok / Instagram</strong><br>Un prospect découvre la formation via le contenu IA</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">🎯</div>
+        <div class="flow-text"><strong>Landing Page</strong><br>Il atterrit sur cette page et passe à l'achat</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">⚡</div>
+        <div class="flow-text"><strong>Accès Automatique</strong><br>Il reçoit ses accès instantanément par email</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">📧</div>
+        <div class="flow-text"><strong>Séquence Email 7J</strong><br>Relances, tips, et encouragements automatiques</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">🎮</div>
+        <div class="flow-text"><strong>Discord Nexum</strong><br>Invitation automatique dans la communauté</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="reveal">
+    <span class="section-tag">Tarifs</span>
+    <h2 class="section-title">Investis dans ta transformation. Une fois.</h2>
+    <p class="section-desc" style="margin: 0 auto;">Accès à vie. Mises à jour incluses. Communauté Nexum incluse.</p>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown reveal">
+    <div class="count-block">
+      <span class="count-num" id="hours">47</span>
+      <span class="count-label">Heures</span>
+    </div>
+    <div class="count-block">
+      <span class="count-num" id="minutes">59</span>
+      <span class="count-label">Minutes</span>
+    </div>
+    <div class="count-block">
+      <span class="count-num" id="seconds">00</span>
+      <span class="count-label">Secondes</span>
+    </div>
+  </div>
+  <p style="font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.1em; margin-bottom: 0;">↑ PRIX EARLY BIRD — Augmentation après ce délai</p>
+
+  <div class="pricing-grid reveal" style="margin-top: 56px;">
+    <div class="price-card">
+      <span class="price-tier">Accès Standard</span>
+      <div class="price-amount">97€ <span>une fois</span></div>
+      <ul class="price-features">
+        <li>Les 8 modules complets</li>
+        <li>30+ exercices pratiques</li>
+        <li>Accès à vie + mises à jour</li>
+        <li>Communauté Discord Nexum</li>
+        <li>Ressources & templates IA</li>
+      </ul>
+      <a href="#" class="btn-buy btn-buy-outline">Commencer maintenant →</a>
+    </div>
+
+    <div class="price-card featured">
+      <span class="price-badge">⭐ MOST POPULAR</span>
+      <span class="price-tier">Accès Premium</span>
+      <div class="price-amount">197€ <span>une fois</span></div>
+      <ul class="price-features">
+        <li>Tout de l'accès Standard</li>
+        <li>Accès salon VIP Nexum</li>
+        <li>1 session de coaching mensuel (groupe)</li>
+        <li>Templates & prompts exclusifs</li>
+        <li>Accès aux masterminds Nexum</li>
+        <li>Priorité sur les nouvelles formations</li>
+      </ul>
+      <a href="#" class="btn-buy btn-buy-filled">Accès Premium →</a>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<div class="guarantee">
+  <div class="guarantee-inner reveal">
+    <span class="guarantee-icon">🛡️</span>
+    <h3 style="font-family:'Syne',sans-serif; font-weight:800; font-size:24px; color:#fff; margin-bottom:12px;">Garantie 30 jours satisfait ou remboursé</h3>
+    <p style="font-size:15px; color:var(--muted); line-height:1.7;">Si dans les 30 jours tu n'es pas satisfait, on te rembourse intégralement. Sans question, sans condition. On est là pour ton succès, pas pour prendre ton argent.</p>
+  </div>
+</div>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2>L'IA est déjà là.<br>La question c'est :<br>tu es dedans ou dehors ?</h2>
+  <p>Rejoins Nexum AI Mastery et commence à construire dès aujourd'hui.</p>
+  <a href="#pricing" class="btn-primary" style="font-size:16px; padding:20px 60px;">Rejoindre la Formation →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">NEXUM<span>//</span>AI</div>
+  <p>© 2025 NEXUM — Formation IA — Tous droits réservés</p>
+  <p style="color:var(--muted)">nexum.community</p>
+</footer>
+
+<script>
+// SCROLL REVEAL
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(el => {
+    if (el.isIntersecting) {
+      el.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// COUNTDOWN TIMER — 48h from page load
+const end = new Date().getTime() + (48 * 60 * 60 * 1000);
+
+function updateCountdown() {
+  const now = new Date().getTime();
+  const diff = end - now;
+  if (diff <= 0) {
+    document.getElementById('hours').textContent = '00';
+    document.getElementById('minutes').textContent = '00';
+    document.getElementById('seconds').textContent = '00';
+    return;
+  }
+  const h = Math.floor(diff / (1000 * 60 * 60));
+  const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const s = Math.floor((diff % (1000 * 60)) / 1000);
+  document.getElementById('hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('minutes').textContent = String(m).padStart(2,'0');
+  document.getElementById('seconds').textContent = String(s).padStart(2,'0');
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
+
+</body>
+</html>
