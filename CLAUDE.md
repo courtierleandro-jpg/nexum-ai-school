@@ -106,14 +106,15 @@ https://www.notion.so/33b9526165a181b7ab4ed16bb904b4fd
 
 ---
 
-## Credentials services (à remplir)
+## Credentials services
 
-- **Gumroad Standard URL** : _à renseigner_ (gumroad.com/l/XXXXX)
-- **Gumroad Premium URL** : _à renseigner_ (gumroad.com/l/YYYYY)
-- **Brevo API Key** : _à renseigner_
-- **Brevo List IDs** : Leads=?, Élèves Actifs=?, Diplômés=?
-- **HeyGen** : compte à créer sur heygen.com (plan gratuit → 1 vidéo/mois, payant pour production)
-- **Make.com** : compte à créer
+- **[GUMROAD_STANDARD]** : https://leandrodomingoslourenco.gumroad.com/l/ckcrul
+- **[GUMROAD_PREMIUM]** : https://leandrodomingoslourenco.gumroad.com/l/lcwubf
+- **[BREVO_API_KEY]** : _à renseigner_
+- **[BREVO_LIST_IDS]** : Leads=?, Élèves Actifs=?, Diplômés=?
+- **[MAKE_WEBHOOK_URL]** : _à renseigner_
+- **[DISCORD_INVITE]** : _à renseigner_
+- **[HEYGEN_AVATARS]** : _à renseigner_
 
 ## TODO
 
