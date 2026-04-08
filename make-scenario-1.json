@@ -1,0 +1,56 @@
+{
+  "name": "Achat Gumroad → Accès Automatique",
+  "description": "Déclenché par un achat Gumroad. Ajoute l'acheteur à Brevo, envoie l'email de bienvenue.",
+  "modules": [
+    {
+      "id": 1,
+      "type": "webhook",
+      "label": "Gumroad Sale Webhook",
+      "note": "Copier cette URL dans Gumroad > Settings > Integrations > Webhooks > event: sale"
+    },
+    {
+      "id": 2,
+      "type": "http_post",
+      "label": "Brevo — Ajouter contact",
+      "url": "https://api.brevo.com/v3/contacts",
+      "headers": {
+        "api-key": "{{BREVO_API_KEY}}",
+        "content-type": "application/json"
+      },
+      "body": {
+        "email": "{{1.email}}",
+        "listIds": [2],
+        "attributes": {
+          "PRENOM": "{{1.full_name}}",
+          "PRODUIT": "{{1.product_name}}",
+          "MONTANT": "{{1.price}}"
+        },
+        "updateEnabled": true
+      }
+    },
+    {
+      "id": 3,
+      "type": "http_post",
+      "label": "Brevo — Email de bienvenue",
+      "url": "https://api.brevo.com/v3/smtp/email",
+      "headers": {
+        "api-key": "{{BREVO_API_KEY}}",
+        "content-type": "application/json"
+      },
+      "body": {
+        "sender": { "name": "Leandro — Nexum AI School", "email": "hello@nexum.ai" },
+        "to": [{ "email": "{{1.email}}", "name": "{{1.full_name}}" }],
+        "subject": "Bienvenue dans Nexum AI School ! Voici tes accès",
+        "htmlContent": "<h2>Bienvenue {{1.full_name}} !</h2><p>Ton accès à <strong>Nexum AI School</strong> est confirmé.</p><p>Rejoins notre Discord : <a href='{{DISCORD_INVITE}}'>Cliquer ici</a></p><p>À très vite,<br>Leandro</p>"
+      }
+    }
+  ],
+  "setup_instructions": [
+    "1. Sur make.com : Create scenario > Import blueprint > coller ce JSON",
+    "2. Module 1 : copier l'URL webhook générée",
+    "3. Remplacer {{BREVO_API_KEY}} par ta vraie clé Brevo dans modules 2 et 3",
+    "4. Remplacer {{DISCORD_INVITE}} par le lien d'invitation Discord",
+    "5. Activer le scénario",
+    "6. Coller l'URL webhook dans Gumroad > Settings > Integrations > Webhooks > event: sale"
+  ]
+}
