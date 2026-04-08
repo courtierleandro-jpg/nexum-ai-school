@@ -36,6 +36,10 @@ Stack gratuite : GitHub Pages, Gumroad (0€+10%), Brevo (300 mails/j), Make.com
 
 ---
 
+## Format de formation (mis à jour 08/04/2026)
+
+**Vidéos générées par IA** via HeyGen (avatar Leandro FR) + **tuteurs IA interactifs** par module via Discord (bot Claude par canal #module-XX).
+
 ## 8 Modules
 
 01 - Comprendre Claude & l'IA (3h)
@@ -46,6 +50,12 @@ Stack gratuite : GitHub Pages, Gumroad (0€+10%), Brevo (300 mails/j), Make.com
 06 - Marketing & Contenu IA (4h)
 07 - Business Models (3h)
 08 - Prompt Engineering Avancé (4h)
+
+## Stack production contenu
+
+- **HeyGen** : avatar IA de Leandro, voix FR, génération vidéo par script
+- **Discord bots** : 1 bot Claude par module = tuteur IA 24/7 (répond aux questions du module uniquement)
+- **Workflow** : Script (Notion) → HeyGen vidéo → Hébergement → Discord canal module
 
 ---
 
@@ -96,14 +106,24 @@ https://www.notion.so/33b9526165a181b7ab4ed16bb904b4fd
 
 ---
 
+## Credentials services (à remplir)
+
+- **Gumroad Standard URL** : _à renseigner_ (gumroad.com/l/XXXXX)
+- **Gumroad Premium URL** : _à renseigner_ (gumroad.com/l/YYYYY)
+- **Brevo API Key** : _à renseigner_
+- **Brevo List IDs** : Leads=?, Élèves Actifs=?, Diplômés=?
+- **HeyGen** : compte à créer sur heygen.com (plan gratuit → 1 vidéo/mois, payant pour production)
+- **Make.com** : compte à créer
+
 ## TODO
 
-- [ ] cp nexum-formation-landing.html index.html && git push
-- [ ] GitHub Pages → Settings → Pages → main
-- [ ] Gumroad : 2 produits (97€/197€) + IBAN
-- [ ] Brevo : 3 listes + séquence leads
+- [x] cp nexum-formation-landing.html index.html && git push
+- [x] GitHub Pages → Settings → Pages → main
+- [ ] Gumroad : 2 produits (97€/197€) + IBAN → **envoyer URLs à Claude**
+- [ ] Brevo : 3 listes + séquence leads → **envoyer clé API à Claude**
 - [ ] Make.com : Scénario 1 (achat → accès auto)
-- [ ] Discord : créer serveur
-- [ ] Filmer Module 01 Leçon 1
+- [ ] HeyGen : compte + premier avatar FR
+- [ ] Discord : créer serveur + bots tuteurs par module
+- [ ] Filmer/générer Module 01 Leçon 1
 
 *Mise à jour : 08/04/2026*
