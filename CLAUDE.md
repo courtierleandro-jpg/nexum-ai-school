@@ -116,15 +116,36 @@ https://www.notion.so/33b9526165a181b7ab4ed16bb904b4fd
 - **[DISCORD_INVITE]** : _à renseigner_
 - **[HEYGEN_AVATARS]** : _à renseigner_
 
+## Discord (mis à jour 08/04/2026)
+
+Pas de nouveau serveur — ajout d'une catégorie "NEXUM AI SCHOOL" dans le serveur Nexum existant.
+Voir `discord-integration.md` pour les instructions complètes.
+IDs à renseigner quand le serveur est configuré :
+- DISCORD_GUILD_ID = _à renseigner_
+- DISCORD_ROLE_ELEVE = _à renseigner_
+- DISCORD_ROLE_PREMIUM = _à renseigner_
+- DISCORD_BOT_TOKEN = _à renseigner_
+
+## Email (mis à jour 08/04/2026)
+
+Alternative à Brevo si vérification téléphone bloquante :
+- **Mailchimp** : gratuit 500 contacts, pas de vérif téléphone → mailchimp.com
+- **SendGrid** : 100 emails/jour gratuit → sendgrid.com
+- Séquence emails prête dans `brevo-email-sequence.md` (compatible tous services)
+
 ## TODO
 
-- [x] cp nexum-formation-landing.html index.html && git push
-- [x] GitHub Pages → Settings → Pages → main
-- [ ] Gumroad : 2 produits (97€/197€) + IBAN → **envoyer URLs à Claude**
-- [ ] Brevo : 3 listes + séquence leads → **envoyer clé API à Claude**
-- [ ] Make.com : Scénario 1 (achat → accès auto)
-- [ ] HeyGen : compte + premier avatar FR
-- [ ] Discord : créer serveur + bots tuteurs par module
-- [ ] Filmer/générer Module 01 Leçon 1
+- [x] Landing page live : https://courtierleandro-jpg.github.io/nexum-ai-school/
+- [x] Bouton Standard → https://leandrodomingoslourenco.gumroad.com/l/ckcrul
+- [x] Bouton Premium → https://leandrodomingoslourenco.gumroad.com/l/lcwubf
+- [x] make-full-scenario.md — Scénario Make complet avec JSON
+- [x] discord-integration.md — Catégorie + salons + bot + rôles
+- [x] heygen-30-lessons-plan.md — 30 leçons planifiées
+- [x] brevo-email-sequence.md — Séquence 7 emails J0→J14
+- [ ] Brevo/Mailchimp : compte + 3 listes + clé API → donner à Claude
+- [ ] Make.com : compte + import JSON → webhook URL → Gumroad
+- [ ] Discord : configurer catégorie AI School dans serveur Nexum
+- [ ] HeyGen : compte + leçon 01.01 (premier test)
+- [ ] Tally : formulaire Discord ID pour attribution des rôles auto
 
 *Mise à jour : 08/04/2026*
