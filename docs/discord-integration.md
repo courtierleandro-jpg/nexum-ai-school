@@ -1,124 +1,158 @@
-# Discord — Intégration Nexum AI School dans le serveur Nexum existant
+# Discord — Intégration Nexum AI School
 
 ## Contexte
-Ne PAS créer un nouveau serveur. Ajouter une catégorie "NEXUM AI SCHOOL" dans le serveur Nexum existant de Leandro.
+Catégorie **NEXUM AI SCHOOL** ajoutée dans le serveur Nexum existant de Leandro.
+Bot **ARIA** opérationnel — répond dans `#aria-assistant`.
 
 ---
 
-## ÉTAPE 1 — Créer les rôles
+## ✅ Configuration actuelle (faite)
 
-Dans le serveur Nexum → Paramètres du serveur → Rôles → "+" :
+### IDs du serveur
+```
+DISCORD_GUILD_ID    = 1389194889379446874
+DISCORD_ROLE_ELEVE  = 1493236518201065604   (Élève AI School — bleu #5865F2)
+DISCORD_ROLE_PREMIUM= 1493237129545912340   (Premium AI School — violet #7B5EA7)
+```
 
-| Rôle | Couleur | Usage |
-|------|---------|-------|
-| Élève AI School | #5865F2 (bleu) | Acheteurs Standard (97€) |
-| Premium AI School | #7B5EA7 (violet) | Acheteurs Premium (197€) |
-
-Permissions des rôles :
-- **Élève AI School** : accès aux salons Formation + Communauté de la catégorie AI School
-- **Premium AI School** : tout Élève + accès salon #vip-ai-school
-
----
-
-## ÉTAPE 2 — Créer la catégorie et les salons
-
-Clic droit dans la liste des salons → "Créer une catégorie" → Nom : `NEXUM AI SCHOOL`
-
-### Salons à créer dans la catégorie (dans l'ordre) :
-
+### Salons créés
 ```
 NEXUM AI SCHOOL
-├── 📌 bienvenue-ai-school       (lecture seule, message épinglé)
-├── 📣 annonces-ai-school        (lecture seule, admin only)
-├── 🤖 aria-assistant            (bot Claude 24/7)
-├── 01-comprendre-ia             (rôle : Élève AI School)
-├── 02-creer-site-web            (rôle : Élève AI School)
-├── 03-automatisations           (rôle : Élève AI School)
-├── 04-developper-app            (rôle : Élève AI School)
-├── 05-jeu-video                 (rôle : Élève AI School)
-├── 06-marketing-ia              (rôle : Élève AI School)
-├── 07-business-models           (rôle : Élève AI School)
-├── 08-prompt-engineering        (rôle : Élève AI School)
-└── 👑 vip-ai-school             (rôle : Premium AI School uniquement)
+├── 📌 bienvenue-ai-school   (lecture seule)
+├── 📣 annonces              (admin only)
+├── 💬 entraide-ai-school    (Élève + Premium)
+├── 🤖 aria-assistant        (bot ARIA)
+└── 👑 vip-ai-school         (Premium uniquement)
 ```
 
-Total : 12 salons dans 1 catégorie.
-
-### Permissions par salon :
-- `bienvenue-ai-school` : tout le monde peut lire, personne ne peut écrire (sauf admin)
-- `annonces-ai-school` : tout le monde peut lire, admin seulement
-- `aria-assistant` : tout le monde peut lire/écrire (bot répond)
-- `01-` à `08-` : Élève AI School + Premium AI School peuvent lire/écrire
+### Permissions
+- `bienvenue-ai-school` : tout le monde lit, personne n'écrit (sauf admin)
+- `annonces` : pareil
+- `entraide-ai-school` : Élève AI School + Premium AI School lisent/écrivent
+- `aria-assistant` : Élève AI School + Premium AI School lisent/écrivent
 - `vip-ai-school` : Premium AI School uniquement
 
 ---
 
-## ÉTAPE 3 — Créer le bot Discord
+## 🤖 Bot ARIA
 
-### 3.1 Créer l'application
-1. Aller sur https://discord.com/developers/applications
-2. Cliquer "New Application" → Nom : `ARIA — Nexum AI School`
-3. Onglet "Bot" → "Add Bot" → confirmer
-4. Copier le **TOKEN** (garder secret — ne jamais commit)
-5. Sous "Privileged Gateway Intents", activer :
-   - SERVER MEMBERS INTENT
-   - MESSAGE CONTENT INTENT
+### Infos bot
+- **Nom** : ARIA
+- **Tag** : Aria#8665
+- **App Discord** : discord.com/developers/applications → ARIA
+- **Token** : stocké uniquement en local / variable d'environnement (NE PAS COMMITER)
 
-### 3.2 Inviter le bot sur le serveur
-1. Onglet "OAuth2" → "URL Generator"
-2. Scopes : `bot`, `applications.commands`
-3. Bot Permissions : `Send Messages`, `Manage Roles`, `Read Message History`, `View Channels`
-4. Copier l'URL générée → ouvrir dans le navigateur → sélectionner le serveur Nexum
-5. Autoriser
+### Intents activés (obligatoire)
+Dans Discord Developer Portal → Bot → Privileged Gateway Intents :
+- ✅ Presence Intent
+- ✅ Server Members Intent
+- ✅ Message Content Intent
 
-### 3.3 Variables d'environnement nécessaires
+### Fichiers du bot
 ```
-DISCORD_BOT_TOKEN=    # Token du bot (onglet Bot)
-DISCORD_GUILD_ID=     # ID du serveur Nexum (clic droit serveur → Copier l'ID)
-DISCORD_ROLE_ELEVE=   # ID du rôle "Élève AI School"
-DISCORD_ROLE_PREMIUM= # ID du rôle "Premium AI School"
+bot/
+├── bot.js          ← code principal
+├── package.json    ← dépendances (discord.js ^14)
+└── .gitignore      ← exclut node_modules + .env
+```
+
+### Lancer le bot en local (dev/test)
+```bash
+cd /Users/hhhsimo/Desktop/nexum-ai-school/bot
+DISCORD_BOT_TOKEN=<token> node bot.js
+```
+
+### Variable d'environnement requise
+```env
+DISCORD_BOT_TOKEN=   # Token du bot (onglet Bot sur Discord Developer Portal)
 ```
 
 ---
 
-## ÉTAPE 4 — Code Make.com pour attribution des rôles
+## 🚀 Héberger le bot (quand prêt)
+
+### Option A — Glitch (gratuit, recommandé)
+1. Aller sur **glitch.com** → Sign in with GitHub
+2. **New Project** → **"glitch-hello-node"**
+3. Remplacer `server.js` par le contenu de `bot/bot.js`
+4. Remplacer `package.json` par le contenu de `bot/package.json`
+5. Dans `.env` (sidebar Glitch) ajouter :
+   ```
+   DISCORD_BOT_TOKEN=<token>
+   ```
+6. Glitch démarre automatiquement
+
+**Keep-alive (empêche Glitch de dormir) :**
+- Le bot inclut déjà un serveur HTTP sur le port 3000
+- Créer un compte sur **uptimerobot.com** (gratuit)
+- Add Monitor → Type HTTP → URL : `https://ton-projet.glitch.me` → Interval : 5 min
+
+### Option B — Fly.io (gratuit permanent, plus robuste)
+```bash
+# Installer Fly CLI
+brew install flyctl
+
+# Se connecter
+fly auth login
+
+# Depuis le dossier bot/
+cd bot
+fly launch        # crée le projet
+fly secrets set DISCORD_BOT_TOKEN=<token>
+fly deploy
+```
+
+### Option C — discloud.app (gratuit si pas saturé)
+1. discloud.app → Add App
+2. Upload un `.zip` de `bot.js` + `package.json`
+3. Main file : `bot.js` · Type : `bot`
+4. Variables d'env → `DISCORD_BOT_TOKEN`
+5. Deploy
+
+> ⚠️ En avril 2026 le free tier discloud était saturé — réessayer plus tard.
+
+---
+
+## ⚙️ Make.com — Attribution automatique des rôles
+
+Quand quelqu'un achète sur Gumroad, Make.com doit attribuer le bon rôle Discord.
+
+**Problème** : Gumroad ne collecte pas le Discord ID automatiquement.
+**Solution** : dans l'email de bienvenue, demander à l'élève son Discord ID via un formulaire Tally → Make récupère et attribue le rôle.
 
 ### Module Make : HTTP → Add Role to Member
 
-**Pour achat Standard (97€) :**
+**Achat Standard (97€) :**
 ```
-URL: https://discord.com/api/v10/guilds/{{DISCORD_GUILD_ID}}/members/{{discord_user_id}}/roles/{{DISCORD_ROLE_ELEVE}}
-Method: PUT
+URL    : https://discord.com/api/v10/guilds/1389194889379446874/members/{{discord_user_id}}/roles/1493236518201065604
+Method : PUT
 Headers:
-  Authorization: Bot {{DISCORD_BOT_TOKEN}}
-  Content-Type: application/json
+  Authorization : Bot <DISCORD_BOT_TOKEN>
+  Content-Type  : application/json
 ```
 
-**Pour achat Premium (197€) :**
+**Achat Premium (197€) :**
 ```
-URL: https://discord.com/api/v10/guilds/{{DISCORD_GUILD_ID}}/members/{{discord_user_id}}/roles/{{DISCORD_ROLE_PREMIUM}}
-Method: PUT
+URL    : https://discord.com/api/v10/guilds/1389194889379446874/members/{{discord_user_id}}/roles/1493237129545912340
+Method : PUT
 Headers:
-  Authorization: Bot {{DISCORD_BOT_TOKEN}}
-  Content-Type: application/json
+  Authorization : Bot <DISCORD_BOT_TOKEN>
+  Content-Type  : application/json
 ```
-
-**Note importante :** Gumroad ne collecte pas le Discord ID de l'acheteur automatiquement.
-Solution : dans l'email de bienvenue, demander à l'élève d'entrer son Discord ID dans un formulaire Tally/Typeform → Make récupère et attribue le rôle.
 
 ---
 
-## ÉTAPE 5 — Message de bienvenue épinglé dans #bienvenue-ai-school
+## 📌 Message de bienvenue épinglé dans #bienvenue-ai-school
 
 ```
-Bienvenue dans Nexum AI School !
+Bienvenue dans Nexum AI School ! 🎓
 
 Voici comment accéder à ta formation :
 
-1️⃣ Lis les règles générales du serveur Nexum
-2️⃣ Rends-toi dans ton module : #01-comprendre-ia pour commencer
-3️⃣ Pour toute question IA : #aria-assistant (bot disponible 24/7)
-4️⃣ Si tu es Premium : accès à #vip-ai-school (coaching mensuel, templates)
+1️⃣ Ton espace membre → https://courtierleandro-jpg.github.io/nexum-ai-school/dashboard.html
+2️⃣ Commence par le Module 01 dans ton dashboard
+3️⃣ Des questions ? → #aria-assistant (bot disponible 24/7)
+4️⃣ Si tu es Premium : accès à #vip-ai-school 👑
 
 Programme complet :
 📦 Module 01 — Comprendre Claude & l'IA
@@ -128,32 +162,8 @@ Programme complet :
 📦 Module 05 — Développer un jeu vidéo
 📦 Module 06 — Marketing & Contenu IA
 📦 Module 07 — Business Models IA
-📦 Module 08 — Prompt Engineering Avancé
+📦 Module 08 — Prompt Engineering Avancé (Premium)
 
 Bonne formation !
 — Leandro
-```
-
----
-
-## IDs à renseigner dans CLAUDE.md
-
-Quand le serveur est configuré, récupérer et noter :
-- `DISCORD_GUILD_ID` = ID du serveur Nexum (clic droit → Copier l'ID)
-- `DISCORD_ROLE_ELEVE` = ID du rôle Élève AI School
-- `DISCORD_ROLE_PREMIUM` = ID du rôle Premium AI School
-- `DISCORD_BOT_TOKEN` = Token du bot ARIA
-- `DISCORD_INVITE` = Lien d'invitation permanent → Paramètres → Invitations → Créer → Durée : Jamais → Copier
-
----
-
-## Prompt bot ARIA (à coller dans chaque canal #module-XX)
-
-```
-Tu es ARIA, tuteure IA de Nexum AI School pour le Module [X] — [Nom du module].
-Tu réponds uniquement aux questions liées à ce module.
-Tu es encourageante, précise, et tu donnes des exemples concrets.
-Si la question dépasse ton module, tu rediriges vers le bon canal.
-Tu ne donnes jamais les réponses directement — tu guides l'élève à trouver par lui-même.
-Langue : français. Ton : professionnel mais chaleureux.
 ```

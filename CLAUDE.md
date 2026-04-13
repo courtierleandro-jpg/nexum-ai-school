@@ -47,7 +47,7 @@ Nexum AI School est une formation en ligne sur Claude & l'IA, 100% automatisée.
 8 modules, 30 leçons pratiques, accessible sans code.
 Vendue 97€ (Standard) ou 197€ (Premium) via Gumroad, hébergée sur GitHub Pages.
 L'objectif est d'atteindre 22 ventes/mois (~1 900€ net) grâce à une stack gratuite
-(GitHub Pages, Gumroad, Brevo/Mailchimp, Make.com, Discord).
+(GitHub Pages, Gumroad, Gmail/Make.com, Discord).
 ```
 
 ---
@@ -56,21 +56,19 @@ L'objectif est d'atteindre 22 ventes/mois (~1 900€ net) grâce à une stack gr
 
 ```
 Acheteur (Gumroad)
-    ↓ Webhook Gumroad
-Make.com Scénario 1
-    ↓ → Email de bienvenue (Brevo/Mailchimp)
-    ↓ → Invitation Discord (rôle Élève ou Premium)
-    ↓ → CRM Notion (log de l'achat)
+    ↓ Webhook → Make.com
+    ↓ → Email de bienvenue (Gmail via Make)
+    ↓ → [futur] Rôle Discord automatique (nécessite Discord ID de l'élève)
 
 Espace membre (dashboard.html — GitHub Pages)
-    ↓ Vidéos hébergées Vimeo/Google Drive (HeyGen)
+    ↓ 30 leçons texte interactives (QCM + freetext)
     ↓ Progression sauvegardée localStorage
-    ↓ Discord communauté (#module-01 … #module-08)
+    ↓ Discord communauté (catégorie NEXUM AI SCHOOL)
 
 Discord (serveur Nexum existant — catégorie NEXUM AI SCHOOL)
-    ↓ 1 bot Claude par module (tuteur IA 24/7)
-    ↓ #aria-assistant (bot général)
-    ↓ #vip-lounge (Premium uniquement)
+    ↓ Bot ARIA (réponses prédéfinies, tourne en local pour l'instant)
+    ↓ #aria-assistant (questions formation)
+    ↓ #vip-ai-school (Premium uniquement)
 ```
 
 ---
@@ -79,20 +77,25 @@ Discord (serveur Nexum existant — catégorie NEXUM AI SCHOOL)
 
 ```
 nexum-ai-school/
-├── index.html                  ← Landing page principale (live GitHub Pages)
-├── dashboard.html              ← Espace membre post-paiement ✅ CRÉÉ
+├── index.html                  ← Landing page (live GitHub Pages) ✅
+├── dashboard.html              ← Espace membre post-paiement ✅
 ├── make-scenario-1.json        ← Scénario Make.com (import direct)
-├── make-full-scenario.md       ← Documentation scénarios Make
-├── brevo-email-sequence.md     ← Séquence 7 emails J0→J14
-├── discord-integration.md      ← Config bot + rôles + salons
-├── discord-setup.md            ← Guide setup serveur Discord
-├── heygen-30-lessons-plan.md   ← Plan 30 leçons + scripts HeyGen
-└── CLAUDE.md                   ← ce fichier
+├── CLAUDE.md                   ← ce fichier
+├── bot/
+│   ├── bot.js                  ← Bot ARIA Discord (réponses prédéfinies)
+│   └── package.json            ← dépendances discord.js
+└── docs/
+    ├── discord-integration.md  ← Config Discord complète + IDs + hébergement bot
+    ├── brevo-email-sequence.md ← Séquence 7 emails J0→J14
+    ├── make-full-scenario.md   ← Documentation scénarios Make
+    ├── heygen-30-lessons-plan.md ← Plan 30 leçons
+    └── discord-setup.md        ← Guide setup serveur Discord
 ```
 
 > ⚠️ **Fichiers sensibles / à ne pas toucher** :
-> - Ne jamais commiter de clés API dans ce repo (public)
+> - Ne jamais commiter de clés API ou tokens dans ce repo (public)
 > - `make-scenario-1.json` — contient la structure des webhooks
+> - `DISCORD_BOT_TOKEN` — ne jamais commiter, stocker en variable d'env uniquement
 
 ---
 
@@ -102,13 +105,12 @@ nexum-ai-school/
 |---|---|---|
 | Frontend | HTML · CSS · JS vanilla | — |
 | Hosting | GitHub Pages | — |
-| Paiement | Gumroad | — |
-| Email | Brevo (ou Mailchimp/SendGrid) | — |
+| Paiement | Gumroad (`courtierleandro`) | — |
+| Email | Gmail via Make.com | — |
 | Automation | Make.com | — |
 | Communauté | Discord (serveur Nexum existant) | — |
-| Vidéos | HeyGen → Vimeo / Google Drive | — |
+| Bot Discord | discord.js (tourne en local) | 14.x |
 | CRM | Notion | — |
-| Formulaires | Tally | — |
 
 ---
 
@@ -116,27 +118,21 @@ nexum-ai-school/
 
 ```env
 # Gumroad
-GUMROAD_STANDARD=https://leandrodomingoslourenco.gumroad.com/l/ckcrul
-GUMROAD_PREMIUM=https://leandrodomingoslourenco.gumroad.com/l/lcwubf
-
-# Brevo / Email
-BREVO_API_KEY=               # à renseigner
-BREVO_LIST_LEADS=            # ID liste Leads
-BREVO_LIST_ELEVES=           # ID liste Élèves Actifs
-BREVO_LIST_DIPLOMES=         # ID liste Diplômés
+GUMROAD_STANDARD=https://courtierleandro.gumroad.com/l/ckcrul
+GUMROAD_PREMIUM=https://courtierleandro.gumroad.com/l/lcwubf
 
 # Make.com
-MAKE_WEBHOOK_URL=            # à renseigner après import JSON
+MAKE_WEBHOOK_URL=https://hook.eu1.make.com/zm2u20jofmqjxcvcn5mevn4sbfiuckjh
 
 # Discord
 DISCORD_INVITE=              # à renseigner
-DISCORD_GUILD_ID=            # à renseigner
-DISCORD_ROLE_ELEVE=          # à renseigner
-DISCORD_ROLE_PREMIUM=        # à renseigner
-DISCORD_BOT_TOKEN=           # à renseigner
+DISCORD_GUILD_ID=1389194889379446874
+DISCORD_ROLE_ELEVE=1493236518201065604
+DISCORD_ROLE_PREMIUM=1493237129545912340
+DISCORD_BOT_TOKEN=           # NE PAS COMMITER — stocker en variable d'env uniquement
 
-# HeyGen
-HEYGEN_AVATAR_ID=            # à renseigner (avatar Leandro)
+# HeyGen (futur)
+HEYGEN_AVATAR_ID=            # à renseigner si vidéos HeyGen
 ```
 
 ---
@@ -150,6 +146,9 @@ git clone https://github.com/courtierleandro-jpg/nexum-ai-school.git
 # Voir en local (ouvrir directement dans le navigateur)
 open index.html
 open dashboard.html
+
+# Lancer le bot ARIA en local
+cd bot && DISCORD_BOT_TOKEN=<token> node bot.js
 
 # Push vers GitHub Pages
 git add .
@@ -178,8 +177,10 @@ git push origin main
 |---|---|
 | Repo GitHub | `https://github.com/courtierleandro-jpg/nexum-ai-school` |
 | Landing page (prod) | `https://courtierleandro-jpg.github.io/nexum-ai-school` |
-| Gumroad Standard | `https://leandrodomingoslourenco.gumroad.com/l/ckcrul` |
-| Gumroad Premium | `https://leandrodomingoslourenco.gumroad.com/l/lcwubf` |
+| Dashboard (prod) | `https://courtierleandro-jpg.github.io/nexum-ai-school/dashboard.html` |
+| Gumroad Standard | `https://courtierleandro.gumroad.com/l/ckcrul` |
+| Gumroad Premium | `https://courtierleandro.gumroad.com/l/lcwubf` |
+| Make.com Webhook | `https://hook.eu1.make.com/zm2u20jofmqjxcvcn5mevn4sbfiuckjh` |
 | Notion workspace | `https://www.notion.so/33b9526165a181b7ab4ed16bb904b4fd` |
 
 ---
@@ -187,13 +188,14 @@ git push origin main
 ## 🧩 Contexte métier important
 
 ```
-- Leandro est seul à gérer le projet (pas d'équipe tech).
+- Leandro gère le produit, Hhhsimo gère le technique.
 - La stack doit rester 100% gratuite ou quasi-gratuite au démarrage.
 - Le seuil de viabilité est 8 ventes/mois (~700€ net).
 - Objectif salaire : 22 ventes/mois (~1 900€ net).
-- Les vidéos n'existent pas encore — HeyGen sera utilisé pour les générer.
-- Le serveur Discord Nexum existe déjà : on ajoute une catégorie, pas un nouveau serveur.
-- Alternative email si Brevo bloque la vérif téléphone : Mailchimp (500 contacts gratuit).
+- Les cours sont en format texte interactif (pas de vidéos HeyGen pour l'instant).
+- Le serveur Discord Nexum existe déjà : catégorie NEXUM AI SCHOOL ajoutée.
+- Bot ARIA tourne en local pour l'instant — à héberger sur Glitch ou Fly.io quand prêt.
+- Make.com gère l'email de bienvenue automatique après achat Gumroad.
 ```
 
 ---
@@ -202,9 +204,10 @@ git push origin main
 
 | # | Description | Statut |
 |---|---|---|
-| 1 | Vidéos pas encore produites — placeholders HeyGen dans dashboard.html | 🔴 Ouvert |
-| 2 | Variables d'env (Brevo, Discord, Make) pas encore renseignées | 🔴 Ouvert |
+| 1 | Bot ARIA tourne en local (Mac) — s'arrête si le Mac dort | 🟡 En cours |
+| 2 | Attribution rôle Discord non automatisée — nécessite Discord ID de l'élève | 🔴 Ouvert |
 | 3 | Pas de vrai système d'auth — l'espace membre est accessible sans login | 🟡 Accepté (MVP) |
+| 4 | Brevo non configuré — email via Gmail/Make pour l'instant | 🟡 Acceptable |
 
 ---
 
@@ -217,6 +220,9 @@ git push origin main
 | 2026-04-08 | Progression en localStorage | Pas de BDD nécessaire pour MVP |
 | 2026-04-13 | dashboard.html = espace membre | Page dédiée post-paiement, même branding |
 | 2026-04-13 | Module 08 verrouillé Standard | Différenciation valeur Premium |
+| 2026-04-13 | Cours en texte interactif (pas HeyGen) | Livrable immédiat, pas besoin de vidéos |
+| 2026-04-13 | Bot ARIA sans clé Claude API | Réponses prédéfinies suffisantes pour MVP |
+| 2026-04-13 | Email bienvenue via Gmail + Make.com | Brevo non configuré, Gmail fonctionne immédiatement |
 
 ---
 
@@ -272,6 +278,38 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
 
+### Session 2 — 2026-04-13
+**Durée estimée** : 2h  
+**Objectif de la session** : Discord, bot ARIA, Make.com et tunnel de vente Gumroad
+
+**✅ Réalisé :**
+- Config Discord complète : catégorie NEXUM AI SCHOOL + 5 salons + 2 rôles (Élève / Premium)
+- Création et lancement du bot ARIA (discord.js, réponses prédéfinies, tourne en local)
+- Config Make.com : webhook Gumroad → email de bienvenue Gmail automatique
+- Produits Gumroad publiés + lien contenu dashboard ajouté
+- Correction URLs Gumroad (leandrodomingoslourenco → courtierleandro)
+- Refonte landing page (design éditorial, marquee, before/after, témoignages)
+
+**🔧 Modifié / Créé :**
+- `bot/bot.js` — créé · bot ARIA Discord · réponses prédéfinies par mots-clés · 13 sujets couverts
+- `bot/package.json` — créé · dépendances discord.js
+- `docs/discord-integration.md` — mis à jour · IDs Discord · 3 options hébergement bot · config Make.com
+- `index.html` — refonte design + correction URLs Gumroad
+- `CLAUDE.md` — mis à jour · structure fichiers · bugs · décisions · variables d'env
+
+**⚠️ Points en suspens :**
+- Bot ARIA tourne en local → à héberger (Glitch + UptimeRobot ou Fly.io)
+- Attribution rôle Discord non automatisée (besoin Discord ID élève via formulaire Tally)
+- Brevo non configuré (email via Gmail pour l'instant)
+- Payout Gumroad à configurer par Leandro (compte bancaire)
+
+**💡 Décisions prises :**
+- Bot sans clé API Claude → réponses prédéfinies suffisantes pour MVP
+- Email bienvenue via Gmail + Make.com (Brevo non prioritaire)
+- 5 salons Discord max (pas 1 par module — trop vide au démarrage)
+
+---
+
 ### Session 1 — 2026-04-13
 **Durée estimée** : 1h  
 **Objectif de la session** : Mise en place de l'espace membre post-paiement
@@ -303,4 +341,4 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 
 ---
 
-*— CLAUDE.md · Nexum AI School · Leandro × HTT Digital · Mis à jour le 2026-04-13*
+*— CLAUDE.md · Nexum AI School · Leandro × Hhhsimo · Mis à jour le 2026-04-13*
