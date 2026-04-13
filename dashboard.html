@@ -385,12 +385,101 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
   .progress-wrap { display:none; }
   .milestone-strip { display:none; }
 }
+
+/* ── LOGIN ── */
+#login-screen {
+  position:fixed; inset:0; z-index:1000;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg);
+}
+.login-bg {
+  position:absolute; inset:0; overflow:hidden;
+}
+.login-grid {
+  position:absolute; inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.login-glow {
+  position:absolute; top:20%; left:50%; transform:translateX(-50%);
+  width:600px; height:600px; border-radius:50%;
+  background:radial-gradient(circle, rgba(123,94,167,.18) 0%, transparent 70%);
+  pointer-events:none;
+}
+.login-card {
+  position:relative; z-index:1;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:48px 40px;
+  width:100%; max-width:440px;
+  display:flex; flex-direction:column; gap:20px;
+  box-shadow:0 0 80px rgba(0,0,0,.6);
+}
+.login-logo {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:20px;
+  letter-spacing:.12em; color:#fff; text-align:center;
+}
+.login-logo span { color:var(--cyan); }
+.login-title {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:28px;
+  color:#fff; text-align:center; margin-top:-4px;
+}
+.login-sub {
+  font-size:14px; color:var(--muted); text-align:center; line-height:1.6;
+}
+.login-field input {
+  width:100%; background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; padding:16px 18px;
+  font-family:'Space Mono',monospace; font-size:14px; letter-spacing:.08em;
+  color:#fff; outline:none; transition:border .2s;
+  text-transform:uppercase;
+}
+.login-field input:focus { border-color:var(--cyan); }
+.login-error {
+  font-size:13px; color:#FF5555; text-align:center;
+  min-height:18px; font-family:'Space Mono',monospace;
+}
+.login-btn {
+  width:100%; padding:16px; border-radius:8px; border:none; cursor:pointer;
+  background:linear-gradient(135deg,var(--cyan),var(--accent));
+  font-family:'Syne',sans-serif; font-weight:800; font-size:15px;
+  color:#000; letter-spacing:.04em; transition:opacity .2s;
+}
+.login-btn:hover { opacity:.85; }
+.login-btn:disabled { opacity:.5; cursor:not-allowed; }
+.login-footer {
+  font-size:13px; color:var(--muted); text-align:center;
+}
+.login-footer a { color:var(--cyan); text-decoration:none; }
+.login-footer a:hover { text-decoration:underline; }
 </style>
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
+<div id="login-screen" style="display:none">
+  <div class="login-bg">
+    <div class="login-grid"></div>
+    <div class="login-glow"></div>
+  </div>
+  <div class="login-card">
+    <div class="login-logo">NEXUM<span>//</span>AI</div>
+    <div class="login-title">Accès Formation</div>
+    <div class="login-sub">Entre ta clé d'accès reçue par email après ton achat.</div>
+    <div class="login-field">
+      <input type="text" id="login-key" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false" />
+    </div>
+    <div id="login-error" class="login-error"></div>
+    <button class="login-btn" onclick="submitLogin()" id="login-btn">
+      <span id="login-btn-text">Accéder à la formation →</span>
+    </button>
+    <div class="login-footer">
+      Pas encore membre ? <a href="https://courtierleandro.gumroad.com/l/ckcrul" target="_blank">Rejoindre la formation →</a>
+    </div>
+  </div>
+</div>
+
 <!-- TOPBAR -->
-<nav class="topbar">
+<nav class="topbar" id="main-app" style="display:none">
   <div class="topbar-logo" onclick="renderHome()">NEXUM<span>//</span>AI</div>
   <div class="topbar-right">
     <div class="progress-wrap">
@@ -398,10 +487,11 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
       <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
     </div>
     <div class="badge badge-std" id="plan-badge">STANDARD</div>
+    <button onclick="logout()" style="background:none;border:1px solid var(--border);color:var(--muted);font-size:12px;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:'Space Mono',monospace;">Déconnexion</button>
   </div>
 </nav>
 
-<div class="layout">
+<div class="layout" id="main-layout">
   <aside class="sidebar">
     <div class="sb-section">Mes modules</div>
     <div id="sb-modules"></div>
@@ -1988,6 +2078,111 @@ const MODULES = [
 const TOTAL = MODULES.reduce((a,m) => a + m.lessons.length, 0);
 
 // ═══════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════
+const ADMIN_KEYS = {
+  'NEXUM-ADMIN-2026-PREMIUM': 'premium',
+  'NEXUM-ADMIN-2026-STANDARD': 'standard',
+};
+const GUMROAD_PRODUCTS = {
+  'ckcrul': 'standard',
+  'lcwubf': 'premium',
+};
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'flex';
+  document.getElementById('main-layout').style.display = 'flex';
+}
+
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('main-layout').style.display = 'none';
+}
+
+function setLoginError(msg) {
+  document.getElementById('login-error').textContent = msg;
+}
+
+function setLoginLoading(loading) {
+  const btn = document.getElementById('login-btn');
+  const txt = document.getElementById('login-btn-text');
+  btn.disabled = loading;
+  txt.textContent = loading ? 'Vérification...' : 'Accéder à la formation →';
+}
+
+async function submitLogin() {
+  const key = document.getElementById('login-key').value.trim().toUpperCase();
+  if (!key) { setLoginError('Entre ta clé d\'accès.'); return; }
+
+  setLoginError('');
+  setLoginLoading(true);
+
+  // 1. Clé admin
+  if (ADMIN_KEYS[key]) {
+    grantAccess(key, ADMIN_KEYS[key]);
+    return;
+  }
+
+  // 2. Vérification via API Gumroad
+  try {
+    let plan = null;
+    for (const [permalink, p] of Object.entries(GUMROAD_PRODUCTS)) {
+      const res = await fetch(`https://api.gumroad.com/v2/licenses/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `product_permalink=${permalink}&license_key=${encodeURIComponent(key)}&increment_uses_count=false`,
+      });
+      const data = await res.json();
+      if (data.success) { plan = p; break; }
+    }
+
+    if (plan) {
+      grantAccess(key, plan);
+    } else {
+      setLoginError('Clé invalide. Vérifie ton email ou contacte le support.');
+      setLoginLoading(false);
+    }
+  } catch (e) {
+    setLoginError('Erreur réseau. Réessaie dans quelques secondes.');
+    setLoginLoading(false);
+  }
+}
+
+function grantAccess(key, plan) {
+  localStorage.setItem('nx_key', key);
+  localStorage.setItem('nx_plan', plan);
+  S.plan = plan;
+  updatePlanBadge();
+  showApp();
+  renderHome();
+  renderSidebar();
+  updateProgressBar();
+}
+
+function logout() {
+  localStorage.removeItem('nx_key');
+  localStorage.removeItem('nx_plan');
+  localStorage.removeItem('nx_done');
+  localStorage.removeItem('nx_open');
+  location.reload();
+}
+
+// Vérifier si déjà connecté
+const savedKey = localStorage.getItem('nx_key');
+if (savedKey) {
+  showApp();
+} else {
+  showLogin();
+}
+
+// Enter pour valider
+document.getElementById('login-key').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitLogin();
+});
+
+// ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
 const S = {
@@ -1997,7 +2192,7 @@ const S = {
   cur:       null,
   qcmSel:    null,
   discordUrl:'#',
-  gumroadPremium:'https://leandrodomingoslourenco.gumroad.com/l/lcwubf',
+  gumroadPremium:'https://courtierleandro.gumroad.com/l/lcwubf',
 };
 function save() {
   localStorage.setItem('nx_done', JSON.stringify(S.done));
