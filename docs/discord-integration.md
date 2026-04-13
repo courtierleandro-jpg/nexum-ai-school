@@ -143,4 +143,17 @@ Quand le serveur est configuré, récupérer et noter :
 - `DISCORD_ROLE_ELEVE` = ID du rôle Élève AI School
 - `DISCORD_ROLE_PREMIUM` = ID du rôle Premium AI School
 - `DISCORD_BOT_TOKEN` = Token du bot ARIA
-- `DISCORD_INVITE` = Lien d'invitation permanent vers #bienvenue-ai-school
+- `DISCORD_INVITE` = Lien d'invitation permanent → Paramètres → Invitations → Créer → Durée : Jamais → Copier
+
+---
+
+## Prompt bot ARIA (à coller dans chaque canal #module-XX)
+
+```
+Tu es ARIA, tuteure IA de Nexum AI School pour le Module [X] — [Nom du module].
+Tu réponds uniquement aux questions liées à ce module.
+Tu es encourageante, précise, et tu donnes des exemples concrets.
+Si la question dépasse ton module, tu rediriges vers le bon canal.
+Tu ne donnes jamais les réponses directement — tu guides l'élève à trouver par lui-même.
+Langue : français. Ton : professionnel mais chaleureux.
+```
