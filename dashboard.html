@@ -2130,17 +2130,17 @@ function setLoginLoading(loading) {
 }
 
 async function submitLogin() {
-  const key = document.getElementById('login-key').value.trim().toUpperCase();
+  const key = document.getElementById('login-key').value.trim();
   if (!key) { setLoginError('Entre ta clé d\'accès.'); return; }
 
   setLoginError('');
   setLoginLoading(true);
 
   // 1. Clé admin (locale, pas de BDD)
-  if (ADMIN_KEYS[key]) {
-    currentUserKey = key;
-    localStorage.setItem('nx_key', key);
-    await grantAccess(key, ADMIN_KEYS[key], { done: [], open: [1] });
+  if (ADMIN_KEYS[key.toUpperCase()]) {
+    currentUserKey = key.toUpperCase();
+    localStorage.setItem('nx_key', key.toUpperCase());
+    await grantAccess(key.toUpperCase(), ADMIN_KEYS[key.toUpperCase()], { done: [], open: [1] });
     return;
   }
 
