@@ -1,0 +1,2413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUM AI SCHOOL — Espace Membre</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #040407;
+  --surface: #0c0c14;
+  --surface2: #111120;
+  --surface3: #16162a;
+  --border: rgba(255,255,255,0.07);
+  --accent: #7B5EA7;
+  --cyan: #00E5FF;
+  --pink: #FF3CAC;
+  --text: #E8E8F0;
+  --muted: #6B6B80;
+  --success: #00E5A0;
+  --warn: #F5C842;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; overflow-x:hidden; min-height:100vh; }
+
+/* ── TOPBAR ── */
+.topbar {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  height:60px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px;
+  background:rgba(4,4,7,0.96); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:17px; letter-spacing:.12em; color:#fff; cursor:pointer; }
+.topbar-logo span { color:var(--cyan); }
+.topbar-right { display:flex; align-items:center; gap:14px; }
+.badge { font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.1em; padding:5px 12px; border-radius:2px; text-transform:uppercase; }
+.badge-std { background:rgba(0,229,255,.1); color:var(--cyan); border:1px solid rgba(0,229,255,.25); }
+.badge-prm { background:rgba(255,60,172,.1); color:var(--pink); border:1px solid rgba(255,60,172,.25); }
+.progress-wrap { display:flex; align-items:center; gap:10px; }
+.progress-label { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); }
+.progress-track { width:110px; height:4px; background:var(--surface2); border-radius:2px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--cyan),var(--pink)); border-radius:2px; transition:width .4s; }
+
+/* ── LAYOUT ── */
+.layout { display:flex; padding-top:60px; min-height:100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width:272px; min-width:272px; background:var(--surface);
+  border-right:1px solid var(--border);
+  height:calc(100vh - 60px); position:sticky; top:60px;
+  overflow-y:auto; padding:16px 0 24px;
+}
+.sidebar::-webkit-scrollbar { width:3px; }
+.sidebar::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+.sb-section { font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:.15em; color:var(--muted); text-transform:uppercase; padding:12px 18px 8px; }
+.mod-item { border-bottom:1px solid var(--border); }
+.mod-header {
+  display:flex; align-items:center; gap:10px; padding:12px 18px;
+  cursor:pointer; transition:background .15s;
+}
+.mod-header:hover { background:rgba(255,255,255,.03); }
+.mod-item.open .mod-header,
+.mod-item.active .mod-header { background:rgba(0,229,255,.05); }
+.mod-code { font-family:'Space Mono',monospace; font-size:10px; color:var(--cyan); min-width:28px; }
+.mod-info { flex:1; min-width:0; }
+.mod-name { font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.3; }
+.mod-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+.mod-pct { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
+.mod-pct.done { color:var(--success); }
+.mod-lessons { display:none; }
+.mod-item.open .mod-lessons { display:block; }
+.les-item {
+  display:flex; align-items:center; gap:9px;
+  padding:8px 18px 8px 30px; cursor:pointer;
+  transition:background .12s; position:relative;
+}
+.les-item:hover { background:rgba(255,255,255,.025); }
+.les-item.active { background:rgba(0,229,255,.07); }
+.les-item.active::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--cyan); }
+.les-check {
+  width:15px; height:15px; border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.15);
+  display:flex; align-items:center; justify-content:center;
+  font-size:8px; flex-shrink:0; transition:all .2s;
+}
+.les-check.done { background:var(--success); border-color:var(--success); color:#000; font-weight:700; }
+.les-name { font-size:11.5px; color:var(--muted); line-height:1.35; flex:1; }
+.les-item.active .les-name { color:var(--text); }
+.les-dur { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); flex-shrink:0; }
+.les-lock { font-size:11px; }
+.sb-discord {
+  margin:16px 14px 0;
+  padding:14px; background:rgba(88,101,242,.1);
+  border:1px solid rgba(88,101,242,.2); border-radius:4px;
+  cursor:pointer; text-decoration:none; display:block; transition:background .2s;
+}
+.sb-discord:hover { background:rgba(88,101,242,.17); }
+.sb-discord-title { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:#fff; display:flex; align-items:center; gap:7px; }
+.sb-discord p { font-size:11px; color:var(--muted); margin-top:3px; }
+
+/* ── MAIN ── */
+.main { flex:1; min-width:0; padding:36px 44px; max-width:860px; }
+
+/* ── HOME ── */
+.home-greeting { font-family:'Space Mono',monospace; font-size:11px; color:var(--cyan); letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px; }
+.home-title { font-family:'Syne',sans-serif; font-weight:800; font-size:30px; color:#fff; line-height:1.2; margin-bottom:10px; }
+.home-title span { color:var(--cyan); }
+.home-sub { font-size:14px; color:var(--muted); line-height:1.65; max-width:500px; margin-bottom:32px; }
+.stats-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px; }
+.stat-card { background:var(--surface); border:1px solid var(--border); padding:18px 22px; flex:1; min-width:120px; }
+.stat-val { font-family:'Syne',sans-serif; font-weight:800; font-size:26px; color:var(--cyan); line-height:1; margin-bottom:3px; }
+.stat-lbl { font-size:11px; color:var(--muted); }
+.section-title { font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:#fff; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.mods-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; margin-bottom:32px; }
+.mod-card {
+  background:var(--surface); border:1px solid var(--border);
+  padding:18px 20px; cursor:pointer; transition:border-color .2s,background .2s;
+  position:relative; overflow:hidden;
+}
+.mod-card:hover { border-color:rgba(0,229,255,.2); background:var(--surface2); }
+.mod-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--cyan),var(--pink)); opacity:0; transition:opacity .2s; }
+.mod-card:hover::before { opacity:1; }
+.mc-code { font-family:'Space Mono',monospace; font-size:10px; color:var(--cyan); margin-bottom:7px; }
+.mc-title { font-family:'Syne',sans-serif; font-weight:800; font-size:14px; color:#fff; margin-bottom:5px; line-height:1.3; }
+.mc-meta { font-size:11px; color:var(--muted); margin-bottom:13px; }
+.mc-bar { height:3px; background:rgba(255,255,255,.05); border-radius:2px; overflow:hidden; margin-bottom:5px; }
+.mc-bar-fill { height:100%; background:var(--cyan); border-radius:2px; transition:width .4s; }
+.mc-pct { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
+
+/* ── LESSON VIEW ── */
+.breadcrumb { display:flex; align-items:center; gap:7px; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.06em; margin-bottom:24px; }
+.breadcrumb a { color:var(--muted); text-decoration:none; cursor:pointer; transition:color .15s; }
+.breadcrumb a:hover { color:var(--cyan); }
+.breadcrumb span { color:var(--text); }
+
+/* Lesson header */
+.les-header { margin-bottom:28px; }
+.les-tags { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.tag { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.08em; padding:4px 10px; border-radius:2px; text-transform:uppercase; }
+.tag-mod { background:rgba(123,94,167,.15); color:var(--accent); border:1px solid rgba(123,94,167,.25); }
+.tag-dur { background:rgba(255,255,255,.05); color:var(--muted); border:1px solid var(--border); }
+.tag-new { background:rgba(0,229,255,.1); color:var(--cyan); border:1px solid rgba(0,229,255,.25); }
+.les-title-big { font-family:'Syne',sans-serif; font-weight:800; font-size:26px; color:#fff; line-height:1.2; margin-bottom:10px; }
+.les-intro { font-size:15px; color:var(--muted); line-height:1.7; }
+
+/* Divider */
+.divider { height:1px; background:var(--border); margin:28px 0; }
+
+/* Content blocks */
+.content-block { margin-bottom:28px; }
+.block-title { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:#fff; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+.block-title .icon { font-size:20px; }
+.block-text { font-size:14.5px; color:#C8C8D8; line-height:1.75; }
+.block-text p { margin-bottom:12px; }
+.block-text strong { color:#fff; }
+.block-text ul { padding-left:20px; margin-bottom:12px; }
+.block-text ul li { margin-bottom:6px; }
+
+/* Callout */
+.callout {
+  background:rgba(0,229,255,.06); border:1px solid rgba(0,229,255,.18);
+  border-left:3px solid var(--cyan);
+  padding:16px 20px; border-radius:0 4px 4px 0; margin:16px 0;
+}
+.callout.warn { background:rgba(245,200,66,.06); border-color:rgba(245,200,66,.18); border-left-color:var(--warn); }
+.callout.success { background:rgba(0,229,160,.06); border-color:rgba(0,229,160,.18); border-left-color:var(--success); }
+.callout-title { font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan); margin-bottom:6px; }
+.callout.warn .callout-title { color:var(--warn); }
+.callout.success .callout-title { color:var(--success); }
+.callout-text { font-size:13.5px; color:#C8C8D8; line-height:1.65; }
+
+/* Prompt example */
+.prompt-box { background:var(--surface2); border:1px solid var(--border); border-radius:4px; overflow:hidden; margin:16px 0; }
+.prompt-header { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:rgba(255,255,255,.03); border-bottom:1px solid var(--border); }
+.prompt-label { font-family:'Space Mono',monospace; font-size:10px; color:var(--cyan); letter-spacing:.08em; }
+.copy-btn { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); background:none; border:1px solid var(--border); padding:4px 10px; cursor:pointer; border-radius:2px; transition:all .15s; }
+.copy-btn:hover { color:var(--text); border-color:rgba(255,255,255,.2); }
+.copy-btn.copied { color:var(--success); border-color:rgba(0,229,160,.3); }
+.prompt-content { padding:16px; font-family:'Space Mono',monospace; font-size:12.5px; line-height:1.65; color:#D0D0E8; white-space:pre-wrap; }
+
+/* Key points */
+.key-points { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:16px 0; }
+.key-point { background:var(--surface2); border:1px solid var(--border); padding:16px; }
+.kp-icon { font-size:22px; margin-bottom:8px; }
+.kp-title { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:#fff; margin-bottom:4px; }
+.kp-text { font-size:12px; color:var(--muted); line-height:1.5; }
+
+/* ── EXERCISE ── */
+.exercise-box {
+  background:linear-gradient(135deg,rgba(123,94,167,.08),rgba(0,229,255,.05));
+  border:1px solid rgba(123,94,167,.25);
+  padding:28px; margin:28px 0;
+}
+.ex-header { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+.ex-badge { font-family:'Space Mono',monospace; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; background:rgba(123,94,167,.2); color:var(--accent); border:1px solid rgba(123,94,167,.3); border-radius:2px; }
+.ex-title { font-family:'Syne',sans-serif; font-weight:800; font-size:17px; color:#fff; }
+.ex-desc { font-size:14px; color:var(--muted); line-height:1.65; margin-bottom:20px; }
+
+/* QCM */
+.qcm-options { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.qcm-option {
+  display:flex; align-items:flex-start; gap:12px;
+  background:var(--surface); border:1px solid var(--border);
+  padding:14px 16px; cursor:pointer; transition:all .15s; border-radius:2px;
+}
+.qcm-option:hover { border-color:rgba(0,229,255,.25); background:var(--surface2); }
+.qcm-option.selected { border-color:var(--cyan); background:rgba(0,229,255,.07); }
+.qcm-option.correct { border-color:var(--success); background:rgba(0,229,160,.08); }
+.qcm-option.wrong { border-color:#ff4444; background:rgba(255,68,68,.07); }
+.qcm-letter { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:var(--muted); min-width:20px; margin-top:1px; }
+.qcm-option.selected .qcm-letter { color:var(--cyan); }
+.qcm-option.correct .qcm-letter { color:var(--success); }
+.qcm-option.wrong .qcm-letter { color:#ff4444; }
+.qcm-text { font-size:13.5px; color:var(--text); line-height:1.45; }
+
+/* Free text */
+.ex-textarea {
+  width:100%; background:var(--surface); border:1px solid var(--border);
+  color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px;
+  line-height:1.6; padding:14px 16px; border-radius:2px; resize:vertical;
+  min-height:120px; transition:border-color .15s; margin-bottom:16px;
+}
+.ex-textarea:focus { outline:none; border-color:rgba(0,229,255,.35); }
+.ex-textarea::placeholder { color:var(--muted); }
+
+/* Feedback */
+.ex-feedback {
+  padding:14px 18px; border-radius:2px; margin-bottom:16px;
+  font-size:13.5px; line-height:1.6; display:none;
+}
+.ex-feedback.show { display:block; }
+.ex-feedback.ok { background:rgba(0,229,160,.08); border:1px solid rgba(0,229,160,.25); color:#a0f0d0; }
+.ex-feedback.ko { background:rgba(255,68,68,.07); border:1px solid rgba(255,68,68,.2); color:#ffaaaa; }
+.ex-feedback strong { display:block; margin-bottom:4px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+
+/* Buttons */
+.btn-row { display:flex; gap:12px; flex-wrap:wrap; }
+.btn { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; padding:12px 24px; border:none; cursor:pointer; transition:opacity .2s; }
+.btn-primary { background:var(--cyan); color:#000; }
+.btn-primary:hover { opacity:.85; }
+.btn-primary:disabled { opacity:.35; cursor:not-allowed; }
+.btn-secondary { background:transparent; color:var(--text); border:1px solid var(--border); }
+.btn-secondary:hover { border-color:rgba(255,255,255,.2); background:rgba(255,255,255,.04); }
+.btn-success { background:var(--success); color:#000; }
+.btn-pink { background:var(--pink); color:#fff; }
+
+/* Next lesson card */
+.next-card {
+  display:flex; align-items:center; gap:20px;
+  background:var(--surface); border:1px solid var(--border);
+  padding:20px 24px; cursor:pointer; transition:border-color .2s; margin:28px 0;
+}
+.next-card:hover { border-color:rgba(0,229,255,.25); }
+.next-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--cyan); text-transform:uppercase; margin-bottom:4px; }
+.next-title { font-family:'Syne',sans-serif; font-weight:700; font-size:15px; color:#fff; }
+.next-arrow { font-size:22px; color:var(--cyan); margin-left:auto; }
+
+/* Locked */
+.lock-screen {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:14px; padding:60px 20px; text-align:center;
+}
+.lock-icon { font-size:48px; }
+.lock-title { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; color:var(--pink); }
+.lock-sub { font-size:14px; color:var(--muted); max-width:360px; line-height:1.6; }
+
+/* Soon */
+.soon-screen {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:14px; padding:60px 20px; text-align:center;
+  background:var(--surface2); border:1px solid var(--border);
+  margin-bottom:28px;
+}
+.soon-icon { font-size:40px; }
+.soon-title { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:#fff; }
+.soon-sub { font-size:13px; color:var(--muted); }
+
+/* ── VISUALS ── */
+/* Hero banner */
+.home-banner {
+  position:relative; overflow:hidden;
+  background:linear-gradient(135deg,#0c0c1a 0%,#0d0d20 50%,#110820 100%);
+  border:1px solid var(--border); padding:40px 40px 36px;
+  margin-bottom:28px;
+}
+.home-banner::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 80% 60% at 70% 50%, rgba(0,229,255,.07) 0%, transparent 70%),
+             radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,60,172,.06) 0%, transparent 60%);
+  pointer-events:none;
+}
+.home-banner-grid {
+  position:absolute; inset:0; opacity:.04;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.home-banner-content { position:relative; z-index:1; }
+.home-banner-eyebrow {
+  font-family:'Space Mono',monospace; font-size:10px; font-weight:700;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--cyan);
+  margin-bottom:12px; display:flex; align-items:center; gap:8px;
+}
+.home-banner-eyebrow::before { content:''; width:24px; height:1px; background:var(--cyan); }
+.home-banner-title { font-family:'Syne',sans-serif; font-weight:800; font-size:32px; color:#fff; line-height:1.15; margin-bottom:10px; }
+.home-banner-title span { background:linear-gradient(90deg,var(--cyan),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.home-banner-sub { font-size:14px; color:var(--muted); line-height:1.65; max-width:480px; }
+
+/* Stat cards enriched */
+.stat-card { position:relative; overflow:hidden; }
+.stat-card::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--pink));
+  transform:scaleX(0); transform-origin:left; transition:transform .3s;
+}
+.stat-card:hover::after { transform:scaleX(1); }
+.stat-icon { font-size:22px; margin-bottom:8px; }
+.stat-val { position:relative; }
+
+/* Progress ring */
+.progress-ring-wrap { display:flex; align-items:center; gap:20px; margin-bottom:28px; }
+.ring-svg { transform:rotate(-90deg); }
+.ring-bg { fill:none; stroke:rgba(255,255,255,.06); stroke-width:4; }
+.ring-fill { fill:none; stroke-width:4; stroke-linecap:round; transition:stroke-dashoffset .6s ease; }
+.ring-label { text-anchor:middle; dominant-baseline:middle; font-family:'Syne',sans-serif; font-weight:800; }
+.ring-info { flex:1; }
+.ring-info-title { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:#fff; margin-bottom:4px; }
+.ring-info-sub { font-size:13px; color:var(--muted); }
+.ring-badges { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.ring-badge { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.08em; padding:4px 10px; border-radius:2px; text-transform:uppercase; }
+.ring-badge-cyan { background:rgba(0,229,255,.1); color:var(--cyan); border:1px solid rgba(0,229,255,.2); }
+.ring-badge-pink { background:rgba(255,60,172,.1); color:var(--pink); border:1px solid rgba(255,60,172,.2); }
+.ring-badge-green { background:rgba(0,229,160,.1); color:var(--success); border:1px solid rgba(0,229,160,.2); }
+
+/* Module cards enriched */
+.mc-icon { font-size:28px; margin-bottom:12px; line-height:1; }
+.mc-accent { position:absolute; top:0; right:0; width:60px; height:60px; border-radius:0 0 0 60px; opacity:.06; }
+
+/* Module milestone strip */
+.milestone-strip { display:flex; align-items:center; gap:0; margin-bottom:28px; overflow:hidden; border:1px solid var(--border); }
+.milestone-step { flex:1; padding:12px 8px; text-align:center; position:relative; transition:background .2s; }
+.milestone-step:not(:last-child)::after {
+  content:'›'; position:absolute; right:-1px; top:50%; transform:translateY(-50%);
+  font-size:16px; color:var(--border); z-index:1;
+}
+.milestone-step.done { background:rgba(0,229,160,.05); }
+.milestone-step.current { background:rgba(0,229,255,.07); }
+.ms-num { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); margin-bottom:3px; }
+.ms-label { font-size:11px; font-weight:500; color:var(--muted); }
+.milestone-step.done .ms-label { color:var(--success); }
+.milestone-step.current .ms-label { color:var(--cyan); }
+
+/* Lesson step numbers */
+.step-num {
+  width:28px; height:28px; border-radius:50%; background:rgba(0,229,255,.1);
+  border:1px solid rgba(0,229,255,.25); display:inline-flex; align-items:center; justify-content:center;
+  font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:var(--cyan);
+  flex-shrink:0; margin-right:10px;
+}
+.block-title-wrap { display:flex; align-items:center; margin-bottom:12px; }
+
+/* Streak banner */
+.streak-card {
+  background:linear-gradient(135deg,rgba(255,60,172,.08),rgba(123,94,167,.08));
+  border:1px solid rgba(255,60,172,.2); padding:16px 20px;
+  display:flex; align-items:center; gap:16px; margin-bottom:28px;
+}
+.streak-icon { font-size:32px; }
+.streak-text strong { display:block; font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:#fff; margin-bottom:2px; }
+.streak-text span { font-size:12px; color:var(--muted); }
+
+/* Lesson progress header */
+.les-progress-bar { height:3px; background:rgba(255,255,255,.05); margin-bottom:28px; overflow:hidden; }
+.les-progress-fill { height:100%; background:linear-gradient(90deg,var(--cyan),var(--pink)); transition:width .4s; }
+
+/* Responsive */
+@media(max-width:768px) {
+  .sidebar { display:none; }
+  .main { padding:20px 16px; }
+  .home-banner { padding:24px 20px; }
+  .home-banner-title { font-size:22px; }
+  .les-title-big { font-size:20px; }
+  .progress-wrap { display:none; }
+  .milestone-strip { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-logo" onclick="renderHome()">NEXUM<span>//</span>AI</div>
+  <div class="topbar-right">
+    <div class="progress-wrap">
+      <span class="progress-label" id="prog-text">0 / 30</span>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <div class="badge badge-std" id="plan-badge">STANDARD</div>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb-section">Mes modules</div>
+    <div id="sb-modules"></div>
+    <a href="#" class="sb-discord" id="discord-link" onclick="return false;">
+      <div class="sb-discord-title">💬 Discord communauté</div>
+      <p>Pose tes questions dans #module-XX</p>
+    </a>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// LESSON CONTENT — 30 leçons complètes
+// ═══════════════════════════════════════════════
+const CONTENT = {
+  "01.01": {
+    intro: "L'IA n'est pas de la science-fiction. Depuis 2023, des outils comme Claude, ChatGPT ou Gemini ont changé la donne pour des millions d'entrepreneurs. Dans cette leçon, on démystifie tout ça — simplement.",
+    blocks: [
+      {
+        type: "text",
+        title: "🧠 C'est quoi exactement l'IA ?",
+        body: `<p>L'intelligence artificielle, dans sa version moderne, c'est un <strong>programme entraîné sur des milliards de textes</strong> pour comprendre et générer du langage humain. On appelle ça un <strong>LLM</strong> (Large Language Model — Grand Modèle de Langage).</p>
+<p>Concrètement : tu lui parles en français (ou en anglais), et il te répond. Pas avec des règles préprogrammées, mais en ayant "appris" à raisonner à partir de tout ce qu'il a lu.</p>
+<ul>
+  <li><strong>Claude</strong> (Anthropic) — le plus fiable pour les tâches longues et complexes</li>
+  <li><strong>ChatGPT</strong> (OpenAI) — le plus connu, excellent pour la créativité</li>
+  <li><strong>Gemini</strong> (Google) — intégré aux outils Google (Docs, Gmail...)</li>
+</ul>`
+      },
+      {
+        type: "callout",
+        style: "info",
+        title: "À retenir",
+        text: "L'IA ne pense pas comme toi. Elle prédit le mot le plus probable à chaque étape. C'est pour ça que la façon dont tu lui parles (ton prompt) change tout au résultat."
+      },
+      {
+        type: "text",
+        title: "⚡ Pourquoi ça change tout pour toi",
+        body: `<p>Avant, créer un site web demandait un développeur (1 500€ minimum). Rédiger des contenus marketing, un copywriter. Automatiser un process, un développeur encore.</p>
+<p>Aujourd'hui, avec Claude, tu peux :</p>
+<ul>
+  <li>Générer une landing page HTML complète en 10 minutes</li>
+  <li>Écrire 30 posts LinkedIn en 1 heure</li>
+  <li>Créer une application sans coder</li>
+  <li>Automatiser tes relances clients</li>
+</ul>
+<p>Et tu n'as pas besoin d'être développeur. Tu as juste besoin de savoir <strong>comment parler à l'IA</strong>. C'est exactement ce qu'on va apprendre ici.</p>`
+      },
+      {
+        type: "keypoints",
+        points: [
+          { icon: "🚀", title: "Gain de temps", text: "Des tâches qui prenaient 4h prennent maintenant 20 minutes" },
+          { icon: "💰", title: "Réduction des coûts", text: "Plus besoin de sous-traiter les tâches répétitives" },
+          { icon: "📈", title: "Qualité constante", text: "L'IA ne se fatigue pas, ne fait pas d'erreurs d'inattention" },
+          { icon: "🎯", title: "Compétitivité", text: "Ceux qui maîtrisent l'IA ont 10 ans d'avance sur les autres" }
+        ]
+      },
+      {
+        type: "callout",
+        style: "warn",
+        title: "Erreur fréquente",
+        text: "Beaucoup de gens essaient l'IA une fois, obtiennent un résultat médiocre, et concluent que \"ça ne marche pas\". Le problème vient toujours du prompt, pas de l'IA. C'est la compétence clé à acquérir."
+      }
+    ],
+    exercise: {
+      type: "qcm",
+      question: "Un LLM (comme Claude) génère ses réponses en :",
+      options: [
+        { text: "Cherchant dans une base de données fixe de réponses préprogrammées", correct: false },
+        { text: "Prédisant statistiquement les mots les plus pertinents selon le contexte", correct: true },
+        { text: "Se connectant à internet en temps réel pour chercher l'information", correct: false },
+        { text: "Copiant des réponses d'autres utilisateurs", correct: false }
+      ],
+      feedback_ok: "Exactement ! Claude prédit les tokens les plus probables selon le contexte de ta conversation. C'est pour ça que le prompt (ce que tu dis) est si important — il définit tout le contexte.",
+      feedback_ko: "Pas tout à fait. Un LLM comme Claude génère ses réponses en prédisant statistiquement les mots les plus pertinents selon le contexte de la conversation — c'est ce qui le rend si flexible."
+    }
+  },
+
+  "01.02": {
+    intro: "Tu sais maintenant ce qu'est l'IA. Maintenant on va voir comment ça fonctionne concrètement — et surtout comment lui parler pour obtenir exactement ce que tu veux. C'est la base de tout.",
+    blocks: [
+      {
+        type: "text",
+        title: "💬 Le prompt : ton outil principal",
+        body: `<p>Un <strong>prompt</strong>, c'est simplement ce que tu écris à l'IA. Mais tous les prompts ne se valent pas. La différence entre un prompt médiocre et un prompt excellent, c'est souvent la différence entre un résultat inutilisable et un résultat professionnel.</p>
+<p>La méthode des <strong>3C</strong> te permet de structurer n'importe quel prompt efficacement :</p>
+<ul>
+  <li><strong>Contexte</strong> — Qui es-tu ? Quel est le projet ? L'IA n'a pas de mémoire entre les sessions</li>
+  <li><strong>Consigne</strong> — Qu'est-ce que tu veux exactement ? Sois précis</li>
+  <li><strong>Contraintes</strong> — Format, longueur, ton, ce qu'il faut éviter</li>
+</ul>`
+      },
+      {
+        type: "prompt",
+        label: "❌ Prompt médiocre",
+        content: `Écris quelque chose sur mon entreprise`
+      },
+      {
+        type: "prompt",
+        label: "✅ Prompt 3C — Résultat professionnel",
+        content: `Contexte : Je suis Leandro, entrepreneur en Île-de-France. Je lance une formation en ligne sur l'IA appelée "Nexum AI School", destinée aux entrepreneurs et freelances qui veulent utiliser Claude sans avoir de compétences techniques.
+
+Consigne : Rédige une description de ma formation pour la page À Propos du site web. Ton convaincant, axé sur les bénéfices concrets.
+
+Contraintes : 120 mots maximum. Pas de jargon technique. Commence par un chiffre ou une statistique percutante.`
+      },
+      {
+        type: "callout",
+        style: "success",
+        title: "Règle d'or",
+        text: "Plus tu donnes de contexte à Claude, plus sa réponse sera précise et utilisable. Traite-le comme un collaborateur qui vient de rejoindre ton équipe — il a besoin de comprendre qui tu es et ce que tu fais."
+      },
+      {
+        type: "text",
+        title: "🔄 L'itération : la vraie puissance",
+        body: `<p>Le secret des utilisateurs avancés n'est pas d'écrire le prompt parfait du premier coup. C'est de <strong>raffiner en dialogue</strong>.</p>
+<p>Après une première réponse, tu peux dire :</p>
+<ul>
+  <li><em>"C'est bien, mais rends le ton plus direct et moins formel"</em></li>
+  <li><em>"Garde la structure mais raccourcis à 3 paragraphes"</em></li>
+  <li><em>"Donne-moi 3 autres versions plus percutantes"</em></li>
+</ul>
+<p>Claude garde le contexte de toute ta conversation. C'est comme travailler avec quelqu'un qui se souvient de tout ce qu'on s'est dit depuis le début de la réunion.</p>`
+      }
+    ],
+    exercise: {
+      type: "freetext",
+      question: "Exercice pratique — Améliore ce prompt",
+      desc: "Voici un prompt médiocre : \"Aide-moi avec mon business.\" Réécris-le en utilisant la méthode des 3C (Contexte / Consigne / Contraintes). Utilise TON vrai projet ou activité.",
+      placeholder: "Contexte : Je suis...\n\nConsigne : Je veux que tu...\n\nContraintes : ...",
+      minLength: 80,
+      feedback_ok: "Excellent travail ! Tu viens d'utiliser la structure qui différencie les résultats médiocres des résultats professionnels. Remarque comme ton prompt donne maintenant une direction claire à Claude — il sait qui tu es, ce que tu veux, et sous quelle forme le livrer.",
+      feedback_ko: "Pas assez développé. Un bon prompt 3C doit avoir au minimum : qui tu es (Contexte), ce que tu veux précisément (Consigne), et au moins une contrainte de format ou de ton. Essaie de développer davantage chaque section."
+    }
+  },
+
+  "01.03": {
+    intro: "Tu maîtrises maintenant les bases du prompt. Dans cette leçon, on va découvrir les capacités de Claude que la plupart des gens ignorent — et qui vont changer ta façon de travailler.",
+    blocks: [
+      {
+        type: "text",
+        title: "🔍 Ce que Claude peut vraiment faire",
+        body: `<p>La plupart des gens utilisent Claude comme un moteur de recherche amélioré. Mais ses vraies capacités vont beaucoup plus loin :</p>
+<ul>
+  <li><strong>Analyser des documents</strong> — colle un contrat, un bilan, un article : il résume, explique, extrait les points clés</li>
+  <li><strong>Écrire du code</strong> — HTML, CSS, JavaScript, Python... même si tu n'y connais rien</li>
+  <li><strong>Jouer des rôles</strong> — il peut être ton coach, ton avocat fictif, ton client potentiel qui teste ton pitch</li>
+  <li><strong>Raisonner en plusieurs étapes</strong> — résoudre des problèmes complexes, créer des plans détaillés</li>
+  <li><strong>Travailler en contexte long</strong> — analyser des documents entiers, maintenir la cohérence sur une longue conversation</li>
+</ul>`
+      },
+      {
+        type: "callout",
+        style: "info",
+        title: "Capacité peu connue",
+        text: "Tu peux donner un \"rôle\" permanent à Claude au début d'une conversation. Exemple : \"Tu es mon directeur marketing avec 15 ans d'expérience. Tu es direct, tu ne mâches pas tes mots, et tu penses toujours ROI.\" Il gardera ce personnage tout au long de la conversation."
+      },
+      {
+        type: "prompt",
+        label: "💡 Exemple — Claude comme coach business",
+        content: `Tu es un coach business spécialisé pour les entrepreneurs solo en France. Tu es direct, pragmatique, et tu donnes des conseils actionnables immédiatement. Tu poses des questions pour comprendre avant de conseiller.
+
+Mon problème : j'ai lancé une formation en ligne il y a 2 mois, j'ai eu 3 ventes, et je ne sais pas pourquoi ça ne décolle pas. Mon budget marketing est nul. Qu'est-ce que tu ferais à ma place ?`
+      },
+      {
+        type: "text",
+        title: "⚠️ Ce que Claude ne peut pas faire",
+        body: `<p>Il est important de connaître les limites pour éviter les mauvaises surprises :</p>
+<ul>
+  <li><strong>Pas d'accès internet en temps réel</strong> (sauf avec l'outil de recherche activé)</li>
+  <li><strong>Mémoire limitée à la conversation</strong> — chaque nouvelle conversation repart de zéro</li>
+  <li><strong>Peut se tromper</strong> — toujours vérifier les chiffres, dates, et informations factuelles importantes</li>
+  <li><strong>Pas d'actions autonomes</strong> — il répond, mais ne fait pas d'actions dans le monde réel sans outils spécifiques</li>
+</ul>`
+      }
+    ],
+    exercise: {
+      type: "qcm",
+      question: "Tu veux que Claude t'aide à préparer un pitch pour un investisseur. Quelle approche est la plus efficace ?",
+      options: [
+        { text: "\"Écris un pitch pour ma startup\"", correct: false },
+        { text: "\"Tu es un investisseur VC parisien avec 10 ans d'expérience. Évalue mon pitch et dis-moi ce qui te ferait dire non : [pitch].\"", correct: true },
+        { text: "\"Améliore ce texte : [pitch]\"", correct: false },
+        { text: "\"Donne-moi des conseils pour pitcher\"", correct: false }
+      ],
+      feedback_ok: "Parfait ! En donnant un rôle précis à Claude (investisseur VC), tu obtiens une perspective réaliste et actionnable — pas juste une amélioration cosmétique. C'est la différence entre un feedback générique et un vrai entraînement.",
+      feedback_ko: "La réponse B est la meilleure. En donnant un rôle précis à Claude (investisseur VC), tu obtiens une perspective réaliste — il va simuler les objections réelles d'un investisseur, ce qui est bien plus utile qu'une simple amélioration de texte."
+    }
+  },
+
+  "01.04": {
+    intro: "Dans cette leçon pratique, on va configurer Claude pour qu'il soit toujours calibré à ton activité — et faire tes 10 premiers cas d'usage concrets.",
+    blocks: [
+      {
+        type: "text",
+        title: "⚙️ Configurer Claude pour ton business",
+        body: `<p>Claude.ai propose une fonctionnalité appelée <strong>\"Instructions personnalisées\"</strong> (ou \"Profil système\"). C'est un texte que Claude lira automatiquement au début de chaque nouvelle conversation.</p>
+<p>Voici ce que tu devrais y mettre :</p>`
+      },
+      {
+        type: "prompt",
+        label: "📋 Template — Instructions personnalisées à copier-adapter",
+        content: `Mon nom est [PRÉNOM]. Je suis [ton activité en 1 phrase].
+
+Mon client idéal : [description en 1-2 phrases]
+
+Mes projets actuels :
+- [Projet 1]
+- [Projet 2]
+
+Quand je te demande d'écrire, utilise toujours :
+- Un ton [professionnel / décontracté / direct]
+- La langue française
+- Des phrases courtes et des listes quand c'est possible
+
+Points importants sur mon business :
+- [Contrainte ou contexte important 1]
+- [Contrainte ou contexte important 2]
+
+Si tu n'es pas sûr de quelque chose, dis-le moi clairement.`
+      },
+      {
+        type: "text",
+        title: "🎯 Tes 10 premiers cas d'usage",
+        body: `<p>Voici les 10 utilisations les plus efficaces pour un entrepreneur solo, par ordre d'impact :</p>
+<ul>
+  <li><strong>1. Email professionnel</strong> — relance client, devis, réponse à réclamation</li>
+  <li><strong>2. Post LinkedIn / Instagram</strong> — à partir d'une idée en 2 mots</li>
+  <li><strong>3. Résumé de document</strong> — contrat, article, rapport</li>
+  <li><strong>4. Idées de contenu</strong> — 10 idées de posts pour la semaine</li>
+  <li><strong>5. Script d'appel commercial</strong> — qualification, objections, closing</li>
+  <li><strong>6. FAQ de ton site web</strong> — génère 15 questions/réponses</li>
+  <li><strong>7. Description de produit/service</strong> — orientée bénéfices</li>
+  <li><strong>8. Plan de projet</strong> — steps détaillées avec deadlines</li>
+  <li><strong>9. Analyse concurrentielle</strong> — si tu lui donnes les infos</li>
+  <li><strong>10. Feedback sur ton travail</strong> — il joue le rôle de ton client cible</li>
+</ul>`
+      },
+      {
+        type: "callout",
+        style: "success",
+        title: "Défi de la leçon",
+        text: "Teste au moins 3 de ces cas d'usage aujourd'hui avec ton vrai business. Prends 20 minutes. Note ce qui marche et ce qui ne marche pas — on en discute dans #module-01 sur Discord."
+      }
+    ],
+    exercise: {
+      type: "freetext",
+      question: "Rédige tes instructions personnalisées",
+      desc: "En utilisant le template ci-dessus, rédige tes propres instructions personnalisées Claude pour ton activité. Sois concret — utilise ton vrai business, tes vrais projets.",
+      placeholder: "Mon nom est...\n\nJe suis...\n\nMon client idéal...",
+      minLength: 100,
+      feedback_ok: "Parfait ! Tu viens de créer un contexte permanent pour toutes tes futures conversations avec Claude. Colle ce texte dans les paramètres Claude.ai → \"Instructions personnalisées\". À partir de maintenant, Claude te connaît à chaque session.",
+      feedback_ko: "Développe davantage — les instructions efficaces donnent au minimum : qui tu es, ton activité, ton client cible, et le ton que tu veux. Plus c'est précis, meilleurs seront les résultats sur toutes tes futures conversations."
+    }
+  },
+
+  // ── MODULE 02 — Créer un site web avec l'IA ──
+  "02.01": {
+    intro: "Avant de demander à Claude de générer du code, tu dois savoir exactement ce que tu veux. 80% des mauvais sites viennent d'un manque de réflexion avant la création. Dans cette leçon, on te donne le framework pour penser ton site en 30 minutes.",
+    blocks: [
+      { type:"text", title:"🧭 Les 5 questions à répondre avant de coder",
+        body:`<p>Ouvre un document vierge et réponds à ces 5 questions. Claude s'en servira comme brief.</p>
+<ul>
+<li><strong>1. Quel est l'objectif unique de cette page ?</strong> (vendre, collecter des emails, informer, prendre RDV)</li>
+<li><strong>2. Qui est ton visiteur ?</strong> (âge, problème, niveau de connaissance de ton domaine)</li>
+<li><strong>3. Quelle est l'action principale que tu veux qu'il fasse ?</strong> (un seul CTA = call to action)</li>
+<li><strong>4. Quel est ton message central ?</strong> (une phrase — la promesse principale)</li>
+<li><strong>5. Quelles preuves as-tu ?</strong> (témoignages, résultats, chiffres, certifications)</li>
+</ul>
+<p>Un site qui répond à ces 5 questions génère 3 fois plus de conversions qu'un site créé "à l'instinct".</p>` },
+      { type:"callout", style:"info", title:"Règle des 5 secondes",
+        text:"Ton visiteur décide en 5 secondes s'il reste ou repart. Il doit comprendre immédiatement : qui tu es, ce que tu fais, pourquoi c'est pour lui. Si tu dois expliquer longuement, le site a échoué." },
+      { type:"prompt", label:"📋 Prompt — Générer le plan complet de ton site",
+        content:`Tu es un expert en UX et conversion web. Je vais te donner les infos de mon projet et tu vas créer le plan complet de mon site.
+
+Mon activité : [décris ton activité en 2 phrases]
+Mon client cible : [qui est-il, quel est son problème]
+Mon offre : [ce que tu vends et à quel prix]
+Mon objectif principal : [vente / email / RDV]
+Mes preuves : [témoignages, résultats, chiffres]
+
+Génère :
+1. Structure de la page (sections dans l'ordre)
+2. Titre hero (H1) + sous-titre
+3. 3 arguments de vente clés
+4. Texte du CTA principal
+5. 5 objections à anticiper dans le contenu` },
+      { type:"keypoints",
+        points:[
+          { icon:"🎯", title:"1 page = 1 objectif", text:"Ne mets jamais 2 CTA différents sur une même page" },
+          { icon:"📱", title:"Mobile first", text:"60% de tes visiteurs arrivent sur mobile. Pense mobile d'abord." },
+          { icon:"⚡", title:"Vitesse > beauté", text:"Un site lent fait fuir. Moins de fioritures = plus rapide" },
+          { icon:"🧪", title:"Tester vite", text:"Lance une version imparfaite aujourd'hui plutôt qu'une version parfaite dans 3 mois" }
+        ] }
+    ],
+    exercise: { type:"freetext",
+      question:"Rédige le brief de ton site",
+      desc:"Réponds aux 5 questions du framework pour TON projet. Sois aussi précis que possible — tu vas utiliser ce brief dans la leçon suivante pour générer ton site.",
+      placeholder:"1. Objectif unique de la page : ...\n2. Mon visiteur cible : ...\n3. Action principale souhaitée : ...\n4. Mon message central (1 phrase) : ...\n5. Mes preuves : ...",
+      minLength:120,
+      feedback_ok:"Excellent brief ! Tu as maintenant exactement ce qu'il faut pour générer un site qui convertit. Garde ce texte — on va le coller dans Claude à la leçon suivante.",
+      feedback_ko:"Développe davantage — chaque question mérite une réponse précise. Plus ton brief est détaillé, plus Claude générera un site pertinent pour ton activité réelle." }
+  },
+
+  "02.02": {
+    intro: "On passe à la pratique. Tu vas générer une landing page HTML complète en moins de 10 minutes. Pas de connaissance en code requise — tu vas juste écrire un bon prompt.",
+    blocks: [
+      { type:"text", title:"🏗️ La structure d'une landing page qui convertit",
+        body:`<p>Une landing page efficace suit toujours cette structure dans l'ordre :</p>
+<ul>
+<li><strong>1. Nav</strong> — logo + CTA en haut à droite</li>
+<li><strong>2. Hero</strong> — titre fort + sous-titre + CTA principal + image/visuel</li>
+<li><strong>3. Problème</strong> — tu décris la douleur de ton visiteur (il se reconnaît)</li>
+<li><strong>4. Solution</strong> — tu présentes ton offre comme LA réponse</li>
+<li><strong>5. Preuves</strong> — témoignages, chiffres, logos clients</li>
+<li><strong>6. Programme / Détails</strong> — ce qu'ils vont obtenir exactement</li>
+<li><strong>7. Prix</strong> — clair, simple, avec garantie</li>
+<li><strong>8. FAQ</strong> — répond aux 5 objections principales</li>
+<li><strong>9. CTA final</strong> — répète l'appel à l'action</li>
+</ul>` },
+      { type:"prompt", label:"🚀 Prompt complet — Générer la landing page HTML",
+        content:`Tu es un développeur web expert en landing pages à fort taux de conversion.
+
+Génère une landing page HTML complète en un seul fichier (HTML + CSS intégré + JS minimal).
+
+PROJET :
+- Nom : [NOM DE TON PROJET]
+- Activité : [CE QUE TU FAIS]
+- Client cible : [TON CLIENT IDÉAL]
+- Promesse principale : [TA PROMESSE EN 1 PHRASE]
+- Prix : [TON PRIX]
+- CTA : [TEXTE DU BOUTON]
+- Lien CTA : [URL DE PAIEMENT]
+
+DESIGN :
+- Fond sombre (#0a0a0f), texte blanc
+- Couleur accent : #00E5FF (cyan)
+- Police : Inter via Google Fonts
+- Design moderne, épuré, professionnel
+
+SECTIONS à inclure (dans cet ordre) :
+nav fixe → hero avec CTA → problème (3 points) → solution → 3 bénéfices clés → programme (liste) → prix (2 options) → FAQ (5 questions) → CTA final → footer
+
+CONTRAINTES :
+- Code propre et commenté
+- 100% responsive mobile
+- Aucune dépendance externe sauf Google Fonts
+- Boutons CTA qui pointent vers le lien fourni` },
+      { type:"callout", style:"warn", title:"Astuce itération",
+        text:"Claude génère rarement le résultat parfait en une fois. Après la première génération, dis-lui : 'Le hero manque d'impact, rends le titre plus direct et plus émotionnel' ou 'La section prix est trop chargée, simplifie-la'. Itère 2-3 fois." },
+      { type:"callout", style:"success", title:"Tester localement",
+        text:"Pour voir le résultat : copie le code HTML généré → colle dans un fichier texte → sauvegarde en .html → double-clique pour ouvrir dans le navigateur. C'est aussi simple que ça." }
+    ],
+    exercise: { type:"qcm",
+      question:"Tu as demandé à Claude de générer ta landing page, mais le titre hero est générique et sans impact. Quelle instruction donnes-tu ?",
+      options:[
+        { text:"'Refais tout depuis le début'", correct:false },
+        { text:"'Le titre hero ne me convainc pas. Mon client cible est [X] et son problème principal est [Y]. Réécris-le en partant de cette douleur spécifique, maximum 8 mots.'", correct:true },
+        { text:"'Améliore le titre'", correct:false },
+        { text:"'Le titre est mauvais, essaie autre chose'", correct:false }
+      ],
+      feedback_ok:"Exactement ! L'instruction précise donne à Claude le contexte nécessaire pour s'améliorer. 'Améliore' sans contexte = résultat aléatoire. Contexte précis = amélioration ciblée.",
+      feedback_ko:"La bonne réponse est B. Donner le contexte spécifique (client cible + douleur principale + contrainte de longueur) permet à Claude de s'améliorer précisément, pas juste de réécrire différemment." }
+  },
+
+  "02.03": {
+    intro: "Ta landing page est prête. Maintenant on va la mettre en ligne gratuitement en moins de 10 minutes via GitHub Pages. Pas de serveur, pas d'hébergement payant, zéro configuration complexe.",
+    blocks: [
+      { type:"text", title:"📦 Étape 1 — Créer un compte GitHub",
+        body:`<p>GitHub est la plateforme où les développeurs stockent leur code. Pour toi, c'est simplement un hébergeur gratuit.</p>
+<ul>
+<li>Va sur <strong>github.com</strong> et crée un compte gratuit</li>
+<li>Choisis un nom d'utilisateur professionnel — il sera dans ton URL</li>
+<li>Vérifie ton email</li>
+</ul>
+<p>Ton URL finale sera : <code>https://[ton-username].github.io/[nom-repo]</code></p>` },
+      { type:"text", title:"📁 Étape 2 — Créer le repository et uploader",
+        body:`<ul>
+<li>Clique sur le bouton vert <strong>"New"</strong> pour créer un nouveau repository</li>
+<li>Nom du repo : utilise un nom court sans espaces (ex: <code>mon-site</code>)</li>
+<li>Coche <strong>"Public"</strong> (obligatoire pour GitHub Pages gratuit)</li>
+<li>Clique <strong>"Create repository"</strong></li>
+<li>Clique <strong>"uploading an existing file"</strong></li>
+<li>Glisse ton fichier <code>index.html</code> dans la zone</li>
+<li>Clique <strong>"Commit changes"</strong></li>
+</ul>
+<p><strong>Important :</strong> le fichier doit s'appeler exactement <code>index.html</code> (pas landing.html, pas page.html).</p>` },
+      { type:"text", title:"⚡ Étape 3 — Activer GitHub Pages",
+        body:`<ul>
+<li>Dans ton repo, clique sur <strong>Settings</strong> (l'onglet en haut)</li>
+<li>Dans le menu gauche, clique sur <strong>Pages</strong></li>
+<li>Sous "Branch", sélectionne <strong>main</strong> dans le menu déroulant</li>
+<li>Clique <strong>Save</strong></li>
+<li>Attends 2-3 minutes</li>
+<li>Rafraîchis la page — ton URL apparaît en vert en haut</li>
+</ul>` },
+      { type:"callout", style:"success", title:"C'est live !",
+        text:"Ton site est maintenant accessible dans le monde entier, gratuitement, sans serveur à gérer. Pour mettre à jour ton site : modifie le HTML avec Claude, puis reviens sur GitHub et remplace le fichier index.html." }
+    ],
+    exercise: { type:"qcm",
+      question:"Pourquoi le fichier doit obligatoirement s'appeler 'index.html' sur GitHub Pages ?",
+      options:[
+        { text:"C'est une règle arbitraire de GitHub", correct:false },
+        { text:"C'est la convention web universelle : quand un navigateur visite un dossier, il cherche automatiquement index.html comme fichier par défaut", correct:true },
+        { text:"Pour des raisons de sécurité", correct:false },
+        { text:"GitHub Pages ne supporte que ce nom de fichier", correct:false }
+      ],
+      feedback_ok:"Exactement ! C'est une convention web de base : tous les serveurs web cherchent index.html par défaut quand on accède à un dossier. GitHub Pages suit cette même convention.",
+      feedback_ko:"La bonne réponse est B. C'est une convention web universelle — tous les serveurs web (pas seulement GitHub) cherchent automatiquement index.html quand on accède à un dossier sans spécifier de fichier." }
+  },
+
+  "02.04": {
+    intro: "Ton site est en ligne. Maintenant on s'assure qu'il est prêt à convertir : SEO de base, vitesse, accessibilité, et une checklist complète avant de le partager.",
+    blocks: [
+      { type:"text", title:"🔍 SEO de base avec Claude",
+        body:`<p>Le SEO (référencement) détermine si Google te trouve. Pour une landing page, 3 éléments suffisent :</p>
+<ul>
+<li><strong>Title tag</strong> — le titre qui apparaît dans Google (50-60 caractères)</li>
+<li><strong>Meta description</strong> — la description sous le lien Google (150-160 caractères)</li>
+<li><strong>Balises H1/H2</strong> — structure hiérarchique du contenu</li>
+</ul>` },
+      { type:"prompt", label:"🔍 Prompt — Optimiser le SEO de ta page",
+        content:`Voici mon fichier index.html : [COLLE TON CODE]
+
+Optimise ce fichier pour le SEO en :
+1. Ajoutant une balise <title> optimisée avec le mot-clé principal : [TON MOT-CLÉ]
+2. Ajoutant une meta description de 155 caractères maximum
+3. Vérifiant que le H1 contient le mot-clé principal
+4. Ajoutant les balises Open Graph (pour un bel aperçu quand on partage sur les réseaux)
+5. Ajoutant un meta viewport correct
+
+Retourne uniquement le code modifié, sans explication.` },
+      { type:"text", title:"✅ Checklist finale avant publication",
+        body:`<p>Vérifie chaque point avant de partager ton lien :</p>
+<ul>
+<li>☐ Le site s'affiche correctement sur mobile (test via les devtools du navigateur)</li>
+<li>☐ Le bouton CTA redirige vers la bonne URL de paiement</li>
+<li>☐ Toutes les images se chargent (pas de liens cassés)</li>
+<li>☐ Les fautes d'orthographe ont été corrigées (colle le texte dans Claude pour vérification)</li>
+<li>☐ Le title et meta description sont remplis</li>
+<li>☐ La page se charge en moins de 3 secondes</li>
+<li>☐ Le nom, l'email de contact (ou formulaire) est présent</li>
+<li>☐ Les mentions légales/CGV sont accessibles si tu vends quelque chose</li>
+</ul>` },
+      { type:"callout", style:"info", title:"Tester sur mobile",
+        text:"Sur Chrome : clic droit → Inspecter → icône mobile en haut à gauche. Tu peux simuler n'importe quel téléphone. Teste au minimum iPhone 12 et Samsung Galaxy S20." }
+    ],
+    exercise: { type:"freetext",
+      question:"Génère le prompt SEO pour ta page",
+      desc:"Rédige le prompt complet que tu vas donner à Claude pour optimiser le SEO de ton site. Inclus ton mot-clé principal et une description de ton activité.",
+      placeholder:"Prompt : Voici mon fichier index.html...\n\nMon mot-clé principal : ...\nMon activité : ...",
+      minLength:80,
+      feedback_ok:"Parfait ! Ce prompt va permettre à Claude d'optimiser ta page pour Google en quelques secondes. Une fois le code mis à jour, remplace ton index.html sur GitHub et ton site sera référencable.",
+      feedback_ko:"Développe le prompt — il doit inclure le mot-clé principal sur lequel tu veux être référencé et une description de ton activité pour que Claude puisse rédiger une meta description pertinente." }
+  },
+
+  // ── MODULE 03 — Automatisations & Workflows ──
+  "03.01": {
+    intro: "L'automation c'est le super-pouvoir de l'entrepreneur solo. Tu fais le travail une fois, et le système le répète indéfiniment. Dans cette leçon, on apprend à penser comme un automatiseur.",
+    blocks: [
+      { type:"text", title:"🧠 Le mindset automation",
+        body:`<p>La plupart des gens pensent : <em>"J'ai besoin d'automatiser mes emails."</em></p>
+<p>Un automatiseur pense : <em>"Chaque fois qu'un client achète, 5 choses doivent se passer. Comment je fais pour que ces 5 choses se déclenchent automatiquement sans que j'intervienne ?"</em></p>
+<p>La différence, c'est de penser en <strong>déclencheurs (triggers)</strong> et <strong>actions</strong>.</p>
+<ul>
+<li><strong>Trigger :</strong> l'événement qui déclenche l'automatisation (un achat, un formulaire rempli, une heure précise)</li>
+<li><strong>Actions :</strong> ce qui se passe en réponse (envoyer un email, ajouter une ligne dans un tableur, inviter dans Discord)</li>
+</ul>` },
+      { type:"text", title:"⚡ Les 3 types d'automatisations à connaître",
+        body:`<ul>
+<li><strong>1. Trigger → Action simple</strong> — "Quand X se passe, faire Y"<br><em>Exemple : Quand un formulaire est rempli → envoyer un email de confirmation</em></li>
+<li><strong>2. Trigger → Séquence d'actions</strong> — "Quand X se passe, faire Y puis Z puis W"<br><em>Exemple : Achat Gumroad → email bienvenue + invitation Discord + ligne CRM</em></li>
+<li><strong>3. Timer → Action récurrente</strong> — "Chaque lundi à 8h, faire X"<br><em>Exemple : Tous les lundis → Claude génère 7 scripts TikTok → sauvegarde dans Notion</em></li>
+</ul>` },
+      { type:"prompt", label:"🔍 Prompt — Identifier tes automatisations prioritaires",
+        content:`Je suis [TON ACTIVITÉ]. Voici mes tâches répétitives hebdomadaires :
+[LISTE TES TÂCHES RÉPÉTITIVES — ex: répondre aux emails FAQ, poster sur les réseaux, relancer les prospects, etc.]
+
+Pour chaque tâche, analyse :
+1. Est-elle automatisable ? (oui/non/partiellement)
+2. Quel serait le trigger ?
+3. Quelles actions Make.com permettraient de l'automatiser ?
+4. Combien de temps par semaine cela me ferait gagner ?
+
+Classe ensuite les 5 automatisations par ordre de ROI (temps gagné vs complexité).` },
+      { type:"keypoints",
+        points:[
+          { icon:"🎯", title:"Automatise les répétitions", text:"Si tu fais la même chose plus de 3 fois, c'est automatisable" },
+          { icon:"💰", title:"Commence par le revenu", text:"Automatise d'abord ce qui touche à tes ventes et clients" },
+          { icon:"🔧", title:"Simple avant complexe", text:"Une automation qui marche vaut mieux qu'une complexe qui plante" },
+          { icon:"📊", title:"Documente tout", text:"Note chaque automation créée — tu en auras besoin pour les dépanner" }
+        ] }
+    ],
+    exercise: { type:"freetext",
+      question:"Liste tes 3 tâches les plus répétitives",
+      desc:"Identifie les 3 tâches que tu fais le plus souvent dans ton business et qui pourraient être automatisées. Pour chacune, décris : la tâche, à quelle fréquence tu la fais, et ce qui la déclenche.",
+      placeholder:"Tâche 1 : ...\nFréquence : ...\nCe qui la déclenche : ...\n\nTâche 2 : ...",
+      minLength:80,
+      feedback_ok:"Ces 3 tâches sont tes premières cibles d'automatisation. Dans les leçons suivantes, on va voir exactement comment les configurer dans Make.com.",
+      feedback_ko:"Sois plus précis — décris les tâches concrètement et indique leur fréquence. Plus c'est spécifique, plus il sera facile d'identifier le bon trigger et les bonnes actions dans Make.com." }
+  },
+
+  "03.02": {
+    intro: "Make.com (anciennement Integromat) est l'outil d'automatisation le plus puissant pour les entrepreneurs solo. Gratuit jusqu'à 1000 opérations/mois. Dans cette leçon, on explore l'interface de zéro.",
+    blocks: [
+      { type:"text", title:"🗺️ L'interface Make.com expliquée",
+        body:`<p>Quand tu ouvres Make.com, tu vois des <strong>scénarios</strong> (tes automatisations). Chaque scénario est composé de :</p>
+<ul>
+<li><strong>Modules</strong> — les blocs qui font les actions (Gmail, Discord, Notion, etc.)</li>
+<li><strong>Le trigger</strong> — le premier module, celui qui démarre tout (indiqué par une horloge)</li>
+<li><strong>Les connexions</strong> — les flèches entre les modules</li>
+<li><strong>Les filtres</strong> — des conditions (si email contient "urgent" alors...)</li>
+</ul>
+<p>Chaque module utilise des <strong>crédits</strong> (1 opération = 1 action d'un module). Le plan gratuit donne 1000 opérations/mois, ce qui est largement suffisant pour démarrer.</p>` },
+      { type:"text", title:"🔌 Les connexions d'apps (intégrations)",
+        body:`<p>Pour utiliser Gmail dans Make, tu dois <strong>connecter ton compte</strong>. C'est une autorisation OAuth — Make ne stocke pas ton mot de passe.</p>
+<p>Les apps essentielles pour Nexum AI School :</p>
+<ul>
+<li><strong>Webhooks</strong> — reçoit des données de n'importe quelle app (Gumroad, Tally...)</li>
+<li><strong>Gmail</strong> — envoie des emails depuis ton compte Google</li>
+<li><strong>HTTP</strong> — appelle n'importe quelle API (Discord, Notion API)</li>
+<li><strong>Google Sheets</strong> — ton CRM simple gratuit</li>
+<li><strong>Notion</strong> — ajouter des entrées dans une base de données</li>
+</ul>` },
+      { type:"callout", style:"info", title:"Le module Webhooks",
+        text:"Le module Webhooks est le plus puissant de Make. Il génère une URL unique que tu peux coller dans n'importe quel service (Gumroad, Tally, Stripe...). Quand ce service envoie une notification à cette URL, ton scénario Make se déclenche automatiquement." },
+      { type:"prompt", label:"💡 Prompt — Faire expliquer un scénario Make par Claude",
+        content:`Je veux créer une automation Make.com. Explique-moi comment la configurer étape par étape.
+
+Mon besoin : [décris ce que tu veux automatiser en langage naturel]
+
+Format de réponse souhaité :
+1. Trigger : quel module utiliser et comment le configurer
+2. Actions : liste chaque module dans l'ordre avec sa configuration exacte
+3. Filtres nécessaires : y en a-t-il ?
+4. Variables à mapper entre les modules
+5. Comment tester le scénario` }
+    ],
+    exercise: { type:"qcm",
+      question:"Un client remplit un formulaire Tally. Tu veux ajouter ses infos dans Google Sheets ET lui envoyer un email. Quel est le trigger dans Make.com ?",
+      options:[
+        { text:"Le module Google Sheets", correct:false },
+        { text:"Le module Gmail", correct:false },
+        { text:"Le module Webhooks — il reçoit les données du formulaire Tally via une URL unique", correct:true },
+        { text:"Le module Tally (trigger natif)", correct:false }
+      ],
+      feedback_ok:"Parfait ! Le Webhook est le point d'entrée universel. Tally envoie les données du formulaire à l'URL du webhook, qui déclenche ensuite toutes les actions (Google Sheets + Gmail).",
+      feedback_ko:"La bonne réponse est C. Le module Webhooks génère une URL que tu colles dans Tally. Quand quelqu'un soumet le formulaire, Tally envoie les données à cette URL, ce qui déclenche le scénario Make." }
+  },
+
+  "03.03": {
+    intro: "C'est le scénario le plus important pour Nexum AI School : dès qu'un client achète sur Gumroad, il reçoit automatiquement son accès. Zéro intervention manuelle.",
+    blocks: [
+      { type:"text", title:"🏗️ Architecture du scénario",
+        body:`<p>Voici exactement ce qui se passe à chaque vente :</p>
+<ul>
+<li><strong>Trigger :</strong> Gumroad envoie un webhook à Make quand une vente est effectuée</li>
+<li><strong>Action 1 :</strong> Envoyer un email de bienvenue avec le lien dashboard</li>
+<li><strong>Action 2 :</strong> Ajouter l'acheteur dans Google Sheets (CRM)</li>
+<li><strong>Action 3 :</strong> Envoyer une invitation Discord via l'API</li>
+<li><strong>Action 4 :</strong> Créer une entrée dans Notion (optionnel)</li>
+</ul>
+<p>Tout ça en moins de 30 secondes après l'achat, automatiquement, 24h/24.</p>` },
+      { type:"text", title:"⚙️ Configuration étape par étape",
+        body:`<p><strong>Étape 1 — Configurer le Webhook Make :</strong></p>
+<ul>
+<li>Nouveau scénario → Ajouter module → Webhooks → Custom webhook</li>
+<li>Copier l'URL générée</li>
+</ul>
+<p><strong>Étape 2 — Connecter Gumroad :</strong></p>
+<ul>
+<li>Gumroad Dashboard → Settings → Advanced → Ping URL</li>
+<li>Coller l'URL du webhook Make</li>
+<li>Faire un achat test pour envoyer des données à Make</li>
+</ul>
+<p><strong>Étape 3 — Configurer Gmail (email de bienvenue) :</strong></p>
+<ul>
+<li>Ajouter module Gmail → Send an Email</li>
+<li>To : mapper l'email de l'acheteur depuis le webhook</li>
+<li>Subject : "Bienvenue dans Nexum AI School 🚀"</li>
+<li>Body : coller le template email</li>
+</ul>` },
+      { type:"prompt", label:"✉️ Template email de bienvenue — Copier dans Make",
+        content:`Objet : Bienvenue dans Nexum AI School 🚀 — Voici ton accès
+
+Salut {{buyer_name}},
+
+Bienvenue dans Nexum AI School ! Ton paiement a bien été reçu.
+
+🎓 TON ACCÈS :
+→ Espace membre : https://courtierleandro-jpg.github.io/nexum-ai-school/dashboard.html
+
+📱 DISCORD COMMUNAUTÉ :
+→ Rejoins le serveur : {{discord_invite}}
+Retrouve-moi et les autres élèves dans #module-01 pour commencer.
+
+🚀 PAR OÙ COMMENCER :
+1. Ouvre l'espace membre (lien ci-dessus)
+2. Lance la Leçon 01.01 — elle prend 20 minutes
+3. Rejoins Discord et présente-toi dans #présentations
+
+Des questions ? Réponds directement à cet email.
+
+À tout de suite,
+Leandro` },
+      { type:"callout", style:"warn", title:"Tester avant de lancer",
+        text:"Fais toujours un achat test (Gumroad permet les achats à 0€ en test) avant d'activer le scénario pour de vrai. Vérifie que l'email arrive, que la ligne apparaît dans Sheets, et que l'invitation Discord fonctionne." }
+    ],
+    exercise: { type:"qcm",
+      question:"Ton scénario Make ne se déclenche pas après un achat Gumroad test. Quelle est la première chose à vérifier ?",
+      options:[
+        { text:"Réinstaller Make.com", correct:false },
+        { text:"Vérifier que l'URL du webhook Make est bien collée dans le champ 'Ping URL' de Gumroad Settings", correct:true },
+        { text:"Changer de navigateur", correct:false },
+        { text:"Contacter le support Gumroad", correct:false }
+      ],
+      feedback_ok:"Exactement. 90% des problèmes de webhook viennent d'une URL mal copiée ou collée au mauvais endroit. Toujours vérifier la connexion Trigger en premier.",
+      feedback_ko:"La bonne réponse est B. Le problème vient presque toujours de la configuration du trigger. Si Gumroad n'envoie pas de données au webhook Make, aucune action ne peut se déclencher." }
+  },
+
+  "03.04": {
+    intro: "Dans cette leçon pratique, tu découvres les 5 automatisations les plus rentables pour un entrepreneur solo — avec les templates Make.com prêts à configurer.",
+    blocks: [
+      { type:"text", title:"⚡ Les 5 automatisations à haute valeur",
+        body:`<ul>
+<li><strong>1. Onboarding client automatique</strong> — Vente → email bienvenue + accès + CRM (vu leçon précédente)</li>
+<li><strong>2. Génération de contenu hebdomadaire</strong> — Chaque lundi → Claude API → 7 posts → Notion/Sheets</li>
+<li><strong>3. Suivi des leads non-convertis</strong> — Formulaire rempli → si pas d'achat en 48h → email de relance</li>
+<li><strong>4. Reporting automatique</strong> — Chaque vendredi → collecte données → email récap de la semaine</li>
+<li><strong>5. Archivage et backup</strong> — Nouveaux emails importants → sauvegarde dans Notion ou Drive</li>
+</ul>` },
+      { type:"prompt", label:"🤖 Prompt Make — Générer du contenu avec Claude API chaque semaine",
+        content:`MODULE TRIGGER : Schedule (Lundi 8h00)
+
+MODULE HTTP (appel Claude API) :
+- URL : https://api.anthropic.com/v1/messages
+- Method : POST
+- Headers : x-api-key: [TA_CLÉ_API], anthropic-version: 2023-06-01
+- Body :
+{
+  "model": "claude-opus-4-6",
+  "max_tokens": 2000,
+  "messages": [{
+    "role": "user",
+    "content": "Génère 7 idées de posts LinkedIn pour cette semaine. Thème : IA et entrepreneuriat. Format : titre accrocheur + 3 lignes de contenu + hashtags. Numéroter de 1 à 7."
+  }]
+}
+
+MODULE NOTION : Ajouter une page avec le contenu généré` },
+      { type:"callout", style:"info", title:"Make.com JSON import",
+        text:"Le repo contient un fichier make-scenario-1.json — tu peux l'importer directement dans Make.com (New Scenario → Import Blueprint) pour avoir le scénario d'onboarding pré-configuré. Il reste juste à connecter tes comptes." },
+      { type:"keypoints",
+        points:[
+          { icon:"📈", title:"ROI immédiat", text:"L'onboarding auto = 30 min par vente économisées dès le premier client" },
+          { icon:"🔄", title:"Contenu illimité", text:"L'automation contenu = 7 posts/semaine sans effort supplémentaire" },
+          { icon:"💌", title:"Relances sans gêne", text:"Les relances auto = pas de sentiment d'être intrusif, c'est le système" },
+          { icon:"📊", title:"Vision claire", text:"Le reporting auto = savoir où tu en es sans faire de calculs manuels" }
+        ] }
+    ],
+    exercise: { type:"freetext",
+      question:"Choisis ton automation prioritaire",
+      desc:"Parmi les 5 automatisations présentées, laquelle va avoir le plus d'impact immédiat pour ton business ? Explique pourquoi et décris comment tu la configurerais (trigger + actions).",
+      placeholder:"J'ai choisi l'automation N°... parce que...\n\nTrigger : ...\nAction 1 : ...\nAction 2 : ...",
+      minLength:80,
+      feedback_ok:"Excellent choix et bonne analyse. Tu peux maintenant configurer cette automation dans Make.com en suivant les étapes de la leçon précédente.",
+      feedback_ko:"Développe davantage — explique le trigger précis et les actions dans l'ordre. C'est cet exercice de pensée qui te permettra de configurer Make.com rapidement." }
+  },
+
+  // ── MODULE 04 — Développer une application ──
+  "04.01": {
+    intro: "Créer une vraie application web n'a jamais été aussi accessible. Avec Claude, tu peux passer de l'idée au prototype fonctionnel en quelques heures — sans être développeur.",
+    blocks: [
+      { type:"text", title:"🧠 Penser son app avant de coder",
+        body:`<p>Avant de demander du code à Claude, tu dois définir :</p>
+<ul>
+<li><strong>Le problème résolu</strong> — quelle douleur ton app adresse-t-elle ?</li>
+<li><strong>L'utilisateur cible</strong> — qui va l'utiliser et comment ?</li>
+<li><strong>Les fonctionnalités core (MVP)</strong> — les 3 fonctions indispensables au lancement</li>
+<li><strong>Ce qui n'est PAS dans le MVP</strong> — ce que tu ajoutes après validation</li>
+<li><strong>Les données nécessaires</strong> — qu'est-ce que l'app stocke et affiche ?</li>
+</ul>
+<p>Le piège classique : vouloir tout faire dès le départ. Un MVP qui résout UN problème vaut mieux qu'une app complexe qui n'est jamais lancée.</p>` },
+      { type:"prompt", label:"📋 Prompt — Générer le cahier des charges de ton app",
+        content:`Tu es un product manager expert en applications web. Je veux créer une app et j'ai besoin d'un cahier des charges complet.
+
+Mon idée : [DÉCRIS TON IDÉE EN 2-3 PHRASES]
+Mon utilisateur cible : [QUI VA L'UTILISER]
+Le problème résolu : [QUEL PROBLÈME CONCRET]
+
+Génère :
+1. Nom suggéré pour l'app
+2. Description en 1 phrase (le "pitch")
+3. Les 3 fonctionnalités MVP essentielles (numérotées)
+4. Les fonctionnalités v2 (après lancement)
+5. La structure des données nécessaires (quelles infos stocker)
+6. Les pages/écrans nécessaires
+7. Stack technique recommandée (HTML/CSS/JS + quelle API ou BDD)
+8. Estimation du temps de développement avec Claude` },
+      { type:"callout", style:"warn", title:"Le piège de la perfection",
+        text:"Ton MVP doit être imparfait. Si tu n'as pas honte de la v1 de ton app, c'est que tu as lancé trop tard. L'objectif est de valider que des gens l'utilisent AVANT d'investir des heures à la perfectionner." },
+      { type:"keypoints",
+        points:[
+          { icon:"🎯", title:"MVP = 3 fonctions max", text:"Résous un seul problème, parfaitement" },
+          { icon:"⚡", title:"Lancer en 48h", text:"Si ça prend plus de 48h, le scope est trop large" },
+          { icon:"👤", title:"1 utilisateur test", text:"Montre à 5 personnes avant de t'investir davantage" },
+          { icon:"🔄", title:"Itérer selon les retours", text:"Les vrais utilisateurs te diront quoi améliorer" }
+        ] }
+    ],
+    exercise: { type:"freetext",
+      question:"Rédige le brief de ton app",
+      desc:"Utilise le prompt ci-dessus pour générer le cahier des charges de l'app que tu veux créer. Colle le résultat ici ou décris ton app avec les 5 points clés du framework.",
+      placeholder:"Mon app : ...\nProblème résolu : ...\n3 fonctions MVP : ...\nDonnées stockées : ...\nPages nécessaires : ...",
+      minLength:100,
+      feedback_ok:"Excellent brief ! Tu as les bases pour générer le code frontend à la leçon suivante. Ce document sera le contexte que tu donneras à Claude pour chaque morceau de code.",
+      feedback_ko:"Sois plus précis sur les fonctionnalités et les données. Claude a besoin de comprendre exactement ce que l'app fait et stocke pour générer un code cohérent." }
+  },
+
+  "04.02": {
+    intro: "Tu as ton cahier des charges. Maintenant on génère le code HTML/CSS/JS fonctionnel avec Claude. La technique : découper l'app en composants et les générer un par un.",
+    blocks: [
+      { type:"text", title:"✂️ La technique des composants",
+        body:`<p>Erreur classique : demander à Claude de générer toute l'app en une fois. Résultat : code incomplet, confus, difficile à corriger.</p>
+<p>La bonne approche : <strong>diviser l'app en écrans et fonctionnalités</strong>, et les générer séparément.</p>
+<ul>
+<li>D'abord la structure HTML + la navigation</li>
+<li>Ensuite le CSS (design et responsive)</li>
+<li>Ensuite chaque fonctionnalité JS une par une</li>
+<li>Enfin, l'intégration et les tests</li>
+</ul>` },
+      { type:"prompt", label:"🏗️ Prompt — Générer la structure de base",
+        content:`Tu es un développeur frontend expert. Génère la structure HTML + CSS de base pour mon app.
+
+App : [NOM ET DESCRIPTION]
+Pages nécessaires : [LISTE DES ÉCRANS]
+Design : fond sombre (#0a0a0f), accent cyan (#00E5FF), typo Inter
+Style : moderne, épuré, professionnel
+
+Génère :
+- Structure HTML avec navigation entre les sections
+- CSS complet avec variables CSS pour les couleurs
+- Système de navigation JS simple (afficher/masquer les sections)
+- Responsive mobile complet
+
+Ne génère PAS encore les fonctionnalités — juste la coquille visuelle.` },
+      { type:"prompt", label:"⚙️ Prompt — Ajouter une fonctionnalité",
+        content:`Voici mon code actuel : [COLLE TON CODE]
+
+Ajoute la fonctionnalité suivante sans modifier ce qui fonctionne déjà :
+[DÉCRIS LA FONCTIONNALITÉ EN DÉTAIL]
+
+Contraintes :
+- Utiliser localStorage pour la persistance des données (pas de backend)
+- Valider les inputs avant traitement
+- Afficher un feedback visuel à l'utilisateur après chaque action
+- Garder le style cohérent avec le design existant
+
+Retourne le fichier HTML complet mis à jour.` },
+      { type:"callout", style:"success", title:"Debug avec Claude",
+        text:"Quand quelque chose ne marche pas : ouvre la console du navigateur (F12 → Console), copie l'erreur exacte, et dis à Claude : 'J'ai cette erreur : [erreur]. Voici mon code : [code]. Trouve et corrige le problème.'" }
+    ],
+    exercise: { type:"qcm",
+      question:"Claude génère ton app mais la fonctionnalité de sauvegarde ne marche pas. Tu vois dans la console : 'TypeError: Cannot read property of undefined'. Quelle est la meilleure approche ?",
+      options:[
+        { text:"Recommencer à zéro avec un nouveau prompt", correct:false },
+        { text:"Copier l'erreur exacte de la console + le code problématique + demander à Claude de corriger ce point précis", correct:true },
+        { text:"Chercher sur Stack Overflow", correct:false },
+        { text:"Demander à Claude de 'réparer le code'", correct:false }
+      ],
+      feedback_ok:"Exactement ! Claude est excellent pour débugger quand tu lui donnes le contexte précis. Erreur exacte + code = solution rapide. 'Réparer le code' sans contexte = résultat aléatoire.",
+      feedback_ko:"La bonne réponse est B. Donner l'erreur exacte de la console avec le code permet à Claude d'identifier et corriger précisément le problème. C'est la méthode de debug la plus efficace." }
+  },
+
+  "04.03": {
+    intro: "Pour aller au-delà du localStorage, ton app a besoin d'une vraie base de données accessible depuis n'importe quel appareil. On utilise Airtable — gratuit, simple, et compatible avec toutes les stacks.",
+    blocks: [
+      { type:"text", title:"🗄️ Pourquoi Airtable ?",
+        body:`<p>Airtable est un tableur en ligne qui se comporte comme une base de données, avec une API REST intégrée. Avantages pour les débutants :</p>
+<ul>
+<li>Interface visuelle — tu vois tes données comme dans Excel</li>
+<li>API simple — Claude peut générer le code d'intégration facilement</li>
+<li>Gratuit jusqu'à 1000 lignes par table</li>
+<li>Pas de serveur à gérer</li>
+</ul>
+<p>Alternative si Airtable est trop limité : <strong>Notion API</strong> (même logique, plus de structure).</p>` },
+      { type:"prompt", label:"🔌 Prompt — Intégrer l'API Airtable",
+        content:`Tu es un développeur expert en APIs REST. Voici mon app HTML actuelle : [COLLE TON CODE]
+
+Je veux remplacer le localStorage par Airtable comme base de données.
+
+Ma table Airtable :
+- Base ID : [TON BASE ID — trouvé dans l'URL Airtable]
+- Table : [NOM DE TA TABLE]
+- Colonnes : [LISTE DES COLONNES]
+- API Key : [TA CLÉ API AIRTABLE]
+
+Modifie l'app pour :
+1. Charger les données depuis Airtable au démarrage
+2. Sauvegarder chaque nouvelle entrée dans Airtable
+3. Mettre à jour ou supprimer si nécessaire
+4. Gérer les erreurs réseau proprement
+
+Important : ne pas exposer la clé API dans le code frontend (utilise une variable de configuration).` },
+      { type:"callout", style:"warn", title:"Sécurité API Key",
+        text:"Ne jamais mettre ta clé API Airtable directement dans le code HTML public (GitHub). Si ton app est publique, utilise un proxy ou Netlify Functions pour cacher la clé. Pour un MVP en accès limité, c'est acceptable temporairement." },
+      { type:"keypoints",
+        points:[
+          { icon:"📊", title:"Airtable", text:"1000 lignes gratuit, interface visuelle, API simple" },
+          { icon:"📝", title:"Notion API", text:"Plus structuré, idéal si tu utilises déjà Notion" },
+          { icon:"🔥", title:"Firebase", text:"Google, temps réel, gratuit jusqu'à 1GB — pour apps plus complexes" },
+          { icon:"💾", title:"localStorage", text:"Parfait pour données privées d'un seul utilisateur" }
+        ] }
+    ],
+    exercise: { type:"freetext",
+      question:"Définis la structure de données de ton app",
+      desc:"Pour ton app, définis les données à stocker dans Airtable : quelles tables, quelles colonnes, quels types de données. C'est le schéma que tu donneras à Claude pour générer l'intégration.",
+      placeholder:"Table principale : [NOM]\nColonnes :\n- [Nom] (type: texte)\n- [Date] (type: date)\n- ...\n\nRelations entre tables : ...",
+      minLength:60,
+      feedback_ok:"Bonne structure ! Ce schéma permet à Claude de générer exactement le bon code d'intégration Airtable pour ton app.",
+      feedback_ko:"Sois plus précis sur les types de données de chaque colonne. Airtable distingue texte, nombre, date, checkbox, lien vers une autre table — ces types impactent le code d'intégration." }
+  },
+
+  "04.04": {
+    intro: "Ton app est prête. On la met en ligne et on la partage. Dans cette leçon : les meilleures options d'hébergement gratuit et comment présenter ton app pour obtenir tes premiers utilisateurs.",
+    blocks: [
+      { type:"text", title:"🚀 Options d'hébergement pour ton app",
+        body:`<ul>
+<li><strong>GitHub Pages</strong> — idéal pour apps HTML/CSS/JS pures (sans backend). Gratuit, simple. Déjà vu au M02.</li>
+<li><strong>Netlify</strong> — plus puissant que GitHub Pages. Déploiement par drag & drop, domaine custom gratuit, Netlify Functions (mini backend serverless)</li>
+<li><strong>Vercel</strong> — optimal pour React/Next.js, mais marche aussi pour HTML simple</li>
+<li><strong>Glitch</strong> — idéal pour prototyper et partager. URL publique immédiate, pas de config</li>
+</ul>
+<p><strong>Recommandation pour commencer :</strong> Netlify. Drag & drop ton dossier = app en ligne en 30 secondes.</p>` },
+      { type:"prompt", label:"📢 Prompt — Rédiger la page de présentation de ton app",
+        content:`Mon app s'appelle [NOM]. Voici ce qu'elle fait : [DESCRIPTION]
+
+Elle résout ce problème : [PROBLÈME]
+Pour ces personnes : [CIBLE]
+Les 3 fonctions principales : [LISTE]
+
+Rédige :
+1. Un titre accrocheur pour la page de présentation (max 8 mots)
+2. Un sous-titre qui explique le bénéfice (max 15 mots)
+3. 3 bullet points de fonctionnalités (orientés bénéfices, pas technique)
+4. Un texte de 100 mots pour décrire l'app sur Product Hunt
+5. Un post LinkedIn de lancement (anecdote personnelle + valeur + CTA)` },
+      { type:"callout", style:"info", title:"Partager sur les bons canaux",
+        text:"Pour tes premiers utilisateurs : partage dans des groupes Facebook/LinkedIn de ta niche, sur Reddit (subreddits pertinents), sur IndieHackers, et directement à 10 personnes de ton réseau qui ont le problème que tu résous." }
+    ],
+    exercise: { type:"qcm",
+      question:"Tu viens de déployer ton app sur Netlify. L'URL générée est 'random-words-123.netlify.app'. Comment avoir une URL professionnelle comme 'monapp.com' ?",
+      options:[
+        { text:"C'est impossible avec un hébergement gratuit", correct:false },
+        { text:"Acheter un domaine (5-15€/an sur OVH ou Namecheap) et le connecter dans les DNS settings de Netlify en 10 minutes", correct:true },
+        { text:"Passer sur un hébergement payant", correct:false },
+        { text:"Créer un nouveau compte Netlify avec un meilleur nom", correct:false }
+      ],
+      feedback_ok:"Exactement ! Un domaine custom coûte 5-15€/an et se connecte à Netlify en 10 minutes via les paramètres DNS. C'est l'investissement avec le meilleur ROI en termes de crédibilité.",
+      feedback_ko:"La bonne réponse est B. Acheter un domaine personnalisé (5-15€/an) et le connecter à Netlify en 10 minutes suffit pour avoir une URL professionnelle. Netlify gère le HTTPS automatiquement." }
+  },
+
+  // ── MODULE 05 — Développer un jeu vidéo ──
+  "05.01": {
+    intro: "Créer un jeu vidéo avec l'IA, c'est l'un des projets les plus engageants et les plus impressionnants à montrer. Dans cette leçon, on pose les bases : concept, mécaniques, et game design document.",
+    blocks: [
+      { type:"text", title:"🎮 Choisir le bon type de jeu pour commencer",
+        body:`<p>Tout le monde veut créer un RPG open world. Commence par quelque chose de faisable. Voici les jeux accessibles avec HTML5 Canvas :</p>
+<ul>
+<li><strong>Jeu de plateforme simple</strong> — personnage qui saute, obstacles, score</li>
+<li><strong>Casse-briques / Pong</strong> — balle, raquette, briques — logique simple</li>
+<li><strong>Endless runner</strong> — personnage qui avance, obstacles à éviter</li>
+<li><strong>Puzzle / Match-3</strong> — grille de cases, logique de matching</li>
+<li><strong>Quiz interactif</strong> — questions, score, timer — très rapide à créer</li>
+</ul>
+<p>Conseil : commence par un <strong>endless runner</strong> ou un <strong>casse-briques</strong>. Logique simple, résultat impressionnant, faisable en 2-3h.</p>` },
+      { type:"prompt", label:"📋 Prompt — Générer le Game Design Document",
+        content:`Tu es un game designer avec 10 ans d'expérience. Je veux créer un petit jeu web en HTML5 Canvas.
+
+Mon idée de jeu : [DÉCRIS EN 2 PHRASES]
+Type : [endless runner / platformer / puzzle / autre]
+Thème visuel : [ex: espace, forêt, cyberpunk, minimaliste]
+Public cible : [enfants / ados / adultes / tous publics]
+
+Génère un Game Design Document (GDD) simplifié :
+1. Titre et pitch (1 phrase)
+2. Mécaniques core (3 max pour le MVP)
+3. Progression : comment le joueur avance
+4. Système de score
+5. Game over conditions
+6. Assets nécessaires (personnage, obstacles, fond, sons)
+7. Estimation de complexité (1=facile, 5=difficile)` },
+      { type:"callout", style:"success", title:"La règle du fun immédiat",
+        text:"Un bon jeu doit être fun dans les 10 premières secondes. Si le joueur doit apprendre pendant 5 minutes avant de s'amuser, c'est raté. Pense à Flappy Bird : un bouton, une règle, immédiatement addictif." }
+    ],
+    exercise: { type:"freetext",
+      question:"Rédige le concept de ton jeu",
+      desc:"Décris ton idée de jeu en 5 points : type de jeu, thème visuel, mécanique principale, système de score, et ce qui le rend fun. Sois précis et concis.",
+      placeholder:"Type : ...\nThème : ...\nMécanique principale : ...\nSystème de score : ...\nCe qui le rend fun : ...",
+      minLength:80,
+      feedback_ok:"Super concept ! Dans la leçon suivante, on va utiliser ce GDD pour que Claude génère tout le code HTML5 Canvas du jeu.",
+      feedback_ko:"Développe davantage — surtout la mécanique principale et le système de score. Ce sont les deux éléments dont Claude a besoin pour générer le code du jeu." }
+  },
+
+  "05.02": {
+    intro: "On passe au code. Claude va générer le jeu complet en HTML5 Canvas. Tu n'as pas besoin de comprendre chaque ligne — juste de savoir comment itérer et améliorer.",
+    blocks: [
+      { type:"text", title:"🖼️ HTML5 Canvas — Ce que tu dois savoir",
+        body:`<p>Le Canvas HTML5 est une zone de dessin sur laquelle tu peux dessiner et animer des formes, images, et textes via JavaScript. C'est la base de tous les jeux web simples.</p>
+<p>Les concepts clés (Claude gère le code, toi tu comprends la logique) :</p>
+<ul>
+<li><strong>Game loop</strong> — la boucle qui s'exécute 60 fois/seconde et redessine tout</li>
+<li><strong>requestAnimationFrame</strong> — la fonction qui crée la fluidité</li>
+<li><strong>Détection de collision</strong> — vérifie si deux objets se touchent</li>
+<li><strong>Input handling</strong> — capture les touches clavier ou le tap mobile</li>
+</ul>` },
+      { type:"prompt", label:"🎮 Prompt — Générer le jeu complet",
+        content:`Tu es un développeur de jeux web expert en HTML5 Canvas et JavaScript.
+
+Crée un jeu complet en un seul fichier HTML selon ce Game Design Document :
+
+CONCEPT :
+- Type : [endless runner / platformer / etc]
+- Thème : [ton thème]
+- Titre : [nom du jeu]
+
+MÉCANIQUES :
+- [Mécanique 1]
+- [Mécanique 2]
+- [Mécanique 3]
+
+PROGRESSION :
+- [Comment le jeu devient plus difficile]
+
+SCORE : [Système de score]
+
+TECHNIQUE :
+- HTML5 Canvas plein écran
+- Contrôles : ESPACE ou tap mobile (support tactile obligatoire)
+- Graphismes : formes géométriques colorées (pas d'images externes)
+- Sons : Web Audio API (sons simples générés en code)
+- Écrans : Accueil → Jeu → Game Over → Scores
+
+Inclus : animations fluides, effets visuels, feedback sonore, meilleurs scores localStorage.` },
+      { type:"callout", style:"warn", title:"Itération visuelle",
+        text:"Après la première génération, teste le jeu et note ce qui ne va pas. Dis à Claude : 'Le personnage est trop lent', 'Les obstacles arrivent trop vite dès le début', 'Le game over manque d'effet visuel'. Itère 3-4 fois pour un résultat solide." }
+    ],
+    exercise: { type:"qcm",
+      question:"Ton jeu tourne trop lentement sur mobile. Claude t'a donné le code avec requestAnimationFrame. Quelle est la cause la plus probable ?",
+      options:[
+        { text:"Le Canvas n'est pas supporté sur mobile", correct:false },
+        { text:"Trop d'opérations de dessin dans la game loop — il faut réduire les objets dessinés ou optimiser les recalculs", correct:true },
+        { text:"requestAnimationFrame ne fonctionne pas sur mobile", correct:false },
+        { text:"Il faut utiliser WebGL à la place", correct:false }
+      ],
+      feedback_ok:"Exactement ! La game loop s'exécute 60 fois/seconde. Si elle fait trop de calculs ou dessine trop d'éléments, le mobile ne suit pas. Demande à Claude d'optimiser en réduisant les appels de dessin.",
+      feedback_ko:"La bonne réponse est B. Les problèmes de performance sur mobile viennent presque toujours de trop d'opérations dans la game loop. Demande à Claude d'optimiser le code de rendu." }
+  },
+
+  "05.03": {
+    intro: "Le jeu de base fonctionne. Maintenant on l'enrichit : niveaux, effets sonores, et publication sur itch.io pour que le monde entier puisse y jouer.",
+    blocks: [
+      { type:"text", title:"🎵 Ajouter des sons avec Web Audio API",
+        body:`<p>Pas besoin de fichiers audio externes. La Web Audio API permet de générer des sons directement en JavaScript.</p>
+<ul>
+<li><strong>Son de saut</strong> — fréquence montante courte</li>
+<li><strong>Son de collision</strong> — bruit blanc court</li>
+<li><strong>Son de score</strong> — mélodie ascendante simple</li>
+<li><strong>Musique de fond</strong> — oscillateur basse fréquence en boucle</li>
+</ul>` },
+      { type:"prompt", label:"🎵 Prompt — Ajouter des sons Web Audio",
+        content:`Voici mon jeu HTML5 : [COLLE TON CODE]
+
+Ajoute des effets sonores générés par Web Audio API (sans fichiers externes) :
+1. Son de saut : fréquence montante 200→400Hz, durée 0.1s
+2. Son de mort : fréquence descendante 400→100Hz, durée 0.3s
+3. Son de score : note courte 880Hz, durée 0.05s
+4. Musique de fond optionnelle : mélodie simple en boucle
+
+Ajoute aussi un bouton mute/unmute dans l'interface.
+Assure-toi que les sons fonctionnent sur mobile (iOS nécessite un geste utilisateur).` },
+      { type:"text", title:"📦 Publier sur itch.io",
+        body:`<p>itch.io est la plateforme des jeux indépendants. Publication gratuite, audience active.</p>
+<ul>
+<li>Crée un compte sur <strong>itch.io</strong></li>
+<li>New Project → type HTML</li>
+<li>Zippe ton fichier index.html</li>
+<li>Upload le ZIP et coche "This file will be played in the browser"</li>
+<li>Configure la taille de la fenêtre (recommandé : 800x600 ou plein écran)</li>
+<li>Ajoute une description, captures d'écran, et tags</li>
+<li>Publie et partage le lien !</li>
+</ul>` },
+      { type:"callout", style:"success", title:"Ton premier jeu publié !",
+        text:"Partager un jeu que tu as créé avec l'IA sur itch.io est un excellent proof of concept pour tes clients ou ton audience. C'est concret, impressionnant, et ça démontre mieux que n'importe quel discours ce qu'on peut faire avec Claude." }
+    ],
+    exercise: { type:"freetext",
+      question:"Décris les améliorations à apporter à ton jeu",
+      desc:"Après avoir testé ton jeu de base, liste 3 améliorations que tu veux y apporter (gameplay, sons, visuels, niveaux). Pour chaque amélioration, note comment tu le demanderais à Claude.",
+      placeholder:"Amélioration 1 : ...\nPrompt pour Claude : ...\n\nAmélioration 2 : ...\nPrompt pour Claude : ...",
+      minLength:80,
+      feedback_ok:"Parfait plan d'amélioration. Applique-les une par une — teste après chaque modification avant de passer à la suivante.",
+      feedback_ko:"Sois plus précis sur comment tu demanderais chaque amélioration à Claude. Un prompt vague donne un résultat vague." }
+  },
+
+  // ── MODULE 06 — Marketing & Contenu IA ──
+  "06.01": {
+    intro: "Le meilleur produit du monde ne se vend pas sans visibilité. Dans cette leçon, tu apprends à créer une stratégie de contenu complète en 30 minutes par semaine grâce à l'IA.",
+    blocks: [
+      { type:"text", title:"🏛️ Les 3 piliers de contenu",
+        body:`<p>Une stratégie de contenu efficace repose sur 3 types de posts en rotation :</p>
+<ul>
+<li><strong>Éducatif (40%)</strong> — apprendre quelque chose d'utile à ta cible. Construit l'autorité.</li>
+<li><strong>Inspirationnel (30%)</strong> — histoires, transformations, résultats. Construit la confiance.</li>
+<li><strong>Commercial (30%)</strong> — présenter ton offre, les bénéfices, les témoignages. Génère des ventes.</li>
+</ul>
+<p>Ratio idéal sur LinkedIn : 3 posts éducatifs + 2 posts inspirationnels + 1 post commercial par semaine.</p>` },
+      { type:"prompt", label:"📅 Prompt — Générer 4 semaines de contenu",
+        content:`Je suis [TON ACTIVITÉ]. Ma cible : [CLIENT IDÉAL].
+Mon offre principale : [TON PRODUIT/SERVICE ET PRIX].
+
+Génère un calendrier éditorial de 4 semaines pour LinkedIn (6 posts/semaine).
+
+Pour chaque post, donne :
+- Jour de publication
+- Type (éducatif / inspirationnel / commercial)
+- Titre/hook (la première ligne qui doit arrêter le scroll)
+- Points clés à aborder (3 bullet points)
+- CTA de fin
+
+Semaines 1-2 : focus éducatif (construire l'audience)
+Semaines 3-4 : introduire progressivement l'offre
+
+Ton : [professionnel mais accessible / direct / inspirant]` },
+      { type:"callout", style:"info", title:"Le hook — la première ligne qui fait tout",
+        text:"Sur LinkedIn, seule la première ligne est visible avant le 'Voir plus'. Elle doit créer une curiosité immédiate ou promettre une valeur claire. Exemples : 'J'ai automatisé 80% de mon business en 3 semaines. Voici comment :' ou 'La plupart des entrepreneurs font cette erreur de pricing. Je l'ai faite aussi.'" },
+      { type:"keypoints",
+        points:[
+          { icon:"📅", title:"Batch writing", text:"Écris tous les posts du mois en une session de 2h le premier lundi" },
+          { icon:"🔄", title:"Recycler le contenu", text:"Un post LinkedIn → thread Twitter → email → script TikTok" },
+          { icon:"📊", title:"Analyser les perfs", text:"Après 30 jours, identifie les 3 posts avec le plus d'engagement et fais plus de ce type" },
+          { icon:"⏰", title:"Timing optimal", text:"LinkedIn : mardi/mercredi/jeudi entre 8h-9h ou 17h-18h" }
+        ] }
+    ],
+    exercise: { type:"freetext",
+      question:"Définis tes 3 piliers de contenu",
+      desc:"Pour ton activité spécifique, définis tes 3 piliers de contenu. Pour chaque pilier : thème, exemples de sujets, et pourquoi ta cible s'y intéresse.",
+      placeholder:"Pilier 1 (Éducatif) : ...\nSujets possibles : ...\nPourquoi ça intéresse ma cible : ...\n\nPilier 2 (Inspirationnel) : ...",
+      minLength:100,
+      feedback_ok:"Excellents piliers ! Ces 3 thèmes seront la base de tout ton contenu. Colle-les comme contexte à Claude quand tu lui demandes de générer des posts.",
+      feedback_ko:"Développe davantage — surtout les exemples de sujets. Plus ils sont précis, plus Claude générera du contenu pertinent et non générique." }
+  },
+
+  "06.02": {
+    intro: "LinkedIn est la plateforme avec le meilleur reach organique en 2026 pour les entrepreneurs B2B. Dans cette leçon, on génère 30 posts en moins d'une heure.",
+    blocks: [
+      { type:"text", title:"📝 Le format LinkedIn qui performe",
+        body:`<p>Les posts LinkedIn qui génèrent le plus d'engagement suivent ce format :</p>
+<ul>
+<li><strong>Ligne 1 (hook)</strong> — accroche percutante, question, ou chiffre surprenant</li>
+<li><strong>Ligne 2 (vide)</strong> — espace pour forcer le "Voir plus"</li>
+<li><strong>Corps (5-8 lignes)</strong> — contenu avec sauts de ligne fréquents, listes, chiffres</li>
+<li><strong>CTA final</strong> — question pour engager ou lien vers ton offre</li>
+<li><strong>Hashtags (3-5)</strong> — en dernière ligne, pertinents mais pas trop niche</li>
+</ul>
+<p><strong>Longueur idéale :</strong> 150-300 mots. Assez long pour apporter de la valeur, assez court pour être lu en entier.</p>` },
+      { type:"prompt", label:"✍️ Prompt — Générer 10 posts LinkedIn d'un coup",
+        content:`Tu es un expert en content marketing LinkedIn. Génère 10 posts LinkedIn pour mon compte.
+
+Mon activité : [TON ACTIVITÉ]
+Mon audience : [QUI TU CIBLES]
+Mon offre : [CE QUE TU VENDS]
+Ton souhaité : [direct / inspirant / expert / accessible]
+
+Piliers de contenu :
+- Éducatif : [TES SUJETS ÉDUCATIFS]
+- Inspirationnel : [TES SUJETS PERSO/HISTOIRES]
+- Commercial : [TON OFFRE À PRÉSENTER]
+
+Pour chaque post :
+1. Type (éducatif / inspirationnel / commercial)
+2. Hook (première ligne percutante)
+3. Corps complet avec mise en forme LinkedIn (sauts de ligne, listes)
+4. CTA final
+5. 3-5 hashtags pertinents
+
+Varie les formats : liste numérotée, histoire personnelle, conseil court, question-réponse.` },
+      { type:"callout", style:"success", title:"Variante : les carousels",
+        text:"Les carousels PDF sont le format LinkedIn avec le meilleur reach en 2026. Demande à Claude de créer le contenu de 10 slides sur un sujet, puis utilise Canva pour créer le visuel et upload le PDF sur LinkedIn." }
+    ],
+    exercise: { type:"qcm",
+      question:"Pourquoi faut-il une ligne vide après le hook dans un post LinkedIn ?",
+      options:[
+        { text:"C'est une convention esthétique", correct:false },
+        { text:"LinkedIn tronque le texte après quelques lignes — la ligne vide crée un effet visuel qui incite à cliquer 'Voir plus'", correct:true },
+        { text:"Pour améliorer le référencement du post", correct:false },
+        { text:"Pour respecter les règles de LinkedIn", correct:false }
+      ],
+      feedback_ok:"Exactement ! L'algorithme LinkedIn coupe le texte après 2-3 lignes. La ligne vide crée un blanc qui attire l'oeil et donne envie de cliquer 'Voir plus'. Plus de lectures = plus d'engagement = plus de reach.",
+      feedback_ko:"La bonne réponse est B. LinkedIn coupe le post après quelques lignes. La ligne vide sous le hook crée un effet visuel qui incite à cliquer 'Voir plus', ce qui augmente le taux de lecture." }
+  },
+
+  "06.03": {
+    intro: "TikTok et les Reels Instagram sont les leviers de croissance les plus puissants pour atteindre une nouvelle audience rapidement. Claude peut générer des scripts viraux en quelques secondes.",
+    blocks: [
+      { type:"text", title:"🎬 La structure d'une vidéo virale",
+        body:`<p>Les vidéos courtes qui font des millions de vues suivent toutes la même structure :</p>
+<ul>
+<li><strong>0-3 secondes : Hook visuel + texte</strong> — la question ou affirmation choc qui fait arrêter le scroll</li>
+<li><strong>3-15 secondes : Promesse</strong> — "Dans cette vidéo je vais te montrer..."</li>
+<li><strong>15-45 secondes : Contenu</strong> — la valeur, le conseil, l'histoire en 3-5 points</li>
+<li><strong>45-60 secondes : CTA</strong> — "Abonne-toi si tu veux la suite" / "Lien en bio"</li>
+</ul>
+<p>Formule magique pour le hook : <em>"La plupart des [cible] font [erreur]. Voici comment [résultat]."</em></p>` },
+      { type:"prompt", label:"🎥 Prompt — Générer 5 scripts TikTok/Reels",
+        content:`Tu es un expert en marketing vidéo court (TikTok/Reels). Génère 5 scripts de vidéos courtes (60 secondes max) pour mon compte.
+
+Mon activité : [TON ACTIVITÉ]
+Mon audience : [QUI TU CIBLES - âge, intérêts, problèmes]
+Thèmes : [2-3 thèmes autour de ton expertise]
+Ton : [parler directement à la caméra / voix off / tutoriel]
+
+Pour chaque script :
+1. Hook (texte à l'écran + ce que tu dis — 3 secondes)
+2. Script complet (avec indications [PAUSE], [ZOOM], [TEXTE À L'ÉCRAN])
+3. CTA final
+4. Hashtags (15 max)
+5. Idée de texte superposé (caption qui accroche)
+
+Format : scripts prêts à filmer, aucune explication nécessaire.` },
+      { type:"callout", style:"info", title:"Republier sur plusieurs plateformes",
+        text:"Un script TikTok peut devenir : une vidéo TikTok + un Reel Instagram + un Short YouTube + un post LinkedIn avec les points clés. Claude peut adapter le même contenu pour chaque format en quelques secondes." }
+    ],
+    exercise: { type:"freetext",
+      question:"Écris le hook de ta première vidéo",
+      desc:"Rédige le hook (0-3 premières secondes) de ta première vidéo TikTok/Reel. Il doit arrêter le scroll immédiatement. Inclus le texte à l'écran ET ce que tu dis à l'oral.",
+      placeholder:"Texte à l'écran : ...\nCe que je dis : ...\n\nPourquoi ce hook va fonctionner : ...",
+      minLength:60,
+      feedback_ok:"Excellent hook ! La combinaison texte à l'écran + parole crée un double impact. Teste cette accroche sur au moins 3 vidéos avant de juger si elle fonctionne.",
+      feedback_ko:"Développe — un bon hook doit créer soit une curiosité (ce que la plupart ne savent pas...), soit une promesse claire (comment faire X en Y minutes), soit un contraste surprenant (j'ai fait X et voilà ce qui s'est passé)." }
+  },
+
+  "06.04": {
+    intro: "L'email reste le canal avec le meilleur ROI en marketing digital. Un abonné email vaut 10x un follower sur les réseaux. Dans cette leçon, on crée une séquence email qui convertit.",
+    blocks: [
+      { type:"text", title:"📧 La séquence email de nurturing",
+        body:`<p>Une séquence de nurturing, c'est une série d'emails automatiques envoyés après l'inscription. Son but : créer la confiance et préparer la vente.</p>
+<p>Structure optimale pour convertir en 7 jours :</p>
+<ul>
+<li><strong>J0 — Email de bienvenue</strong> : accueillir, délivrer la promesse, planter les prochains emails</li>
+<li><strong>J1 — Valeur pure</strong> : un conseil actionnable immédiatement</li>
+<li><strong>J2 — Histoire personnelle</strong> : ta transformation, ton parcours</li>
+<li><strong>J4 — Problème + Solution</strong> : le problème de ta cible + comment tu le résous</li>
+<li><strong>J6 — Preuve sociale</strong> : témoignage client ou résultat concret</li>
+<li><strong>J7 — Offre + Urgence</strong> : présenter l'offre avec un bonus ou deadline</li>
+<li><strong>J14 — Relance douce</strong> : pour ceux qui n'ont pas encore acheté</li>
+</ul>` },
+      { type:"prompt", label:"✉️ Prompt — Générer toute la séquence email",
+        content:`Tu es un expert en email marketing et copywriting. Génère une séquence complète de 7 emails de nurturing.
+
+Mon activité : [TON ACTIVITÉ]
+Ma cible : [CLIENT IDÉAL et son problème principal]
+Mon offre : [PRODUIT/SERVICE et prix]
+Ma transformation : [avant → après pour le client]
+
+Pour chaque email :
+- Objet : accrocheur (taux d'ouverture), max 50 caractères
+- Pré-header : complète l'objet (70 caractères)
+- Corps : conversationnel, personnel, valeur réelle
+- CTA : clair et unique
+
+Ton : [conversationnel / professionnel / inspirant]
+Longueur : 150-300 mots par email
+
+Emails : J0 bienvenue / J1 valeur / J2 histoire / J4 problème-solution / J6 preuve / J7 offre / J14 relance` },
+      { type:"callout", style:"warn", title:"RGPD obligatoire",
+        text:"En France, tout email marketing nécessite un consentement explicite (opt-in double recommandé) et un lien de désinscription dans chaque email. Brevo et Mailchimp gèrent ça automatiquement si tu utilises leurs formulaires officiels." }
+    ],
+    exercise: { type:"qcm",
+      question:"Quel est l'objectif principal de l'email J0 (bienvenue) ?",
+      options:[
+        { text:"Vendre l'offre immédiatement tant que le prospect est chaud", correct:false },
+        { text:"Accueillir, délivrer ce qui a été promis, créer les attentes pour les prochains emails, et confirmer que l'abonnement est bien pris en compte", correct:true },
+        { text:"Présenter toute l'offre en détail", correct:false },
+        { text:"Demander au prospect de partager sa newsletter", correct:false }
+      ],
+      feedback_ok:"Exactement ! L'email de bienvenue ne doit pas vendre. Son job : créer une bonne première impression, délivrer la promesse faite lors de l'inscription, et créer l'envie d'ouvrir les prochains emails.",
+      feedback_ko:"La bonne réponse est B. Vendre dès l'email J0 brûle la confiance avant qu'elle soit établie. L'email de bienvenue prépare le terrain : accueil chaleureux, valeur immédiate, et teaser des prochains emails." }
+  },
+
+  "06.05": {
+    intro: "Produire du contenu c'est bien. L'automatiser c'est mieux. Dans cette leçon, on connecte Claude + Make.com pour créer une machine à contenu qui tourne seule.",
+    blocks: [
+      { type:"text", title:"🤖 Le workflow contenu automatisé",
+        body:`<p>Voici le système complet :</p>
+<ul>
+<li><strong>Lundi 7h</strong> → Make déclenche → Claude API génère 7 posts LinkedIn → sauvegarde dans Notion</li>
+<li><strong>Mardi-Dimanche</strong> → Buffer/SocialBee publie 1 post/jour aux heures optimales</li>
+<li><strong>Chaque semaine</strong> → tu reviews les posts Notion en 10 minutes et ajustes si nécessaire</li>
+</ul>
+<p>Résultat : présence constante sur LinkedIn avec 30 minutes de travail par mois.</p>` },
+      { type:"prompt", label:"📲 Prompt — Générer le contenu de la semaine (pour Make)",
+        content:`[Ce prompt est utilisé dans Make.com → module HTTP → Claude API]
+
+Tu es le gestionnaire de contenu de [NOM/MARQUE].
+Cible : [CLIENT IDÉAL]
+Ton : [TON SOUHAITÉ]
+Thèmes cette semaine : [THÈMES ROTATIFS]
+
+Génère 7 posts LinkedIn pour cette semaine. Chaque post doit :
+- Commencer par un hook fort (question ou affirmation choc)
+- Apporter une valeur concrète et actionnable
+- Finir par une question pour maximiser les commentaires
+- Inclure 3-5 hashtags pertinents
+- Faire entre 150 et 250 mots
+
+Retourne UNIQUEMENT un JSON valide avec cette structure :
+{"posts": [{"day": "Lundi", "type": "educatif", "content": "...", "hashtags": [...]}]}` },
+      { type:"callout", style:"info", title:"Buffer vs SocialBee",
+        text:"Buffer : gratuit jusqu'à 3 comptes, simple, idéal pour commencer. SocialBee : payant mais plus puissant (catégories de contenu, recyclage automatique). Commence par Buffer et migre si tu en as besoin." }
+    ],
+    exercise: { type:"freetext",
+      question:"Décris ton workflow contenu idéal",
+      desc:"Comment tu veux que ton système de contenu fonctionne ? Décris la fréquence de publication, les plateformes, le niveau d'automatisation souhaité, et ce que tu veux encore contrôler manuellement.",
+      placeholder:"Fréquence : ...\nPlateformes : ...\nCe que j'automatise : ...\nCe que je fais moi-même : ...",
+      minLength:80,
+      feedback_ok:"Bon plan de workflow ! Le niveau d'automatisation que tu décris est réaliste. Note qu'il vaut mieux commencer simple (1 plateforme, 3 posts/semaine) et complexifier ensuite.",
+      feedback_ko:"Sois plus précis — indique la fréquence par plateforme et le niveau d'automatisation pour chaque étape. Cette clarté est nécessaire pour configurer Make.com correctement." }
+  },
+
+  // ── MODULE 07 — Business Models IA ──
+  "07.01": {
+    intro: "L'IA a créé des dizaines de nouveaux business models accessibles sans capital, sans équipe, et sans expertise technique. Dans cette leçon, on explore les 10 plus viables en 2026.",
+    blocks: [
+      { type:"text", title:"💼 Les 10 business models IA viables en 2026",
+        body:`<ul>
+<li><strong>1. Formation en ligne IA</strong> — comme Nexum AI School. Marché massif, faible coût de création</li>
+<li><strong>2. Agence de contenu IA</strong> — créer des posts/articles/vidéos scripts pour des entreprises</li>
+<li><strong>3. Automatisation pour PME</strong> — vendre des systèmes Make.com clés en main</li>
+<li><strong>4. Prompts premium</strong> — vendre des bibliothèques de prompts pour des niches spécifiques</li>
+<li><strong>5. SaaS no-code</strong> — créer un outil web avec Claude + le vendre par abonnement</li>
+<li><strong>6. Newsletter IA</strong> — curation et analyse de l'actualité IA pour une niche</li>
+<li><strong>7. Coaching IA pour entrepreneurs</strong> — accompagner les pros dans l'adoption de l'IA</li>
+<li><strong>8. Création de bots Discord/Telegram</strong> — bots personnalisés pour communautés</li>
+<li><strong>9. Services de personnalisation</strong> — créer des avatars IA, voix synthétiques, etc.</li>
+<li><strong>10. Consulting transformation IA</strong> — auditer et transformer le workflow d'une entreprise</li>
+</ul>` },
+      { type:"callout", style:"info", title:"Comment choisir ton modèle",
+        text:"Pose-toi ces 3 questions : (1) Est-ce que j'ai déjà une expertise dans ce domaine ? (2) Est-ce que j'aime ce type de travail ? (3) Quelqu'un paye-t-il déjà pour quelque chose de similaire ? Si tu as 2 oui sur 3, c'est un bon candidat." },
+      { type:"prompt", label:"💡 Prompt — Identifier ton business model IA idéal",
+        content:`Tu es un coach business spécialisé dans les business models basés sur l'IA.
+
+Voici mon profil :
+- Compétences : [liste tes compétences — ex: marketing, design, vente, langues...]
+- Expérience pro : [ton background en 2 phrases]
+- Disponibilité : [heures/semaine]
+- Objectif financier : [revenu mensuel cible]
+- Ce que j'aime faire : [activités que tu apprécies]
+- Ce que je veux éviter : [ce que tu ne veux pas faire]
+- Budget de démarrage : [0€ / moins de 500€ / plus]
+
+Analyse mon profil et recommande :
+1. Les 3 business models IA les plus adaptés à mon cas
+2. Pour chacun : avantages, inconvénients, première étape concrète
+3. Celui que tu recommandes en priorité et pourquoi` },
+      { type:"keypoints",
+        points:[
+          { icon:"🚀", title:"Commencer petit", text:"1 client payant prouve le concept mieux que 1000 heures de planification" },
+          { icon:"💰", title:"Valider avant de créer", text:"Vends avant de produire — pré-vente ou beta test payant" },
+          { icon:"🔄", title:"Itérer vite", text:"Change de modèle ou d'offre si pas de traction en 3 mois" },
+          { icon:"🎯", title:"Niche profonde", text:"Mieux vaut être la référence pour les coachs en nutrition que pour 'tous les entrepreneurs'" }
+        ] }
+    ],
+    exercise: { type:"qcm",
+      question:"Tu veux lancer un business IA. Tu as une expertise en RH/recrutement. Quel est le chemin le plus rapide vers ton premier euro ?",
+      options:[
+        { text:"Créer une formation en ligne complète sur l'IA en RH (3 mois de production)", correct:false },
+        { text:"Développer un SaaS de recrutement IA (6-12 mois)", correct:false },
+        { text:"Proposer à 5 entreprises de ton réseau un audit de leur processus de recrutement avec l'IA — 500€ par audit — et le faire en 1 semaine", correct:true },
+        { text:"Créer un compte TikTok sur l'IA en RH et attendre d'avoir 10 000 abonnés avant de vendre", correct:false }
+      ],
+      feedback_ok:"Exactement ! Le consulting/audit permet de valider ton expertise, générer du cash rapidement, et comprendre les vrais besoins du marché — avant d'investir dans un produit plus long à créer.",
+      feedback_ko:"La bonne réponse est C. Le consulting/audit génère du cash dès la première semaine avec zéro investissement. Tu valides ton marché avec de vraies personnes avant de créer un produit scalable." }
+  },
+
+  "07.02": {
+    intro: "Créer et vendre un produit digital est le business model le plus scalable qui existe — tu le crées une fois, il se vend indéfiniment. Dans cette leçon, on crée et lance ton premier produit digital.",
+    blocks: [
+      { type:"text", title:"📦 Les types de produits digitaux",
+        body:`<ul>
+<li><strong>Ebook/Guide PDF</strong> — 20-50€. Facile à créer avec Claude, facile à vendre</li>
+<li><strong>Template/Modèle</strong> — Notion, Canva, Excel... 10-30€. Très fort ROI</li>
+<li><strong>Bibliothèque de prompts</strong> — pack de 50-100 prompts pour une niche — 15-50€</li>
+<li><strong>Formation vidéo</strong> — 97-500€. Plus long à créer mais ticket élevé</li>
+<li><strong>Outil web</strong> — app simple avec abonnement mensuel — 9-49€/mois</li>
+</ul>
+<p><strong>Le meilleur pour commencer :</strong> un guide PDF ou une bibliothèque de templates pour une niche que tu connais. Claude peut le créer en 2-3h.</p>` },
+      { type:"prompt", label:"📝 Prompt — Créer un guide PDF complet",
+        content:`Tu es un expert en [TON DOMAINE D'EXPERTISE]. Rédige un guide PDF complet et vendable.
+
+Titre : [TITRE DU GUIDE]
+Public cible : [QUI VA L'ACHETER]
+Problème résolu : [QUEL PROBLÈME CONCRET]
+Prix de vente prévu : [PRIX]
+
+Structure :
+- Introduction (le problème, pourquoi ce guide, ce qu'ils vont apprendre)
+- 5-7 chapitres avec titre + contenu complet + exemples concrets
+- Checklist récapitulative en fin de guide
+- Ressources recommandées
+- Call to action final (vers ton offre principale)
+
+Format : structuré, lisible, avec des titres clairs, des listes, et des exemples concrets.
+Longueur : environ 3000-5000 mots.
+Ton : [expert mais accessible / direct et pratique]` },
+      { type:"callout", style:"success", title:"Gumroad : vendre en 10 minutes",
+        text:"Pour vendre ton guide : Gumroad.com → New Product → Digital Product → Upload ton PDF → fixe le prix → publie. Tu as une page de vente + paiement + livraison automatique en 10 minutes. Commission : 10% par vente uniquement." }
+    ],
+    exercise: { type:"freetext",
+      question:"Définit ton premier produit digital",
+      desc:"Décris le produit digital que tu vas créer : type, titre, public cible, problème résolu, prix de vente envisagé, et contenu principal (3-5 chapitres ou sections).",
+      placeholder:"Type de produit : ...\nTitre : ...\nCible : ...\nProblème résolu : ...\nPrix : ...\nContenu : ...",
+      minLength:100,
+      feedback_ok:"Excellent produit ! Il est maintenant temps de le créer avec Claude. Lance le prompt de création ci-dessus avec ces informations et tu auras un premier draft en moins d'une heure.",
+      feedback_ko:"Sois plus précis sur le contenu — quels chapitres, quelles sections, quelles informations concrètes le guide va contenir. C'est ce brief qui permettra à Claude de créer un produit vendable et non générique." }
+  },
+
+  "07.03": {
+    intro: "Le freelance IA est le business model avec le démarrage le plus rapide. Dans cette leçon, tu apprends à te positionner, trouver tes premiers clients, et fixer tes tarifs.",
+    blocks: [
+      { type:"text", title:"🎯 Se positionner comme expert IA",
+        body:`<p>Erreur classique : se présenter comme "consultant IA généraliste". Tout le monde le fait. Personne ne paye un généraliste cher.</p>
+<p>La bonne approche : choisir une niche et une spécialisation.</p>
+<ul>
+<li><strong>Niche</strong> — pour quel secteur ? (restaurant, immobilier, e-commerce, cabinet médical...)</li>
+<li><strong>Service</strong> — quoi exactement ? (automatiser le service client, créer du contenu, configurer un CRM IA...)</li>
+<li><strong>Résultat promis</strong> — "Je réduis ton temps de gestion admin de 5h à 30min par semaine"</li>
+</ul>
+<p>Exemple de positionnement gagnant : <em>"J'automatise l'administratif des cabinets de kinésithérapie avec l'IA — prise de RDV, relances patients, facturation — pour gagner 8h par semaine."</em></p>` },
+      { type:"prompt", label:"💼 Prompt — Définir ton offre freelance IA",
+        content:`Tu es un consultant business spécialisé dans le positionnement des freelances. Aide-moi à créer une offre freelance IA irrésistible.
+
+Mon background : [TON EXPÉRIENCE PROFESSIONNELLE]
+Mes compétences IA : [ce que tu sais faire avec Claude, Make, etc.]
+Secteurs que je connais : [1-3 secteurs d'activité que tu connais bien]
+Ma disponibilité : [heures/semaine]
+
+Génère :
+1. 3 propositions de positionnement (niche + service + résultat)
+2. Pour chaque positionnement : le client idéal, le service exact, le résultat mesurable
+3. Structure d'une offre "package" à prix fixe (3 niveaux)
+4. Script d'une prise de contact LinkedIn (60 mots max)
+5. Comment fixer mes tarifs (logique de pricing)` },
+      { type:"keypoints",
+        points:[
+          { icon:"🤝", title:"Premiers clients = réseau", text:"Tes 5 premiers clients sont dans ton entourage professionnel. Commence là." },
+          { icon:"🎁", title:"Offre découverte", text:"Propose un audit gratuit de 30 min — 80% des audits se convertissent en mission" },
+          { icon:"📊", title:"Tarifier le résultat", text:"Si tu économises 5h/semaine à un client à 80€/h, ton service vaut 400€/mois minimum" },
+          { icon:"💬", title:"Témoignages dès le début", text:"Demande un témoignage écrit après chaque mission réussie — c'est ta meilleure pub" }
+        ] }
+    ],
+    exercise: { type:"freetext",
+      question:"Rédige ton pitch freelance IA",
+      desc:"En 3-4 phrases maximum, décris ton positionnement freelance IA : pour qui, quoi, résultat, preuve. C'est le pitch que tu utiliseras sur LinkedIn et lors de tes prises de contact.",
+      placeholder:"J'aide [CIBLE] à [ACTION CONCRÈTE] grâce à [OUTIL IA], ce qui leur permet de [RÉSULTAT MESURABLE]. Résultat typique : ...",
+      minLength:60,
+      feedback_ok:"Excellent pitch ! Il est précis, orienté résultat, et immédiatement compréhensible. C'est exactement ce qu'un client potentiel a besoin d'entendre pour dire oui.",
+      feedback_ko:"Ton pitch doit être plus orienté résultat. Le client ne paye pas pour de l'IA — il paye pour un gain de temps, une réduction de coût, ou une augmentation de revenu. Reformule en partant du résultat concret." }
+  },
+
+  // ── MODULE 08 — Prompt Engineering Avancé (PREMIUM) ──
+  "08.01": {
+    intro: "Tu maîtrises les bases du prompting. Dans ce module Premium, on passe au niveau expert : les 7 techniques utilisées par les professionnels pour obtenir des résultats exceptionnels à chaque fois.",
+    blocks: [
+      { type:"text", title:"🧠 Les 7 techniques de prompting expert",
+        body:`<ul>
+<li><strong>1. Role prompting</strong> — assigner un rôle précis : "Tu es un avocat spécialisé en droit des contrats avec 20 ans d'expérience..."</li>
+<li><strong>2. Chain of Thought (CoT)</strong> — demander à Claude de raisonner étape par étape : "Réfléchis d'abord à haute voix, puis donne ta conclusion"</li>
+<li><strong>3. Few-shot prompting</strong> — donner 2-3 exemples de ce que tu veux avant de demander : "Voici 3 exemples du format souhaité. Génère 10 de plus dans le même format."</li>
+<li><strong>4. Contraintes négatives</strong> — dire ce qu'il ne faut PAS faire : "Sans jargon technique, sans intro générique, sans bullet points"</li>
+<li><strong>5. Output formatting</strong> — spécifier le format exact : JSON, tableau, liste numérotée, code, markdown</li>
+<li><strong>6. Persona stacking</strong> — combiner plusieurs rôles : "Tu es à la fois copywriter expert et psychologue comportementaliste"</li>
+<li><strong>7. Iterative refinement</strong> — système de feedback structuré : noter de 1 à 10, expliquer ce qui manque, demander une amélioration ciblée</li>
+</ul>` },
+      { type:"prompt", label:"🔬 Exemple — Chain of Thought pour une décision business",
+        content:`Avant de répondre, je veux que tu raisonnes étape par étape à voix haute. Utilise le format suivant :
+
+[ANALYSE]
+1. D'abord, identifie tous les facteurs pertinents
+2. Analyse les avantages et risques de chaque option
+3. Identifie les hypothèses que tu fais
+4. Note les informations manquantes
+
+[CONCLUSION]
+Ta recommandation finale avec justification
+
+[INCERTITUDES]
+Ce que tu n'es pas sûr et pourquoi
+
+Ma question : J'hésite entre lancer ma formation à 97€ ou 197€ dès le début. Voici le contexte : [CONTEXTE]` },
+      { type:"callout", style:"info", title:"Pourquoi le CoT marche",
+        text:"Demander à Claude de raisonner étape par étape force le modèle à activer ses capacités de raisonnement au lieu de donner une réponse superficielle. Sur les problèmes complexes, le CoT améliore la qualité de 30 à 50%." }
+    ],
+    exercise: { type:"qcm",
+      question:"Tu veux que Claude génère des emails de vente dans un format très précis que tu as développé. Quelle technique est la plus efficace ?",
+      options:[
+        { text:"Décrire le format en détail dans le prompt", correct:false },
+        { text:"Few-shot prompting : donner 2-3 exemples d'emails dans ton format exact, puis demander d'en générer 10 de plus dans ce même format", correct:true },
+        { text:"Role prompting : dire à Claude d'être un expert en email marketing", correct:false },
+        { text:"Chain of Thought : lui demander de réfléchir avant d'écrire", correct:false }
+      ],
+      feedback_ok:"Exactement ! Le few-shot est la technique la plus efficace pour reproduire un format précis. Les exemples concrets valent mieux que n'importe quelle description abstraite.",
+      feedback_ko:"La bonne réponse est B. Le few-shot prompting consiste à donner des exemples concrets de ce que tu veux. Claude comprend et reproduit un format à partir d'exemples bien mieux qu'à partir d'une description." }
+  },
+
+  "08.02": {
+    intro: "On va maintenant pratiquer les 3 techniques les plus puissantes avec des cas concrets : Chain of Thought pour les décisions, Few-shot pour la cohérence de style, et Role prompting pour les perspectives d'expert.",
+    blocks: [
+      { type:"text", title:"🔗 Chain of Thought — Cas pratiques",
+        body:`<p>Le CoT est particulièrement efficace pour :</p>
+<ul>
+<li><strong>Analyses et décisions</strong> — "Dois-je baisser mes prix ?"</li>
+<li><strong>Résolution de problèmes</strong> — "Mon taux de conversion est de 0.8%, pourquoi ?"</li>
+<li><strong>Vérification de logique</strong> — "Mon plan de lancement a-t-il des failles ?"</li>
+<li><strong>Calculs complexes</strong> — "Quel est le ROI de cette campagne pub ?"</li>
+</ul>` },
+      { type:"prompt", label:"📐 Few-shot — Reproduire ton style d'écriture",
+        content:`Voici 3 exemples de posts LinkedIn écrits dans MON style :
+
+Exemple 1 :
+[COLLE UN DE TES POSTS LINKEDIN]
+
+Exemple 2 :
+[COLLE UN AUTRE DE TES POSTS]
+
+Exemple 3 :
+[COLLE UN TROISIÈME POST]
+
+Analyse le style de ces exemples : ton, structure, longueur de phrases, type de hook, façon de conclure.
+
+Maintenant génère 5 nouveaux posts LinkedIn sur les sujets suivants, en respectant EXACTEMENT mon style :
+- [Sujet 1]
+- [Sujet 2]
+- [Sujet 3]
+- [Sujet 4]
+- [Sujet 5]` },
+      { type:"prompt", label:"🎭 Role stacking — Analyser ton business sous plusieurs angles",
+        content:`Tu vas jouer successivement 3 rôles pour analyser mon business :
+
+RÔLE 1 — Investisseur VC sceptique :
+Analyse les faiblesses et risques de mon business model. Sois critique et direct.
+
+RÔLE 2 — Client idéal frustré :
+Tu es [CLIENT IDÉAL]. Dis-moi ce qui te ferait hésiter à acheter et ce qui te convaincrait.
+
+RÔLE 3 — Concurrent qui vient de sortir le même produit :
+Comment tu te différencierais de mon offre ? Quels angles d'attaque utiliserais-tu ?
+
+Mon business : [DESCRIPTION COMPLÈTE]
+
+Réponds dans l'ordre des 3 rôles, en changeant de perspective clairement.` },
+      { type:"callout", style:"success", title:"Combiner les techniques",
+        text:"Les techniques se combinent. Exemple : Role prompting + CoT + Format spécifié = 'Tu es un expert en pricing SaaS. Raisonne étape par étape. Réponds en JSON avec les champs : analyse, recommandation, niveau_confiance.' C'est là que la puissance de Claude s'exprime vraiment." }
+    ],
+    exercise: { type:"freetext",
+      question:"Construis un mega-prompt combinant 3 techniques",
+      desc:"Crée un prompt qui combine Role prompting + Chain of Thought + Output formatting pour un problème réel de ton business. Explique quelle technique tu utilises et pourquoi.",
+      placeholder:"Mon problème business : ...\n\nMon prompt combiné :\n- Role : ...\n- CoT : ...\n- Format : ...\n\nPrompt complet : ...",
+      minLength:120,
+      feedback_ok:"Excellent prompt combiné ! Tu appliques maintenant les techniques de prompting expert. Ce niveau de précision te permet d'obtenir des réponses de qualité professionnelle à chaque fois.",
+      feedback_ko:"Développe davantage — un prompt combiné doit clairement intégrer les 3 techniques. Assure-toi que le rôle est précis, que le CoT est explicitement demandé (ex: 'raisonne étape par étape'), et que le format de sortie est spécifié." }
+  },
+
+  "08.03": {
+    intro: "Les professionnels qui tirent le plus de valeur de l'IA ne réinventent pas la roue à chaque prompt. Ils ont une bibliothèque de prompts personnalisée, testée, et organisée. Dans cette dernière leçon, on construit la tienne.",
+    blocks: [
+      { type:"text", title:"📚 Pourquoi une bibliothèque de prompts",
+        body:`<p>Imagine avoir accès instantanément à :</p>
+<ul>
+<li>Ton prompt parfait pour écrire un email commercial</li>
+<li>Ton prompt pour analyser une offre concurrente</li>
+<li>Ton prompt pour générer une semaine de contenu</li>
+<li>Ton prompt pour debugger un problème business</li>
+</ul>
+<p>Au lieu de repartir de zéro à chaque fois, tu copies-colles, adaptes les variables, et obtiens un résultat excellent en 30 secondes.</p>` },
+      { type:"text", title:"🗂️ Structure d'organisation recommandée",
+        body:`<p>Organise ta bibliothèque en catégories dans Notion ou Obsidian :</p>
+<ul>
+<li><strong>Marketing & Contenu</strong> — posts LinkedIn, emails, scripts vidéo</li>
+<li><strong>Business & Stratégie</strong> — analyse, décisions, planification</li>
+<li><strong>Développement</strong> — code, debug, architecture</li>
+<li><strong>Communication</strong> — emails pro, propositions commerciales</li>
+<li><strong>Recherche & Analyse</strong> — études de marché, veille concurrentielle</li>
+<li><strong>Opérations</strong> — CRM, automatisations, processus</li>
+</ul>
+<p>Pour chaque prompt, note : <strong>titre</strong>, <strong>cas d'usage</strong>, <strong>le prompt</strong>, <strong>exemple de résultat</strong>, <strong>version</strong>.</p>` },
+      { type:"prompt", label:"🔧 Prompt — Créer la structure Notion de ta bibliothèque",
+        content:`Tu es un expert en organisation de knowledge management. Crée pour moi :
+
+1. La structure complète d'une base de données Notion pour ma bibliothèque de prompts
+   - Colonnes nécessaires (titre, catégorie, cas d'usage, prompt, résultat exemple, version, date, note qualité)
+   - Les catégories pertinentes pour mon activité : [TES CATÉGORIES]
+
+2. Un template de fiche prompt (format Notion) avec tous les champs
+
+3. Un système de tagging pour retrouver rapidement les prompts
+
+4. La routine de maintenance (comment mettre à jour et améliorer sa bibliothèque)
+
+5. Les 10 premiers prompts que je devrais absolument avoir dans ma bibliothèque en tant que [TON ACTIVITÉ]` },
+      { type:"callout", style:"success", title:"Félicitations — Tu as terminé Nexum AI School !",
+        text:"Tu as maintenant les compétences pour créer des sites web, automatiser ton business, développer des applications et des jeux, générer du contenu en masse, construire un business model IA, et maîtriser le prompting avancé. Tu fais partie des 1% qui savent vraiment utiliser l'IA. La suite se passe dans le Discord — partage tes créations dans #livrables. 🚀" }
+    ],
+    exercise: { type:"freetext",
+      question:"Crée ta première fiche de bibliothèque de prompts",
+      desc:"Choisis un prompt que tu as utilisé dans cette formation et qui t'a particulièrement bien servi. Crée-en une fiche complète : titre, cas d'usage, le prompt complet avec variables, et note de qualité (1-5).",
+      placeholder:"Titre : ...\nCatégorie : ...\nCas d'usage : ...\nPrompt complet :\n---\n[ton prompt ici]\n---\nVariables à remplacer : ...\nNote qualité : /5\nPourquoi ce prompt est efficace : ...",
+      minLength:100,
+      feedback_ok:"Parfait ! Tu viens de créer la première entrée de ta bibliothèque de prompts. Ajoute-en 5 de plus cette semaine — en 30 jours tu auras une collection complète qui te fait gagner des heures chaque mois.",
+      feedback_ko:"Sois plus complet — la valeur d'une bibliothèque vient de la précision des fiches. Inclus des variables clairement marquées ([EN MAJUSCULES]) pour les parties à personnaliser à chaque utilisation." }
+  },
+
+  "__placeholder__": {
+    intro: "Cette leçon sera bientôt disponible.",
+    blocks: [{ type: "soon" }],
+    exercise: null
+  }
+};
+
+function getLessonContent(id) {
+  return CONTENT[id] || CONTENT["__placeholder__"];
+}
+
+// ═══════════════════════════════════════════════
+// MODULES DATA
+// ═══════════════════════════════════════════════
+const MODULES = [
+  { id:1, code:"M01", title:"Comprendre Claude & l'IA", dur:"3h", lessons:[
+    { id:"01.01", title:"Qu'est-ce que l'IA et pourquoi ça change tout", dur:"20 min" },
+    { id:"01.02", title:"Tes premiers prompts — méthode des 3C",          dur:"25 min" },
+    { id:"01.03", title:"Les capacités cachées de Claude",                dur:"30 min" },
+    { id:"01.04", title:"Configurer Claude pour ton business",            dur:"25 min" },
+  ], premium:false },
+  { id:2, code:"M02", title:"Créer un site web avec l'IA", dur:"4h", lessons:[
+    { id:"02.01", title:"Penser son site avant de le créer (avec Claude)", dur:"20 min" },
+    { id:"02.02", title:"Générer une landing page HTML complète",          dur:"35 min" },
+    { id:"02.03", title:"Héberger gratuitement avec GitHub Pages",         dur:"25 min" },
+    { id:"02.04", title:"Optimiser et publier — checklist finale",         dur:"20 min" },
+  ], premium:false },
+  { id:3, code:"M03", title:"Automatisations & Workflows", dur:"4h", lessons:[
+    { id:"03.01", title:"Penser en systèmes : le mindset automation",              dur:"20 min" },
+    { id:"03.02", title:"Make.com de zéro — interface et concepts",               dur:"30 min" },
+    { id:"03.03", title:"Créer son premier scénario : email auto à chaque vente", dur:"40 min" },
+    { id:"03.04", title:"5 automations à copier-coller pour ton business",        dur:"30 min" },
+  ], premium:false },
+  { id:4, code:"M04", title:"Développer une application", dur:"5h", lessons:[
+    { id:"04.01", title:"Concevoir son app avec Claude (cahier des charges IA)", dur:"25 min" },
+    { id:"04.02", title:"Générer le code frontend — HTML/CSS/JS",               dur:"40 min" },
+    { id:"04.03", title:"Ajouter une base de données (Airtable/Notion API)",    dur:"35 min" },
+    { id:"04.04", title:"Publier et partager son app en ligne",                 dur:"20 min" },
+  ], premium:false },
+  { id:5, code:"M05", title:"Développer un jeu vidéo", dur:"3h", lessons:[
+    { id:"05.01", title:"Game design avec Claude — de l'idée au concept",    dur:"25 min" },
+    { id:"05.02", title:"Coder un jeu simple en HTML5 Canvas",               dur:"45 min" },
+    { id:"05.03", title:"Ajouter des niveaux, sons et partager sur itch.io", dur:"30 min" },
+  ], premium:false },
+  { id:6, code:"M06", title:"Marketing & Contenu IA", dur:"4h", lessons:[
+    { id:"06.01", title:"Stratégie de contenu IA en 30 min par semaine",       dur:"20 min" },
+    { id:"06.02", title:"Générer 30 posts LinkedIn en 10 min",                dur:"25 min" },
+    { id:"06.03", title:"Scripts TikTok/Reels — format viral avec Claude",    dur:"25 min" },
+    { id:"06.04", title:"Emails marketing qui convertissent — séquence 7j",   dur:"30 min" },
+    { id:"06.05", title:"Automatiser la publication avec Make.com",           dur:"20 min" },
+  ], premium:false },
+  { id:7, code:"M07", title:"Business Models IA", dur:"3h", lessons:[
+    { id:"07.01", title:"10 business models viables avec l'IA en 2026", dur:"25 min" },
+    { id:"07.02", title:"Créer et vendre un produit digital avec Claude", dur:"35 min" },
+    { id:"07.03", title:"Freelance IA : trouver ses premiers clients",   dur:"30 min" },
+  ], premium:false },
+  { id:8, code:"M08", title:"Prompt Engineering Avancé", dur:"4h", lessons:[
+    { id:"08.01", title:"Les 7 techniques de prompting expert",               dur:"30 min" },
+    { id:"08.02", title:"Chain of thought, few-shot, role prompting",         dur:"35 min" },
+    { id:"08.03", title:"Construire sa bibliothèque de prompts métier",       dur:"25 min" },
+  ], premium:true },
+];
+
+const TOTAL = MODULES.reduce((a,m) => a + m.lessons.length, 0);
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const S = {
+  plan:      localStorage.getItem('nx_plan') || 'standard',
+  done:      JSON.parse(localStorage.getItem('nx_done') || '[]'),
+  open:      JSON.parse(localStorage.getItem('nx_open') || '[1]'),
+  cur:       null,
+  qcmSel:    null,
+  discordUrl:'#',
+  gumroadPremium:'https://leandrodomingoslourenco.gumroad.com/l/lcwubf',
+};
+function save() {
+  localStorage.setItem('nx_done', JSON.stringify(S.done));
+  localStorage.setItem('nx_open', JSON.stringify(S.open));
+  localStorage.setItem('nx_plan', S.plan);
+}
+function isDone(id) { return S.done.includes(id); }
+function totalDone() { return S.done.length; }
+
+// ═══════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════
+function renderSidebar() {
+  const c = document.getElementById('sb-modules');
+  c.innerHTML = '';
+  MODULES.forEach(mod => {
+    const doneCnt = mod.lessons.filter(l => isDone(l.id)).length;
+    const pct = Math.round(doneCnt / mod.lessons.length * 100);
+    const isOpen = S.open.includes(mod.id);
+    const isCurMod = S.cur && S.cur.modId === mod.id;
+    const div = document.createElement('div');
+    div.className = `mod-item${isOpen?' open':''}${isCurMod?' active':''}`;
+
+    const lessonsHTML = mod.lessons.map(l => {
+      const done = isDone(l.id);
+      const active = S.cur && S.cur.lesId === l.id;
+      const locked = mod.premium && S.plan === 'standard';
+      return `<div class="les-item${active?' active':''}" data-lid="${l.id}" data-mid="${mod.id}">
+        ${locked
+          ? `<span class="les-lock">🔒</span>`
+          : `<div class="les-check${done?' done':''}">${done?'✓':''}</div>`}
+        <span class="les-name">${l.title}</span>
+        <span class="les-dur">${l.dur}</span>
+      </div>`;
+    }).join('');
+
+    div.innerHTML = `
+      <div class="mod-header" data-mid="${mod.id}">
+        <span class="mod-code">${mod.code}</span>
+        <div class="mod-info">
+          <div class="mod-name">${mod.title}</div>
+          <div class="mod-sub">${mod.lessons.length} leçons · ${mod.dur}</div>
+        </div>
+        <span class="mod-pct${pct===100?' done':''}">${pct}%</span>
+      </div>
+      <div class="mod-lessons">${lessonsHTML}</div>`;
+
+    div.querySelector('.mod-header').addEventListener('click', () => toggleMod(mod.id));
+    div.querySelectorAll('.les-item').forEach(el => {
+      el.addEventListener('click', e => { e.stopPropagation(); openLesson(+el.dataset.mid, el.dataset.lid); });
+    });
+    c.appendChild(div);
+  });
+}
+
+function toggleMod(id) {
+  S.open = S.open.includes(id) ? S.open.filter(x => x !== id) : [...S.open, id];
+  save(); renderSidebar();
+}
+
+// ═══════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════
+const MOD_ICONS = ['🧠','🌐','⚡','📱','🎮','📣','💼','🔬'];
+const MOD_COLORS = ['#00E5FF','#7B5EA7','#FF3CAC','#00E5FF','#7B5EA7','#FF3CAC','#00E5FF','#FF3CAC'];
+
+function renderHome() {
+  S.cur = null;
+  const done = totalDone();
+  const pct = Math.round(done / TOTAL * 100);
+  const circumference = 2 * Math.PI * 44;
+  const offset = circumference - (pct / 100) * circumference;
+
+  // Milestone strip
+  const milestones = [
+    { label:'Fondations', lessons:4 },
+    { label:'Créer', lessons:8 },
+    { label:'Automatiser', lessons:12 },
+    { label:'Développer', lessons:20 },
+    { label:'Marketer', lessons:26 },
+    { label:'Expert', lessons:30 },
+  ];
+  const milestoneHTML = milestones.map(m => {
+    const cls = done >= m.lessons ? 'done' : done >= m.lessons - 4 ? 'current' : '';
+    return `<div class="milestone-step ${cls}">
+      <div class="ms-num">${m.lessons} leçons</div>
+      <div class="ms-label">${done >= m.lessons ? '✓ ' : ''}${m.label}</div>
+    </div>`;
+  }).join('');
+
+  // Module cards
+  const cards = MODULES.map((mod, i) => {
+    const dc = mod.lessons.filter(l => isDone(l.id)).length;
+    const mp = Math.round(dc / mod.lessons.length * 100);
+    const locked = mod.premium && S.plan === 'standard';
+    const color = MOD_COLORS[i];
+    const onclick = locked
+      ? `window.open('${S.gumroadPremium}','_blank')`
+      : `openLesson(${mod.id},'${mod.lessons[0].id}')`;
+    const statusIcon = mp === 100 ? '✅' : mp > 0 ? '▶' : '';
+    return `<div class="mod-card" onclick="${onclick}" style="--mod-color:${color}">
+      <div class="mc-accent" style="background:${color}"></div>
+      <div class="mc-icon">${MOD_ICONS[i]}</div>
+      <div class="mc-code" style="color:${color}">${mod.code}${locked?' · 👑 PREMIUM':''} ${statusIcon}</div>
+      <div class="mc-title">${mod.title}</div>
+      <div class="mc-meta">${mod.lessons.length} leçons · ${mod.dur}</div>
+      <div class="mc-bar"><div class="mc-bar-fill" style="width:${mp}%;background:${color}"></div></div>
+      <div class="mc-pct">${dc}/${mod.lessons.length} leçons terminées</div>
+    </div>`;
+  }).join('');
+
+  // Streak / motivation
+  const streakMsg = done === 0
+    ? 'Commence par le Module 01 — 20 minutes suffisent.'
+    : done < 5 ? `${done} leçons terminées — Tu es lancé !`
+    : done < 15 ? `${done} leçons ! Tu es dans le top des élèves actifs.`
+    : `${done} leçons terminées — Tu es au niveau expert. 🔥`;
+
+  document.getElementById('main').innerHTML = `
+    <div class="home-banner">
+      <div class="home-banner-grid"></div>
+      <div class="home-banner-content">
+        <div class="home-banner-eyebrow">Espace membre · Nexum AI School</div>
+        <h1 class="home-banner-title">Maîtrise Claude &<br><span>Bâtis ton Empire.</span></h1>
+        <p class="home-banner-sub">8 modules · ${TOTAL} leçons interactives · Accès à vie.<br>Chaque leçon = une compétence directement applicable.</p>
+      </div>
+    </div>
+
+    <div class="progress-ring-wrap">
+      <svg width="100" height="100" class="ring-svg" viewBox="0 0 100 100">
+        <circle class="ring-bg" cx="50" cy="50" r="44"/>
+        <circle class="ring-fill" cx="50" cy="50" r="44"
+          stroke="url(#ringGrad)"
+          stroke-dasharray="${circumference}"
+          stroke-dashoffset="${offset}"/>
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#00E5FF"/>
+            <stop offset="100%" stop-color="#FF3CAC"/>
+          </linearGradient>
+        </defs>
+        <text x="50" y="48" class="ring-label" font-size="16" fill="#fff" font-weight="800">${pct}%</text>
+        <text x="50" y="63" class="ring-label" font-size="9" fill="#6B6B80">COMPLET</text>
+      </svg>
+      <div class="ring-info">
+        <div class="ring-info-title">${done} leçon${done > 1 ? 's' : ''} terminée${done > 1 ? 's' : ''} sur ${TOTAL}</div>
+        <div class="ring-info-sub">${streakMsg}</div>
+        <div class="ring-badges">
+          <span class="ring-badge ring-badge-cyan">📚 ${TOTAL - done} restantes</span>
+          <span class="ring-badge ring-badge-pink">${S.plan === 'premium' ? '👑 Premium' : '⭐ Standard'}</span>
+          ${done >= 4 ? '<span class="ring-badge ring-badge-green">✓ M01 débloqué</span>' : ''}
+        </div>
+      </div>
+    </div>
+
+    <div class="milestone-strip">${milestoneHTML}</div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val">${done}</div><div class="stat-lbl">Leçons terminées</div></div>
+      <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-val">${TOTAL - done}</div><div class="stat-lbl">Leçons restantes</div></div>
+      <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-val">${Math.max(0, MODULES.filter(m => m.lessons.every(l => isDone(l.id))).length)}</div><div class="stat-lbl">Modules complets</div></div>
+      <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-val">${pct}%</div><div class="stat-lbl">Progression globale</div></div>
+    </div>
+
+    <div class="section-title">Mes Modules</div>
+    <div class="mods-grid">${cards}</div>`;
+
+  updateProgressBar();
+  renderSidebar();
+}
+
+// ═══════════════════════════════════════════════
+// LESSON
+// ═══════════════════════════════════════════════
+function openLesson(modId, lesId) {
+  const mod = MODULES.find(m => m.id === modId);
+  const les = mod.lessons.find(l => l.id === lesId);
+  if (!mod || !les) return;
+
+  S.cur = { modId, lesId };
+  S.qcmSel = null;
+  if (!S.open.includes(modId)) { S.open.push(modId); save(); }
+
+  const locked = mod.premium && S.plan === 'standard';
+  const content = getLessonContent(lesId);
+
+  // Next lesson
+  const allLes = MODULES.flatMap(m => m.lessons.map(l => ({ ...l, modId: m.id })));
+  const idx = allLes.findIndex(l => l.id === lesId);
+  const next = allLes[idx + 1];
+
+  // Progression dans le module
+  const modLesIdx = mod.lessons.findIndex(l => l.id === lesId);
+  const modPct = Math.round((modLesIdx + 1) / mod.lessons.length * 100);
+  const modColor = MOD_COLORS[mod.id - 1];
+  const modIcon = MOD_ICONS[mod.id - 1];
+
+  let html = `
+    <div class="les-progress-bar"><div class="les-progress-fill" style="width:${modPct}%;background:linear-gradient(90deg,${modColor},var(--pink))"></div></div>
+    <div class="breadcrumb">
+      <a onclick="renderHome()">Accueil</a> ›
+      <a onclick="openLesson(${modId},'${mod.lessons[0].id}')">${mod.code} — ${mod.title}</a> ›
+      <span>${lesId}</span>
+    </div>`;
+
+  if (locked) {
+    html += `<div class="lock-screen">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">Contenu Premium</div>
+      <div class="lock-sub">Ce module est réservé aux membres Premium. Passe à Premium pour accéder à ${mod.title} et au coaching VIP.</div>
+      <a href="${S.gumroadPremium}" target="_blank"><button class="btn btn-pink" style="margin-top:8px">Passer Premium — 197€ →</button></a>
+    </div>`;
+  } else {
+    // Header
+    html += `<div class="les-header">
+      <div class="les-tags">
+        <span class="tag tag-mod" style="color:${modColor};border-color:${modColor}30;background:${modColor}15">${modIcon} ${mod.code}</span>
+        <span class="tag tag-dur">⏱ ${les.dur}</span>
+        <span class="tag" style="background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border)">${modLesIdx+1} / ${mod.lessons.length}</span>
+        ${!isDone(lesId) ? '' : '<span class="tag" style="background:rgba(0,229,160,.1);color:var(--success);border:1px solid rgba(0,229,160,.25)">✓ Terminée</span>'}
+      </div>
+      <h1 class="les-title-big">${les.title}</h1>
+      <p class="les-intro">${content.intro}</p>
+    </div>
+    <div class="divider"></div>`;
+
+    // Content blocks
+    content.blocks.forEach((b, i) => {
+      html += renderBlock(b, i);
+    });
+
+    // Exercise
+    if (content.exercise) {
+      html += renderExercise(content.exercise, lesId);
+    }
+
+    // Mark done + next
+    html += `<div class="btn-row" style="margin:24px 0">
+      <button class="btn ${isDone(lesId) ? 'btn-success' : 'btn-secondary'}" onclick="toggleDone('${lesId}',${modId})" id="done-btn">
+        ${isDone(lesId) ? '✓ Leçon terminée' : '○ Marquer comme terminée'}
+      </button>
+      <button class="btn btn-secondary" onclick="renderHome()">← Retour</button>
+    </div>`;
+
+    if (next) {
+      html += `<div class="next-card" onclick="openLesson(${next.modId},'${next.id}')">
+        <div>
+          <div class="next-label">Leçon suivante</div>
+          <div class="next-title">${next.title}</div>
+        </div>
+        <div class="next-arrow">→</div>
+      </div>`;
+    }
+  }
+
+  document.getElementById('main').innerHTML = html;
+  renderSidebar();
+  updateProgressBar();
+  window.scrollTo(0, 0);
+}
+
+function renderBlock(b, i) {
+  if (b.type === 'text') {
+    return `<div class="content-block">
+      <h2 class="block-title">${b.title}</h2>
+      <div class="block-text">${b.body}</div>
+    </div>`;
+  }
+  if (b.type === 'callout') {
+    const cls = b.style === 'warn' ? 'warn' : b.style === 'success' ? 'success' : '';
+    return `<div class="callout ${cls}">
+      <div class="callout-title">${b.title}</div>
+      <div class="callout-text">${b.text}</div>
+    </div>`;
+  }
+  if (b.type === 'prompt') {
+    const pid = `prompt_${i}`;
+    return `<div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">${b.label}</span>
+        <button class="copy-btn" onclick="copyPrompt('${pid}',this)">Copier</button>
+      </div>
+      <div class="prompt-content" id="${pid}">${escHtml(b.content)}</div>
+    </div>`;
+  }
+  if (b.type === 'keypoints') {
+    const pts = b.points.map(p => `<div class="key-point">
+      <div class="kp-icon">${p.icon}</div>
+      <div class="kp-title">${p.title}</div>
+      <div class="kp-text">${p.text}</div>
+    </div>`).join('');
+    return `<div class="key-points">${pts}</div>`;
+  }
+  if (b.type === 'soon') {
+    return `<div class="soon-screen">
+      <div class="soon-icon">🎬</div>
+      <div class="soon-title">Contenu en cours de préparation</div>
+      <div class="soon-sub">Cette leçon sera disponible très bientôt. Rejoins le Discord pour être notifié.</div>
+    </div>`;
+  }
+  return '';
+}
+
+function renderExercise(ex, lesId) {
+  const done = isDone(lesId);
+  let inner = '';
+
+  if (ex.type === 'qcm') {
+    const opts = ex.options.map((o, i) => {
+      const letters = ['A','B','C','D'];
+      return `<div class="qcm-option" onclick="selectQcm(this,${o.correct},${JSON.stringify(ex.feedback_ok)},${JSON.stringify(ex.feedback_ko)})">
+        <span class="qcm-letter">${letters[i]}</span>
+        <span class="qcm-text">${o.text}</span>
+      </div>`;
+    }).join('');
+    inner = `<p style="font-size:14px;color:#C8C8D8;margin-bottom:16px;line-height:1.6"><strong style="color:#fff">${ex.question}</strong></p>
+      <div class="qcm-options">${opts}</div>
+      <div class="ex-feedback" id="ex-fb"></div>`;
+  }
+
+  if (ex.type === 'freetext') {
+    inner = `<p style="font-size:14px;color:#C8C8D8;margin-bottom:6px;line-height:1.65">${ex.desc}</p>
+      <textarea class="ex-textarea" id="ex-input" placeholder="${ex.placeholder}" rows="5"></textarea>
+      <div class="ex-feedback" id="ex-fb"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkFreetext(${ex.minLength},${JSON.stringify(ex.feedback_ok)},${JSON.stringify(ex.feedback_ko)})">Valider →</button>
+      </div>`;
+  }
+
+  return `<div class="exercise-box">
+    <div class="ex-header">
+      <span class="ex-badge">Exercice</span>
+      <span class="ex-title">${ex.type === 'qcm' ? 'Quiz de compréhension' : ex.question}</span>
+    </div>
+    <div style="height:12px"></div>
+    ${inner}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════════════
+function selectQcm(el, correct, fbOk, fbKo) {
+  if (S.qcmSel) return; // déjà répondu
+  S.qcmSel = true;
+  document.querySelectorAll('.qcm-option').forEach(o => o.style.pointerEvents = 'none');
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) {
+    document.querySelectorAll('.qcm-option').forEach(o => {
+      const txt = o.querySelector('.qcm-text').textContent;
+      // on ne peut pas identifier la bonne réponse facilement ici, pas grave
+    });
+  }
+  showFeedback(correct, correct ? fbOk : fbKo);
+}
+
+function checkFreetext(minLen, fbOk, fbKo) {
+  const val = document.getElementById('ex-input').value.trim();
+  showFeedback(val.length >= minLen, val.length >= minLen ? fbOk : fbKo);
+}
+
+function showFeedback(ok, msg) {
+  const fb = document.getElementById('ex-fb');
+  fb.className = `ex-feedback show ${ok ? 'ok' : 'ko'}`;
+  fb.innerHTML = `<strong>${ok ? '✓ Bonne réponse !' : '✗ Pas tout à fait'}</strong>${msg}`;
+}
+
+function toggleDone(lesId, modId) {
+  if (isDone(lesId)) {
+    S.done = S.done.filter(id => id !== lesId);
+  } else {
+    S.done.push(lesId);
+  }
+  save();
+  updateProgressBar();
+  openLesson(modId, lesId);
+}
+
+function copyPrompt(id, btn) {
+  const txt = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(txt).then(() => {
+    btn.textContent = 'Copié !';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copier'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function updateProgressBar() {
+  const done = totalDone();
+  const pct = Math.round(done / TOTAL * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = `${done} / ${TOTAL}`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function updatePlanBadge() {
+  const b = document.getElementById('plan-badge');
+  b.className = S.plan === 'premium' ? 'badge badge-prm' : 'badge badge-std';
+  b.textContent = S.plan === 'premium' ? '👑 PREMIUM' : 'STANDARD';
+}
+
+// ── INIT
+updatePlanBadge();
+renderHome();
+renderSidebar();
+updateProgressBar();
+</script>
+</body>
+</html>
