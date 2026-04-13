@@ -80,7 +80,6 @@ Discord (serveur Nexum existant — catégorie NEXUM AI SCHOOL)
 ```
 nexum-ai-school/
 ├── index.html                  ← Landing page principale (live GitHub Pages)
-├── nexum-formation-landing.html← Version alternative landing
 ├── dashboard.html              ← Espace membre post-paiement ✅ CRÉÉ
 ├── make-scenario-1.json        ← Scénario Make.com (import direct)
 ├── make-full-scenario.md       ← Documentation scénarios Make

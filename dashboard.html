@@ -10,7 +10,6 @@
   --bg: #040407;
   --surface: #0c0c14;
   --surface2: #111120;
-  --surface3: #16162a;
   --border: rgba(255,255,255,0.07);
   --accent: #7B5EA7;
   --cyan: #00E5FF;
@@ -2342,16 +2341,10 @@ function renderExercise(ex, lesId) {
 // INTERACTIONS
 // ═══════════════════════════════════════════════
 function selectQcm(el, correct, fbOk, fbKo) {
-  if (S.qcmSel) return; // déjà répondu
+  if (S.qcmSel) return;
   S.qcmSel = true;
   document.querySelectorAll('.qcm-option').forEach(o => o.style.pointerEvents = 'none');
   el.classList.add(correct ? 'correct' : 'wrong');
-  if (!correct) {
-    document.querySelectorAll('.qcm-option').forEach(o => {
-      const txt = o.querySelector('.qcm-text').textContent;
-      // on ne peut pas identifier la bonne réponse facilement ici, pas grave
-    });
-  }
   showFeedback(correct, correct ? fbOk : fbKo);
 }
 
