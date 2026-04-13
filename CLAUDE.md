@@ -36,7 +36,7 @@
 | **Co-développeur** | `Hhhsimo — développement technique dashboard` |
 | **Statut** | `🟡 En cours` |
 | **Démarré le** | `2026-04-08` |
-| **Dernière mise à jour** | `2026-04-13` |
+| **Dernière mise à jour** | `2026-04-13 — Session 3` |
 
 ---
 
@@ -131,8 +131,14 @@ DISCORD_ROLE_ELEVE=1493236518201065604
 DISCORD_ROLE_PREMIUM=1493237129545912340
 DISCORD_BOT_TOKEN=           # NE PAS COMMITER — stocker en variable d'env uniquement
 
-# HeyGen (futur)
-HEYGEN_AVATAR_ID=            # à renseigner si vidéos HeyGen
+# Firebase Realtime Database
+FIREBASE_DB_URL=https://ia-school-83571-default-rtdb.europe-west1.firebasedatabase.app
+FIREBASE_SECRET=             # NE PAS COMMITER — JlMmeYzc... (stocker en local uniquement)
+FIREBASE_PROJECT_ID=la-school-83571
+
+# Clés admin dashboard (NE PAS COMMITER)
+ADMIN_KEY_PREMIUM=NEXUM-ADMIN-2026-PREMIUM
+ADMIN_KEY_STANDARD=NEXUM-ADMIN-2026-STANDARD
 ```
 
 ---
@@ -206,8 +212,7 @@ git push origin main
 |---|---|---|
 | 1 | Bot ARIA tourne en local (Mac) — s'arrête si le Mac dort | 🟡 En cours |
 | 2 | Attribution rôle Discord non automatisée — nécessite Discord ID de l'élève | 🔴 Ouvert |
-| 3 | Pas de vrai système d'auth — l'espace membre est accessible sans login | 🟡 Accepté (MVP) |
-| 4 | Brevo non configuré — email via Gmail/Make pour l'instant | 🟡 Acceptable |
+| 3 | Brevo non configuré — email via Gmail/Make pour l'instant | 🟡 Acceptable |
 
 ---
 
@@ -223,6 +228,8 @@ git push origin main
 | 2026-04-13 | Cours en texte interactif (pas HeyGen) | Livrable immédiat, pas besoin de vidéos |
 | 2026-04-13 | Bot ARIA sans clé Claude API | Réponses prédéfinies suffisantes pour MVP |
 | 2026-04-13 | Email bienvenue via Gmail + Make.com | Brevo non configuré, Gmail fonctionne immédiatement |
+| 2026-04-13 | Auth par clé unique Firebase | 1 clé = 1 membre, progression per-user |
+| 2026-04-13 | Firebase Realtime Database (pas Firestore) | API REST simple, auth par secret token, compatible Make.com |
 
 ---
 
@@ -277,6 +284,35 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 > Toutes les sessions sont archivées ici. Ne jamais supprimer. Ajouter au-dessus (la plus récente en premier).
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
+
+### Session 3 — 2026-04-13
+**Durée estimée** : 2h  
+**Objectif de la session** : Système d'auth + Firebase + tunnel de vente complet
+
+**✅ Réalisé :**
+- Système de login par clé unique sur dashboard.html (page de login complète)
+- Intégration Firebase Realtime Database (progression per-user)
+- Make.com → crée automatiquement le membre dans Firebase après achat Gumroad
+- Clés admin Premium/Standard pour toi et Leandro
+- Bouton déconnexion dans la sidebar
+- Correction URL Gumroad (courtierleandro) dans landing + dashboard
+- Test complet du tunnel : achat Gumroad → Firebase → login dashboard ✅
+
+**🔧 Modifié / Créé :**
+- `dashboard.html` — login screen, auth Firebase, saveToFirebase(), logout(), bouton déconnexion sidebar
+- `CLAUDE.md` — Session 3, décisions techniques, variables d'env Firebase
+
+**⚠️ Points en suspens :**
+- Bot ARIA à héberger (tourne en local)
+- Attribution rôle Discord non automatisée
+- Vérifier que l'email de bienvenue Gmail est bien envoyé après achat
+
+**💡 Décisions prises :**
+- Firebase Realtime Database plutôt que Firestore (API REST simple, auth par secret token)
+- 1 clé unique par achat = `NEXUM-{sale_id}` générée automatiquement par Make.com
+- Clés admin hardcodées pour accès dev (jamais commitées en clair)
+
+---
 
 ### Session 2 — 2026-04-13
 **Durée estimée** : 2h  
