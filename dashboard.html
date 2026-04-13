@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXUM AI SCHOOL — Espace Membre</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-DMZba1BONZiQPyFSk4oqvSq7k_oWX94",
+    authDomain: "la-school-83571.firebaseapp.com",
+    projectId: "la-school-83571",
+    storageBucket: "la-school-83571.firebasestorage.app",
+    messagingSenderId: "1036511097172",
+    appId: "1:1036511097172:web:blc2b5598fcf40aa2658c1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
 <style>
 :root {
   --bg: #040407;
@@ -2078,17 +2093,14 @@ const MODULES = [
 const TOTAL = MODULES.reduce((a,m) => a + m.lessons.length, 0);
 
 // ═══════════════════════════════════════════════
-// AUTH
+// AUTH + FIREBASE
 // ═══════════════════════════════════════════════
 const ADMIN_KEYS = {
   'NEXUM-ADMIN-2026-PREMIUM': 'premium',
   'NEXUM-ADMIN-2026-STANDARD': 'standard',
 };
-// Clés d'accès par plan (affichées dans le contenu Gumroad après achat)
-const STATIC_KEYS = {
-  'NEXUM-PRE-K9M4-2026': 'premium',
-  'NEXUM-STD-F7X2-2026': 'standard',
-};
+
+let currentUserKey = null;
 
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
@@ -2120,28 +2132,37 @@ async function submitLogin() {
   setLoginError('');
   setLoginLoading(true);
 
-  await new Promise(r => setTimeout(r, 600)); // légère pause UX
-
-  // 1. Clé admin
+  // 1. Clé admin (locale, pas de BDD)
   if (ADMIN_KEYS[key]) {
-    grantAccess(key, ADMIN_KEYS[key]);
+    currentUserKey = key;
+    localStorage.setItem('nx_key', key);
+    await grantAccess(key, ADMIN_KEYS[key], { done: [], open: [1] });
     return;
   }
 
-  // 2. Clé statique Gumroad
-  if (STATIC_KEYS[key]) {
-    grantAccess(key, STATIC_KEYS[key]);
-    return;
+  // 2. Vérification dans Firestore
+  try {
+    const doc = await db.collection('members').doc(key).get();
+    if (doc.exists) {
+      const data = doc.data();
+      currentUserKey = key;
+      localStorage.setItem('nx_key', key);
+      await grantAccess(key, data.plan, { done: data.done || [], open: data.open || [1] });
+    } else {
+      setLoginError('Clé invalide. Vérifie ton email ou contacte le support.');
+      setLoginLoading(false);
+    }
+  } catch(e) {
+    setLoginError('Erreur réseau. Réessaie dans quelques secondes.');
+    setLoginLoading(false);
   }
-
-  setLoginError('Clé invalide. Vérifie ton email ou contacte le support.');
-  setLoginLoading(false);
 }
 
-function grantAccess(key, plan) {
-  localStorage.setItem('nx_key', key);
-  localStorage.setItem('nx_plan', plan);
+async function grantAccess(key, plan, progress) {
   S.plan = plan;
+  S.done = progress.done;
+  S.open = progress.open;
+  localStorage.setItem('nx_plan', plan);
   updatePlanBadge();
   showApp();
   renderHome();
@@ -2149,21 +2170,50 @@ function grantAccess(key, plan) {
   updateProgressBar();
 }
 
+async function saveToFirebase() {
+  if (!currentUserKey || ADMIN_KEYS[currentUserKey]) return; // pas de save pour admin
+  try {
+    await db.collection('members').doc(currentUserKey).update({
+      done: S.done,
+      open: S.open,
+      updated_at: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch(e) {
+    console.warn('Firebase save error:', e);
+  }
+}
+
 function logout() {
   localStorage.removeItem('nx_key');
   localStorage.removeItem('nx_plan');
-  localStorage.removeItem('nx_done');
-  localStorage.removeItem('nx_open');
   location.reload();
 }
 
 // Vérifier si déjà connecté
-const savedKey = localStorage.getItem('nx_key');
-if (savedKey) {
-  showApp();
-} else {
-  showLogin();
-}
+(async () => {
+  const savedKey = localStorage.getItem('nx_key');
+  if (!savedKey) { showLogin(); return; }
+
+  if (ADMIN_KEYS[savedKey]) {
+    currentUserKey = savedKey;
+    await grantAccess(savedKey, ADMIN_KEYS[savedKey], { done: [], open: [1] });
+    return;
+  }
+
+  try {
+    const doc = await db.collection('members').doc(savedKey).get();
+    if (doc.exists) {
+      currentUserKey = savedKey;
+      const data = doc.data();
+      await grantAccess(savedKey, data.plan, { done: data.done || [], open: data.open || [1] });
+    } else {
+      localStorage.removeItem('nx_key');
+      showLogin();
+    }
+  } catch(e) {
+    showLogin();
+  }
+})();
 
 // Enter pour valider
 document.getElementById('login-key').addEventListener('keydown', e => {
@@ -2175,17 +2225,16 @@ document.getElementById('login-key').addEventListener('keydown', e => {
 // ═══════════════════════════════════════════════
 const S = {
   plan:      localStorage.getItem('nx_plan') || 'standard',
-  done:      JSON.parse(localStorage.getItem('nx_done') || '[]'),
-  open:      JSON.parse(localStorage.getItem('nx_open') || '[1]'),
+  done:      [],
+  open:      [1],
   cur:       null,
   qcmSel:    null,
   discordUrl:'#',
   gumroadPremium:'https://courtierleandro.gumroad.com/l/lcwubf',
 };
 function save() {
-  localStorage.setItem('nx_done', JSON.stringify(S.done));
-  localStorage.setItem('nx_open', JSON.stringify(S.open));
   localStorage.setItem('nx_plan', S.plan);
+  saveToFirebase();
 }
 function isDone(id) { return S.done.includes(id); }
 function totalDone() { return S.done.length; }
