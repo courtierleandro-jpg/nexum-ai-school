@@ -55,15 +55,24 @@ L'objectif est d'atteindre 22 ventes/mois (~1 900€ net) grâce à une stack gr
 ## 🏗️ Architecture
 
 ```
-Acheteur (Gumroad)
-    ↓ Webhook → Make.com
-    ↓ → Email de bienvenue (Gmail via Make)
+Acheteur (Gumroad — courtierleandro)
+    ↓ Webhook automatique → Make.com (scénario ON ✅)
+    ↓ → Email de bienvenue Gmail avec clé unique (NEXUM-{sale_id})
+    ↓ → Création membre dans Firebase Realtime Database
     ↓ → [futur] Rôle Discord automatique (nécessite Discord ID de l'élève)
 
 Espace membre (dashboard.html — GitHub Pages)
+    ↓ Login par clé unique (NEXUM-{sale_id})
+    ↓ Vérification clé dans Firebase → plan Standard ou Premium
     ↓ 30 leçons texte interactives (QCM + freetext)
-    ↓ Progression sauvegardée localStorage
+    ↓ Progression sauvegardée dans Firebase (per-user, multi-device)
+    ↓ Module 08 verrouillé pour Standard → redirect Gumroad Premium
     ↓ Discord communauté (catégorie NEXUM AI SCHOOL)
+
+Firebase Realtime Database
+    ↓ Collection : members/{NEXUM-sale_id}
+    ↓ Champs : plan, email, done[], open[], updated_at
+    ↓ Accès public en lecture/écriture (test mode)
 
 Discord (serveur Nexum existant — catégorie NEXUM AI SCHOOL)
     ↓ Bot ARIA (réponses prédéfinies, tourne en local pour l'instant)
@@ -110,7 +119,8 @@ nexum-ai-school/
 | Automation | Make.com | — |
 | Communauté | Discord (serveur Nexum existant) | — |
 | Bot Discord | discord.js (tourne en local) | 14.x |
-| CRM | Notion | — |
+| Base de données | Firebase Realtime Database | — |
+| Auth | Clés uniques Gumroad (NEXUM-{sale_id}) | — |
 
 ---
 
@@ -188,6 +198,56 @@ git push origin main
 | Gumroad Premium | `https://courtierleandro.gumroad.com/l/lcwubf` |
 | Make.com Webhook | `https://hook.eu1.make.com/zm2u20jofmqjxcvcn5mevn4sbfiuckjh` |
 | Notion workspace | `https://www.notion.so/33b9526165a181b7ab4ed16bb904b4fd` |
+
+---
+
+## 🔐 Système d'authentification
+
+### Comment ça marche (tunnel complet)
+
+```
+1. Acheteur paie sur Gumroad
+2. Gumroad déclenche le webhook → Make.com
+3. Make.com :
+   a. Crée un document dans Firebase : members/NEXUM-{sale_id}
+      → champs : plan, email, done[], open[]
+   b. Envoie un email Gmail avec la clé NEXUM-{sale_id} et le lien dashboard
+4. Acheteur clique le lien → dashboard.html
+5. Dashboard affiche la page de login
+6. Acheteur entre sa clé → vérification dans Firebase
+7. Si clé valide → accès accordé avec le bon plan (Standard ou Premium)
+8. Progression sauvegardée dans Firebase à chaque leçon terminée
+```
+
+### Clés d'accès
+
+| Clé | Plan | Usage |
+|-----|------|-------|
+| `NEXUM-{sale_id}` | Standard ou Premium | Générée automatiquement par Make.com |
+| `NEXUM-ADMIN-2026-PREMIUM` | Premium | Accès admin (Hhhsimo + Leandro) |
+| `NEXUM-ADMIN-2026-STANDARD` | Standard | Accès admin pour tester |
+
+> ⚠️ Les clés admin ne sont pas stockées dans Firebase — elles sont hardcodées dans dashboard.html. Ne jamais les partager publiquement.
+
+### Structure Firebase
+
+```
+members/
+└── NEXUM-{sale_id}/
+    ├── plan: "standard" | "premium"
+    ├── email: "acheteur@email.com"
+    ├── done: ["01.01", "01.02", ...]   ← leçons terminées
+    ├── open: [1, 2, ...]               ← modules ouverts dans sidebar
+    └── updated_at: timestamp
+```
+
+### Make.com — URL Firebase (HTTP module)
+
+```
+URL    : https://ia-school-83571-default-rtdb.europe-west1.firebasedatabase.app/members/NEXUM-{{1.sale_id}}.json?auth=<SECRET>
+Method : PATCH
+Body   : { "plan": "standard", "email": "{{1.email}}", "done": [], "open": [1] }
+```
 
 ---
 
