@@ -2084,9 +2084,10 @@ const ADMIN_KEYS = {
   'NEXUM-ADMIN-2026-PREMIUM': 'premium',
   'NEXUM-ADMIN-2026-STANDARD': 'standard',
 };
-const GUMROAD_PRODUCTS = {
-  'ckcrul': 'standard',
-  'lcwubf': 'premium',
+// Clés statiques Gumroad (1 clé par plan, envoyée dans le receipt email)
+const STATIC_KEYS = {
+  '6F0E4C97-B72A4E69-A11BF6C4-AF6517E7': 'premium', // clé Premium Gumroad
+  // clé Standard à ajouter ici une fois générée
 };
 
 function showApp() {
@@ -2119,35 +2120,22 @@ async function submitLogin() {
   setLoginError('');
   setLoginLoading(true);
 
+  await new Promise(r => setTimeout(r, 600)); // légère pause UX
+
   // 1. Clé admin
   if (ADMIN_KEYS[key]) {
     grantAccess(key, ADMIN_KEYS[key]);
     return;
   }
 
-  // 2. Vérification via API Gumroad
-  try {
-    let plan = null;
-    for (const [permalink, p] of Object.entries(GUMROAD_PRODUCTS)) {
-      const res = await fetch(`https://api.gumroad.com/v2/licenses/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `product_permalink=${permalink}&license_key=${encodeURIComponent(key)}&increment_uses_count=false`,
-      });
-      const data = await res.json();
-      if (data.success) { plan = p; break; }
-    }
-
-    if (plan) {
-      grantAccess(key, plan);
-    } else {
-      setLoginError('Clé invalide. Vérifie ton email ou contacte le support.');
-      setLoginLoading(false);
-    }
-  } catch (e) {
-    setLoginError('Erreur réseau. Réessaie dans quelques secondes.');
-    setLoginLoading(false);
+  // 2. Clé statique Gumroad
+  if (STATIC_KEYS[key]) {
+    grantAccess(key, STATIC_KEYS[key]);
+    return;
   }
+
+  setLoginError('Clé invalide. Vérifie ton email ou contacte le support.');
+  setLoginLoading(false);
 }
 
 function grantAccess(key, plan) {
