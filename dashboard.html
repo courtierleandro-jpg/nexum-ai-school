@@ -7,18 +7,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyA-DMZba1BONZiQPyFSk4oqvSq7k_oWX94",
     authDomain: "la-school-83571.firebaseapp.com",
     projectId: "la-school-83571",
+    databaseURL: "https://la-school-83571-default-rtdb.europe-west1.firebasedatabase.app",
     storageBucket: "la-school-83571.firebasestorage.app",
     messagingSenderId: "1036511097172",
     appId: "1:1036511097172:web:blc2b5598fcf40aa2658c1"
   };
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  const db = firebase.database();
 </script>
 <style>
 :root {
@@ -2140,11 +2141,11 @@ async function submitLogin() {
     return;
   }
 
-  // 2. Vérification dans Firestore
+  // 2. Vérification dans Realtime Database
   try {
-    const doc = await db.collection('members').doc(key).get();
-    if (doc.exists) {
-      const data = doc.data();
+    const snap = await db.ref('members/' + key).get();
+    if (snap.exists()) {
+      const data = snap.val();
       currentUserKey = key;
       localStorage.setItem('nx_key', key);
       await grantAccess(key, data.plan, { done: data.done || [], open: data.open || [1] });
@@ -2171,12 +2172,12 @@ async function grantAccess(key, plan, progress) {
 }
 
 async function saveToFirebase() {
-  if (!currentUserKey || ADMIN_KEYS[currentUserKey]) return; // pas de save pour admin
+  if (!currentUserKey || ADMIN_KEYS[currentUserKey]) return;
   try {
-    await db.collection('members').doc(currentUserKey).update({
+    await db.ref('members/' + currentUserKey).update({
       done: S.done,
       open: S.open,
-      updated_at: firebase.firestore.FieldValue.serverTimestamp()
+      updated_at: Date.now()
     });
   } catch(e) {
     console.warn('Firebase save error:', e);
@@ -2201,10 +2202,10 @@ function logout() {
   }
 
   try {
-    const doc = await db.collection('members').doc(savedKey).get();
-    if (doc.exists) {
+    const snap = await db.ref('members/' + savedKey).get();
+    if (snap.exists()) {
       currentUserKey = savedKey;
-      const data = doc.data();
+      const data = snap.val();
       await grantAccess(savedKey, data.plan, { done: data.done || [], open: data.open || [1] });
     } else {
       localStorage.removeItem('nx_key');
