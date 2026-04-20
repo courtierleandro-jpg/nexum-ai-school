@@ -124,49 +124,44 @@ function _renderAR(ariaMsg) {
   document.getElementById('main').innerHTML = `
     <div class="ar-wrap" id="ar-wrap">
 
+      <div class="ar-rail"><div class="ar-rail-fill" id="ar-prog-fill" style="width:${pct}%"></div></div>
+
       <div class="ar-topbar">
-        <button class="ar-back" onclick="openLesson(${modId},'${lesId}')">← Retour à la leçon</button>
-        <div class="ar-lesson-info">
+        <button class="ar-back" onclick="openLesson(${modId},'${lesId}')">← Retour</button>
+        <div class="ar-topbar-center">
           <span class="ar-mod-chip">${mod.code} · ${lesId}</span>
-          <span class="ar-count">${idx + 1} <span style="color:var(--muted)">/ ${total}</span></span>
         </div>
+        <div class="ar-step-count">${idx + 1}<span class="ar-step-sep">/</span>${total}</div>
       </div>
 
-      <div class="ar-prog-wrap">
-        <div class="ar-prog-bar">
-          <div class="ar-prog-fill" id="ar-prog-fill" style="width:${pct}%"></div>
-        </div>
-        <span class="ar-prog-label">${pct}%</span>
-      </div>
+      <div class="ar-body">
 
-      <div class="ar-aria-row">
-        <div class="ar-avatar">
-          <span class="ar-avatar-emoji">🤖</span>
-          <div class="ar-avatar-dot"></div>
+        <div class="ar-aria-row">
+          <div class="ar-avatar">🤖</div>
+          <div class="ar-bubble">
+            <div class="ar-bubble-name">ARIA</div>
+            <div id="ar-bubble-txt">${ariaMsg}</div>
+          </div>
         </div>
-        <div class="ar-bubble">
-          <div class="ar-bubble-name">ARIA</div>
-          <div id="ar-bubble-txt">${ariaMsg}</div>
-        </div>
-      </div>
 
-      <div class="ar-card ar-card-in" id="ar-card">
-        <div class="ar-card-head">
-          <span class="ar-ex-num">Exercice ${idx + 1}</span>
-          <span class="exb exb-${ex.type}">${_arTypeName(ex.type)}</span>
+        <div class="ar-card ar-card-in" id="ar-card">
+          <div class="ar-card-head">
+            <span class="ar-ex-num">Exercice ${idx + 1}</span>
+            <span class="ar-ex-badge">${_arTypeName(ex.type)}</span>
+          </div>
+          <div class="ar-ex-title">${ex.title}</div>
+          <div class="ar-ex-instr">${ex.instructions}</div>
+          <div class="ar-ex-body" id="ar-ex-body">
+            ${_arExBody(ex, exId)}
+          </div>
+          <div class="ar-feedback" id="ar-feedback" style="display:none"></div>
+          <div class="ar-btns" id="ar-btns">
+            <button class="ar-btn-validate" id="ar-btn-val" onclick="arValidate()">Valider →</button>
+            ${S.stars > 0 && !isExDone(exId) ? `<button class="ar-btn-skip" onclick="arSkip()">⭐ Passer (${S.stars})</button>` : ''}
+          </div>
         </div>
-        <div class="ar-ex-title">${ex.title}</div>
-        <div class="ar-ex-instr">${ex.instructions}</div>
-        <div class="ar-ex-body" id="ar-ex-body">
-          ${_arExBody(ex, exId)}
-        </div>
-        <div class="ar-feedback" id="ar-feedback" style="display:none"></div>
-        <div class="ar-btns" id="ar-btns">
-          <button class="ar-btn-validate" id="ar-btn-val" onclick="arValidate()">Valider →</button>
-          ${S.stars > 0 && !isExDone(exId) ? `<button class="ar-btn-skip" onclick="arSkip()">⭐ Passer (${S.stars})</button>` : ''}
-        </div>
-      </div>
 
+      </div>
     </div>`;
 
   renderSidebar();
@@ -497,7 +492,7 @@ function arValidate() {
   const btns = document.getElementById('ar-btns');
   const isLast = _ar.idx === _ar.ids.length - 1;
   if (btns) {
-    btns.innerHTML = `<button class="ar-btn-next ar-btn-next-in" onclick="arNext()">${isLast ? 'Voir le résultat →' : 'Exercice suivant →'}</button>`;
+    btns.innerHTML = `<button class="ar-btn-next" onclick="arNext()">${isLast ? 'Voir le résultat →' : 'Exercice suivant →'}</button>`;
   }
 
   // Mark done
@@ -686,7 +681,7 @@ function arSkip() {
   if (bubbleTxt) bubbleTxt.textContent = _rnd(_AR_SKIP);
   const btns = document.getElementById('ar-btns');
   const isLast = _ar.idx === _ar.ids.length - 1;
-  if (btns) btns.innerHTML = `<button class="ar-btn-next ar-btn-next-in" onclick="arNext()">${isLast ? 'Voir le résultat →' : 'Exercice suivant →'}</button>`;
+  if (btns) btns.innerHTML = `<button class="ar-btn-next" onclick="arNext()">${isLast ? 'Voir le résultat →' : 'Exercice suivant →'}</button>`;
 }
 
 // ── Next ─────────────────────────────────────────────────────────────────
@@ -726,36 +721,36 @@ function _arComplete() {
 
   document.getElementById('main').innerHTML = `
     <div class="ar-wrap">
+      <div class="ar-rail"><div class="ar-rail-fill" style="width:100%"></div></div>
       <div class="ar-topbar">
-        <button class="ar-back" onclick="openLesson(${modId},'${lesId}')">← Retour à la leçon</button>
-        <div class="ar-lesson-info">
+        <button class="ar-back" onclick="openLesson(${modId},'${lesId}')">← Retour</button>
+        <div class="ar-topbar-center">
           <span class="ar-mod-chip">${mod.code} · ${lesId}</span>
         </div>
-      </div>
-      <div class="ar-prog-wrap">
-        <div class="ar-prog-bar"><div class="ar-prog-fill" style="width:100%"></div></div>
-        <span class="ar-prog-label">100%</span>
+        <div class="ar-step-count">${total}<span class="ar-step-sep">/</span>${total}</div>
       </div>
 
-      <div class="ar-aria-row">
-        <div class="ar-avatar"><span class="ar-avatar-emoji">🤖</span><div class="ar-avatar-dot"></div></div>
-        <div class="ar-bubble"><div class="ar-bubble-name">ARIA</div><div>${ariaMsg}</div></div>
-      </div>
-
-      <div class="ar-complete-card ar-card-in">
-        <div class="ar-complete-icon">🏆</div>
-        <div class="ar-complete-title">Leçon terminée !</div>
-        <div class="ar-complete-sub">${lesId} · ${mod.title}</div>
-        <div class="ar-complete-stats">
-          <div class="ar-cstat"><div class="ar-cstat-val" style="color:var(--success)">${passed}</div><div class="ar-cstat-lbl">Réussis</div></div>
-          <div class="ar-cstat"><div class="ar-cstat-val" style="color:var(--warn)">${skipped}</div><div class="ar-cstat-lbl">Passés</div></div>
-          <div class="ar-cstat"><div class="ar-cstat-val">${total}</div><div class="ar-cstat-lbl">Total</div></div>
-          <div class="ar-cstat"><div class="ar-cstat-val" style="color:var(--cyan)">${pct}%</div><div class="ar-cstat-lbl">Score</div></div>
+      <div class="ar-body">
+        <div class="ar-aria-row">
+          <div class="ar-avatar">🤖</div>
+          <div class="ar-bubble"><div class="ar-bubble-name">ARIA</div><div>${ariaMsg}</div></div>
         </div>
-        <div class="ar-complete-btns">
-          ${next ? `<button class="ar-btn-next ar-btn-lg" onclick="openLesson(${next.modId},'${next.id}')">Leçon suivante : ${next.title} →</button>` : ''}
-          <button class="ar-btn-validate ar-btn-lg" onclick="openAriaRunner(${modId},'${lesId}')">Recommencer →</button>
-          <button class="ar-back ar-btn-lg" onclick="renderHome()">Retour accueil</button>
+
+        <div class="ar-complete-card">
+          <span class="ar-complete-icon">🏆</span>
+          <div class="ar-complete-title">Leçon terminée !</div>
+          <div class="ar-complete-sub">${lesId} · ${mod.title}</div>
+          <div class="ar-complete-stats">
+            <div class="ar-cstat"><div class="ar-cstat-val" style="color:var(--success)">${passed}</div><div class="ar-cstat-lbl">Réussis</div></div>
+            <div class="ar-cstat"><div class="ar-cstat-val" style="color:#fbbf24">${skipped}</div><div class="ar-cstat-lbl">Passés</div></div>
+            <div class="ar-cstat"><div class="ar-cstat-val">${total}</div><div class="ar-cstat-lbl">Total</div></div>
+            <div class="ar-cstat"><div class="ar-cstat-val" style="color:var(--accent)">${pct}%</div><div class="ar-cstat-lbl">Score</div></div>
+          </div>
+          <div class="ar-complete-btns">
+            ${next ? `<button class="ar-btn-next" onclick="openLesson(${next.modId},'${next.id}')">Leçon suivante : ${next.title} →</button>` : ''}
+            <button class="ar-btn-validate" onclick="openAriaRunner(${modId},'${lesId}')">Recommencer →</button>
+            <button class="ar-back" onclick="renderHome()">Retour accueil</button>
+          </div>
         </div>
       </div>
     </div>`;

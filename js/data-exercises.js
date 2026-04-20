@@ -2545,14 +2545,44 @@ const EXERCISES = {
 }; // end EXERCISES
 
 const MODULES = [
-  {id:1,label:"Module 01",lessons:["01.01","01.02","01.03","01.04"]},
-  {id:2,label:"Module 02",lessons:["02.01","02.02","02.03"]},
-  {id:3,label:"Module 03",lessons:["03.01","03.02","03.03"]},
-  {id:4,label:"Module 04",lessons:["04.01","04.02"]},
-  {id:5,label:"Module 05",lessons:["05.01","05.02"]},
-  {id:6,label:"Module 06",lessons:["06.01","06.02"]},
-  {id:7,label:"Module 07",lessons:["07.01","07.02","07.03"]},
-  {id:8,label:"Module 08",lessons:["08.01","08.02","08.03"],premium:true}
+  { id:1, code:"M01", title:"Comprendre l'IA sans bullshit", dur:"1h30", lessons:[
+    { id:"01.01", title:"Ce que l'IA fait vraiment (et ce qu'elle ne fait pas)", dur:"20 min" },
+    { id:"01.02", title:"Pourquoi 90% des gens l'utilisent mal",                 dur:"20 min" },
+    { id:"01.03", title:"Les 3 types d'IA que tu vas croiser",                   dur:"20 min" },
+    { id:"01.04", title:"Claude vs GPT vs Gemini — lequel choisir",             dur:"25 min" },
+  ], premium:false },
+  { id:2, code:"M02", title:"Parler à l'IA comme un pro", dur:"1h", lessons:[
+    { id:"02.01", title:"La formule RCTFE expliquée", dur:"20 min" },
+    { id:"02.02", title:"Passer d'un prompt basique à un prompt expert", dur:"20 min" },
+    { id:"02.03", title:"Les 5 erreurs qui ruinent tes prompts",         dur:"20 min" },
+  ], premium:false },
+  { id:3, code:"M03", title:"Gagner du temps au quotidien", dur:"1h15", lessons:[
+    { id:"03.01", title:"Écrire des emails professionnels en 30 secondes",  dur:"25 min" },
+    { id:"03.02", title:"Analyser n'importe quel document en 2 minutes",    dur:"25 min" },
+    { id:"03.03", title:"Organiser ta semaine et tes projets avec l'IA",    dur:"25 min" },
+  ], premium:false },
+  { id:4, code:"M04", title:"Créer du contenu qui te ressemble", dur:"45 min", lessons:[
+    { id:"04.01", title:"Faire écrire l'IA avec TA voix (pas la sienne)",            dur:"25 min" },
+    { id:"04.02", title:"Posts LinkedIn, threads, newsletters — les templates",      dur:"20 min" },
+  ], premium:false },
+  { id:5, code:"M05", title:"Apprendre n'importe quoi", dur:"45 min", lessons:[
+    { id:"05.01", title:"Transformer Claude en tuteur personnel",              dur:"25 min" },
+    { id:"05.02", title:"Apprendre une compétence en 10x moins de temps",     dur:"20 min" },
+  ], premium:false },
+  { id:6, code:"M06", title:"Automatiser avec Make.com", dur:"50 min", lessons:[
+    { id:"06.01", title:"Comprendre les automatisations sans code",           dur:"25 min" },
+    { id:"06.02", title:"Créer ton premier scénario Make.com + Claude",       dur:"25 min" },
+  ], premium:false },
+  { id:7, code:"M07", title:"Développer son business", dur:"1h30", lessons:[
+    { id:"07.01", title:"Analyser un marché et ses concurrents en 1h",   dur:"30 min" },
+    { id:"07.02", title:"Créer une offre irrésistible avec l'IA",        dur:"30 min" },
+    { id:"07.03", title:"Déléguer à l'IA les tâches qui t'épuisent",     dur:"30 min" },
+  ], premium:false },
+  { id:8, code:"M08", title:"Niveau Pro · Agents & Stratégie", dur:"1h30", lessons:[
+    { id:"08.01", title:"Méta-prompts et prompts systèmes — le niveau pro",  dur:"30 min" },
+    { id:"08.02", title:"Construire des agents IA autonomes",                dur:"30 min" },
+    { id:"08.03", title:"L'avenir du travail — comment te positionner",      dur:"30 min" },
+  ], premium:true },
 ];
 
-const TOTAL = Object.keys(EXERCISES).length;
+const TOTAL = MODULES.reduce((a,m) => a + m.lessons.length, 0);

@@ -36,7 +36,7 @@
 | **Co-développeur** | `Hhhsimo — développement technique dashboard` |
 | **Statut** | `🟡 En cours` |
 | **Démarré le** | `2026-04-08` |
-| **Dernière mise à jour** | `2026-04-20 — Session 4` |
+| **Dernière mise à jour** | `2026-04-20 — Session 5` |
 
 ---
 
@@ -344,6 +344,31 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 > Toutes les sessions sont archivées ici. Ne jamais supprimer. Ajouter au-dessus (la plus récente en premier).
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
+
+### Session 5 — 2026-04-20
+**Durée estimée** : 1h  
+**Objectif de la session** : Correction bug MODULES + redesign complet interface ARIA
+
+**✅ Réalisé :**
+- Correction du bug "undefined" sur toutes les leçons et la sidebar : `MODULES` dans `data-exercises.js` avait été simplifié (array de strings) lors de la refacto Session 4, alors que `app.js` et `aria-exercise-runner.js` attendent des objets complets avec `title`, `dur`, `code`, `premium`
+- Restauration de la définition complète de `MODULES` depuis le git history (commit `1ed5e5a`)
+- Redesign complet de l'interface ARIA exercise runner : layout centré, barre de progression full-width, topbar propre, carte exercice aérée, boutons VRAI/FAUX redesignés en vert/rose
+
+**🔧 Modifié / Créé :**
+- `js/data-exercises.js` — `MODULES` restauré avec objets complets (id, code, title, dur, lessons[], premium)
+- `css/dashboard.css` — section ARIA entièrement réécrite (~130 lignes) : `.ar-rail`, `.ar-body`, `.ar-ex-badge`, TF/QCM/textarea/matching/ranking redesignés
+- `js/aria-exercise-runner.js` — HTML de `_renderAR` et `_arComplete` refactorisés : ajout `ar-rail`, `ar-body` wrapper centré, `ar-topbar-center`, suppression des classes orphelines
+
+**⚠️ Points en suspens :**
+- Tester les types d'exercice moins fréquents en navigation réelle (matching, ranking, before/after)
+- Vérifier la progression Firebase se sauvegarde correctement après le runner
+- Module 08 (Premium) : vérifier le lock pour les comptes Standard
+
+**💡 Décisions prises :**
+- `MODULES` reste dans `data-exercises.js` (pas `app.js`) pour éviter la redéclaration `const`
+- Interface ARIA : layout max-width 620px centré, rail de progression 3px en dehors de la topbar
+
+---
 
 ### Session 4 — 2026-04-20
 **Durée estimée** : 3h  
