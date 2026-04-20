@@ -36,7 +36,7 @@
 | **Co-développeur** | `Hhhsimo — développement technique dashboard` |
 | **Statut** | `🟡 En cours` |
 | **Démarré le** | `2026-04-08` |
-| **Dernière mise à jour** | `2026-04-13 — Session 3` |
+| **Dernière mise à jour** | `2026-04-20 — Session 4` |
 
 ---
 
@@ -344,6 +344,39 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 > Toutes les sessions sont archivées ici. Ne jamais supprimer. Ajouter au-dessus (la plus récente en premier).
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
+
+### Session 4 — 2026-04-20
+**Durée estimée** : 3h  
+**Objectif de la session** : Refactorisation complète du dashboard + système d'exercices ARIA
+
+**✅ Réalisé :**
+- Découpage de `dashboard.html` (5229 lignes) en 5 fichiers séparés par responsabilité
+- Création de `css/dashboard.css` (1096 lignes) — tous les styles extraits
+- Création de `js/data-content.js` (1300 lignes) — contenu des 22 leçons + `getLessonContent()`
+- Création de `js/data-exercises.js` (2558 lignes) — 220 exercices complets (22 leçons × 10), `LESSON_EXERCISES`, `EXERCISES`, `MODULES`, `TOTAL`
+- Création de `js/aria-exercise-runner.js` (773 lignes) — runner complet : `openAriaRunner()`, tous les types d'exercice, ARIA mascotte, skip avec étoiles, écran de score
+- Mise à jour de `js/app.js` — remplacement du bloc inline exercises par un bouton "Lancer les exercices →" qui appelle `openAriaRunner()`
+- Mise à jour de `dashboard.html` — ajout du script `aria-exercise-runner.js`
+
+**🔧 Modifié / Créé :**
+- `dashboard.html` — refactorisé (95 lignes, pur squelette HTML)
+- `css/dashboard.css` — créé · tous les styles dashboard + ARIA runner (classes `.ar-*`)
+- `js/data-content.js` — créé · contenu des 22 leçons
+- `js/data-exercises.js` — créé · 220 exercices (M01→M08), 9 types : truefalse, qcm, freetext, promptlab, completion, matching, ranking, beforeafter, checklist
+- `js/aria-exercise-runner.js` — créé · runner ARIA séquentiel complet
+- `js/app.js` — bouton ARIA remplace l'affichage inline des exercices
+
+**⚠️ Points en suspens :**
+- Tester le runner ARIA en navigation réelle (login + ouvrir leçon + lancer exercices)
+- Vérifier la progression Firebase se sauvegarde correctement après le runner
+- Module 08 (Premium) : vérifier le lock pour les comptes Standard
+
+**💡 Décisions prises :**
+- Exercices affichés dans un runner plein écran avec ARIA (mascotte) plutôt qu'inline dans la leçon
+- 10 exercices par leçon, 22 leçons = 220 exercices total (validé par parsing Node.js)
+- `data-exercises.js` séparé de `data-content.js` pour garder les fichiers maintenables
+
+---
 
 ### Session 3 — 2026-04-13
 **Durée estimée** : 2h  
