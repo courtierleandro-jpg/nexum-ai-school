@@ -36,7 +36,7 @@
 | **Co-développeur** | `Hhhsimo — développement technique dashboard` |
 | **Statut** | `🟡 En cours` |
 | **Démarré le** | `2026-04-08` |
-| **Dernière mise à jour** | `2026-04-20 — Session 5` |
+| **Dernière mise à jour** | `2026-04-21 — Session 5` |
 
 ---
 
@@ -273,6 +273,7 @@ Body   : { "plan": "standard", "email": "{{1.email}}", "done": [], "open": [1] }
 | 1 | Bot ARIA tourne en local (Mac) — s'arrête si le Mac dort | 🟡 En cours |
 | 2 | Attribution rôle Discord non automatisée — nécessite Discord ID de l'élève | 🔴 Ouvert |
 | 3 | Brevo non configuré — email via Gmail/Make pour l'instant | 🟡 Acceptable |
+| 4 | ~~Leçons ne s'ouvraient pas au clic~~ — TypeError sur `mod.lessons.find()` avant guard clause `if (!mod)` | ✅ Corrigé session 5 |
 
 ---
 
@@ -345,7 +346,41 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
 
-### Session 5 — 2026-04-20
+### Session 5 — 2026-04-21
+**Durée estimée** : 1h  
+**Objectif de la session** : Corrections visuelles dashboard + debug bug leçons + nettoyage design
+
+**✅ Réalisé :**
+- Suppression de tous les emojis du dashboard (data-content.js, aria-exercise-runner.js, data-exercises.js) — remplacement par texte neutre ou caractères simples (✓ ✗)
+- Chatbot Lottie ajouté à côté de NEXUM//AI dans la sidebar (96×96px)
+- Glassmorphism sur les module cards (`.mod-card`) avec effet hover scale + ligne couleur en top
+- Correction lueur rosâtre sur la home-banner → remplacée en bleu `#eef4ff`
+- Récupération du commit de l'associé (MODULES array restauré avec objets complets `{id, title, dur}` par leçon)
+- bg-loop.json déplacé : depuis fond d'écran fixe → dans la home-banner à droite
+- alphaeon.json placé dans la progress-ring-wrap (remplace chip.png)
+- **Bug critique corrigé** : leçons ne s'ouvraient pas → `TypeError: Cannot read properties of undefined (reading 'lessons')` dans `openLesson()` — `mod.lessons.find()` était appelé avant le guard clause `if (!mod)` → corrigé dans `js/app.js` lignes 1444-1446
+
+**🔧 Modifié / Créé :**
+- `js/app.js` — fix `openLesson()` : guard clause `if (!mod) return;` déplacée avant `mod.lessons.find()`
+- `js/data-content.js` — suppression de 61 préfixes emoji sur `title:` et `label:`, 8 `icon:` vidés, ✅/❌ → ✓/✗
+- `js/data-exercises.js` — MODULES restauré avec objets complets (fix commit associé)
+- `js/aria-exercise-runner.js` — version redessinée de l'associé + nettoyage emojis (🤖 → AI, 🏆 → '')
+- `css/dashboard.css` — `.mod-card` glassmorphism, `.mc-icon` monospace, home-banner gradient bleu
+- `dashboard.html` — sidebar chatbot Lottie, suppression Lottie livre, structure mise à jour
+
+**⚠️ Points en suspens :**
+- Tester les leçons en navigation réelle après le fix (login → cliquer une leçon)
+- Vérifier que la progression Firebase se sauvegarde après avoir terminé une leçon
+- Vérifier le runner ARIA ("Lancer les exercices") fonctionne correctement
+- Module 08 Premium : vérifier lock pour comptes Standard
+
+**💡 Décisions prises :**
+- Zéro emoji dans le dashboard → look pro/over-engineered
+- bg-loop.json dans la bannière home, alphaeon.json dans le ring de progression
+
+---
+
+### Session 5b — 2026-04-20 (Hhhsimo)
 **Durée estimée** : 1h  
 **Objectif de la session** : Correction bug MODULES + redesign complet interface ARIA
 

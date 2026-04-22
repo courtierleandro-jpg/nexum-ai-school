@@ -103,6 +103,7 @@ function logout() {
   location.reload();
 }
 
+
 // Vérifier si déjà connecté
 (async () => {
   const savedKey = localStorage.getItem('nx_key');
@@ -145,6 +146,7 @@ const S = {
   cur:               null,
   qcmSel:            null,
   adminMode:         false,
+  freeAccess:        false,
   discordUrl:        '#',
   gumroadPremium:    'https://courtierleandro.gumroad.com/l/lcwubf',
   exerciseOverrides: {},
@@ -159,7 +161,7 @@ function totalDone() { return S.done.length; }
 
 // Vérifie si une leçon est accessible (la précédente dans le module doit être terminée)
 function isLessonAccessible(lesId, modId) {
-  if (S.adminMode) return true; // admin voit tout
+  if (S.adminMode || S.freeAccess) return true;
   const mod = MODULES.find(m => m.id === modId);
   const idx = mod.lessons.findIndex(l => l.id === lesId);
   if (idx === 0) return true;
@@ -273,7 +275,7 @@ function renderInlineExercises(lesId, modId) {
           ${typeBadge(ex.type)}
         </div>
         <div style="display:flex;align-items:center;gap:10px">
-          <span style="font-size:11px;color:var(--muted)">⏱ ${ex.estimated_time_minutes||5} min</span>
+          <span style="font-size:11px;color:var(--muted)">${ex.estimated_time_minutes||5} min</span>
           ${done ? '<span style="color:var(--success);font-size:12px;font-family:\'Space Mono\',monospace">✓ FAIT</span>' : ''}
         </div>
       </div>
@@ -361,7 +363,7 @@ function renderInlineExBody(ex, exId, lesId, modId) {
     const plMinLen = c.min_length || c.minLength || 50;
     return `${plInstruction ? `<p style="font-size:13px;color:#C8C8D8;margin-bottom:12px;line-height:1.65">${plInstruction}</p>` : ''}
     <div class="pl-box">
-      <div class="pl-header"><span>⚡ Prompt Lab</span><button class="pl-copy" onclick="copyInlinePrompt('${promptId}',this)">Copier le prompt</button></div>
+      <div class="pl-header"><span>Prompt Lab</span><button class="pl-copy" onclick="copyInlinePrompt('${promptId}',this)">Copier le prompt</button></div>
       <div class="pl-prompt" id="${promptId}">${escHtml(c.prompt_to_copy||'')}</div>
     </div>
     <div style="margin:12px 0 8px">
@@ -738,21 +740,18 @@ function renderSidebar() {
       const done = isDone(l.id);
       const active = S.cur && S.cur.lesId === l.id;
       const premLocked = mod.premium && S.plan === 'standard';
-      const seqLocked = !premLocked && lesIdx > 0 && !isDone(mod.lessons[lesIdx - 1].id);
-      const anyLocked = premLocked || seqLocked;
-      return `<div class="les-item${active?' active':''}${seqLocked?' seq-locked':''}" data-lid="${l.id}" data-mid="${mod.id}">
+      const clickHandler = premLocked ? `window.open('${S.gumroadPremium}','_blank')` : `openLesson(${mod.id},'${l.id}')`;
+      return `<div class="les-item${active?' active':''}" onclick="${clickHandler}">
         ${premLocked
-          ? `<span class="les-lock">🔒</span>`
-          : seqLocked
-            ? `<span class="les-lock" style="font-size:10px;opacity:.5">🔒</span>`
-            : `<div class="les-check${done?' done':''}">${done?'✓':''}</div>`}
+          ? `<span class="les-lock">·</span>`
+          : `<div class="les-check${done?' done':''}">${done?'✓':''}</div>`}
         <span class="les-name">${l.title}</span>
         <span class="les-dur">${l.dur}</span>
       </div>`;
     }).join('');
 
     div.innerHTML = `
-      <div class="mod-header" data-mid="${mod.id}">
+      <div class="mod-header" onclick="toggleMod(${mod.id})">
         <span class="mod-code">${mod.code}</span>
         <div class="mod-info">
           <div class="mod-name">${mod.title}</div>
@@ -762,14 +761,6 @@ function renderSidebar() {
       </div>
       <div class="mod-lessons">${lessonsHTML}</div>`;
 
-    div.querySelector('.mod-header').addEventListener('click', () => toggleMod(mod.id));
-    div.querySelectorAll('.les-item').forEach(el => {
-      el.addEventListener('click', e => {
-        e.stopPropagation();
-        if (el.classList.contains('seq-locked')) return; // bloque le clic
-        openLesson(+el.dataset.mid, el.dataset.lid);
-      });
-    });
     c.appendChild(div);
   });
 }
@@ -782,10 +773,11 @@ function toggleMod(id) {
 // ═══════════════════════════════════════════════
 // HOME
 // ═══════════════════════════════════════════════
-const MOD_ICONS = ['🧠','🎯','⏱️','✍️','📚','⚡','💼','🔬'];
-const MOD_COLORS = ['#00E5FF','#7B5EA7','#FF3CAC','#00E5FF','#7B5EA7','#FF3CAC','#00E5FF','#FF3CAC'];
+const MOD_ICONS = ['01','02','03','04','05','06','07','08'];
+const MOD_COLORS = ['#00E5FF','#7B5EA7','#1A8FFF','#00E5FF','#7B5EA7','#1A8FFF','#00E5FF','#1A8FFF'];
 
 function renderHome() {
+
   S.cur = null;
   const done = totalDone();
   const pct = Math.round(done / TOTAL * 100);
@@ -818,11 +810,11 @@ function renderHome() {
     const onclick = locked
       ? `window.open('${S.gumroadPremium}','_blank')`
       : `openLesson(${mod.id},'${mod.lessons[0].id}')`;
-    const statusIcon = mp === 100 ? '✅' : mp > 0 ? '▶' : '';
+    const statusIcon = mp === 100 ? '✓' : mp > 0 ? '▶' : '';
     return `<div class="mod-card" onclick="${onclick}" style="--mod-color:${color}">
       <div class="mc-accent" style="background:${color}"></div>
       <div class="mc-icon">${MOD_ICONS[i]}</div>
-      <div class="mc-code" style="color:${color}">${mod.code}${locked?' · 👑 PREMIUM':''} ${statusIcon}</div>
+      <div class="mc-code" style="color:${color}">${mod.code}${locked?' · PREMIUM':''} ${statusIcon}</div>
       <div class="mc-title">${mod.title}</div>
       <div class="mc-meta">${mod.lessons.length} leçons · ${mod.dur}</div>
       <div class="mc-bar"><div class="mc-bar-fill" style="width:${mp}%;background:${color}"></div></div>
@@ -835,16 +827,20 @@ function renderHome() {
     ? 'Commence par le Module 01 — 20 minutes suffisent.'
     : done < 4 ? `${done} leçon${done>1?'s':''} terminée${done>1?'s':''} — Tu es lancé !`
     : done < 13 ? `${done} leçons — Tu maîtrises les bases. Continue.`
-    : done < 20 ? `${done} leçons terminées — Tu es dans le top des élèves actifs. 🔥`
-    : `${done}/22 leçons — Niveau expert atteint. 🚀`;
+    : done < 20 ? `${done} leçons terminées — Tu es dans le top des élèves actifs.`
+    : `${done}/22 leçons — Niveau expert atteint.`;
 
   document.getElementById('main').innerHTML = `
+    <div style="position:relative;z-index:1;">
     <div class="home-banner">
       <div class="home-banner-grid"></div>
-      <div class="home-banner-content">
-        <div class="home-banner-eyebrow">Espace membre · Nexum AI School</div>
-        <h1 class="home-banner-title">Maîtrise Claude &<br><span>Bâtis ton Empire.</span></h1>
-        <p class="home-banner-sub">8 modules · ${TOTAL} leçons · Accès à vie.<br>Chaque leçon = une compétence directement applicable dans ton business.</p>
+      <div class="home-banner-content" style="display:flex;align-items:center;justify-content:space-between;gap:24px;">
+        <div>
+          <div class="home-banner-eyebrow">Espace membre · Nexum AI School</div>
+          <h1 class="home-banner-title">Maîtrise Claude &<br><span>Bâtis ton Empire.</span></h1>
+          <p class="home-banner-sub">8 modules · ${TOTAL} leçons · Accès à vie.<br>Chaque leçon = une compétence directement applicable dans ton business.</p>
+        </div>
+        <lottie-player src="/bg-loop.json" background="transparent" speed="1" style="width:300px;height:300px;flex-shrink:0;margin-top:-20px" autoplay loop></lottie-player>
       </div>
     </div>
 
@@ -858,34 +854,36 @@ function renderHome() {
         <defs>
           <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#00E5FF"/>
-            <stop offset="100%" stop-color="#FF3CAC"/>
+            <stop offset="100%" stop-color="#1A8FFF"/>
           </linearGradient>
         </defs>
         <text x="50" y="48" class="ring-label" font-size="16" fill="#fff" font-weight="800">${pct}%</text>
         <text x="50" y="63" class="ring-label" font-size="9" fill="#6B6B80">COMPLET</text>
       </svg>
       <div class="ring-info">
-        <div class="ring-info-title">${done} leçon${done > 1 ? 's' : ''} terminée${done > 1 ? 's' : ''} sur ${TOTAL}</div>
+        <div class="ring-info-title" style="display:flex;align-items:center;gap:8px;"><lottie-player src="/brain.json" background="transparent" speed="1" style="width:32px;height:32px;flex-shrink:0" autoplay loop></lottie-player>${done} leçon${done > 1 ? 's' : ''} terminée${done > 1 ? 's' : ''} sur ${TOTAL}</div>
         <div class="ring-info-sub">${streakMsg}</div>
         <div class="ring-badges">
-          <span class="ring-badge ring-badge-cyan">📚 ${TOTAL - done} restantes</span>
-          <span class="ring-badge ring-badge-pink">${S.plan === 'premium' ? '👑 Premium' : '⭐ Standard'}</span>
+          <span class="ring-badge ring-badge-cyan">${TOTAL - done} restantes</span>
+          <span class="ring-badge ring-badge-pink">${S.plan === 'premium' ? 'Premium' : 'Standard'}</span>
           ${done >= 4 ? '<span class="ring-badge ring-badge-green">✓ M01 débloqué</span>' : ''}
         </div>
       </div>
+      <lottie-player src="/alphaeon.json" background="transparent" speed="1" style="width:160px;height:160px;flex-shrink:0;margin-left:auto;" autoplay loop></lottie-player>
     </div>
 
     <div class="milestone-strip">${milestoneHTML}</div>
 
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val">${done}</div><div class="stat-lbl">Leçons terminées</div></div>
-      <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-val">${TOTAL - done}</div><div class="stat-lbl">Leçons restantes</div></div>
-      <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-val">${Math.max(0, MODULES.filter(m => m.lessons.every(l => isDone(l.id))).length)}</div><div class="stat-lbl">Modules complets</div></div>
-      <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-val">${pct}%</div><div class="stat-lbl">Progression globale</div></div>
+      <div class="stat-card"><div class="stat-val">${done}</div><div class="stat-lbl">Leçons terminées</div></div>
+      <div class="stat-card"><div class="stat-val">${TOTAL - done}</div><div class="stat-lbl">Leçons restantes</div></div>
+      <div class="stat-card"><div class="stat-val">${Math.max(0, MODULES.filter(m => m.lessons.every(l => isDone(l))).length)}</div><div class="stat-lbl">Modules complets</div></div>
+      <div class="stat-card"><div class="stat-val">${pct}%</div><div class="stat-lbl">Progression globale</div></div>
     </div>
 
     <div class="section-title">Mes Modules</div>
-    <div class="mods-grid">${cards}</div>`;
+    <div class="mods-grid">${cards}</div>
+    </div>`;
 
   updateProgressBar();
   renderSidebar();
@@ -1352,18 +1350,16 @@ function renderPromptLibrary() {
       <span>Bibliothèque de Prompts</span>
     </div>
     <div class="plib-header">
-      <div class="plib-badge">👑 Premium · Accès exclusif</div>
+      <div class="plib-badge">Premium · Accès exclusif</div>
       <h1 class="plib-title">Bibliothèque de <span>Prompts</span></h1>
       <p class="plib-sub">${PROMPT_LIBRARY.length} prompts prêts à l'emploi, organisés par catégorie. Clique sur "Copier" et colle directement dans Claude.</p>
     </div>`;
 
   cats.forEach(cat => {
     const prompts = PROMPT_LIBRARY.filter(p => p.cat === cat);
-    const icons = { "Prompting & Stratégie":"⚡", "Emails & Communication":"✉️", "Contenu & Marketing":"📱", "Business & Offre":"💎", "Productivité & Organisation":"🗓️", "System Prompts & Agents":"🤖" };
     html += `
     <div class="plib-section">
       <div class="plib-section-title">
-        <span class="plib-section-icon">${icons[cat] || '📌'}</span>
         ${cat}
         <span class="plib-count">${prompts.length} prompts</span>
       </div>
@@ -1422,9 +1418,11 @@ function plibExpand(uid, content) {
 // LESSON
 // ═══════════════════════════════════════════════
 function openLesson(modId, lesId) {
+
   const mod = MODULES.find(m => m.id === modId);
+  if (!mod) return;
   const les = mod.lessons.find(l => l.id === lesId);
-  if (!mod || !les) return;
+  if (!les) return;
 
   S.cur = { modId, lesId };
   S.qcmSel = null;
@@ -1454,7 +1452,7 @@ function openLesson(modId, lesId) {
 
   if (locked) {
     html += `<div class="lock-screen">
-      <div class="lock-icon">👑</div>
+      <div class="lock-icon">◆</div>
       <div class="lock-title">Module Premium</div>
       <div class="lock-sub" style="text-align:left;max-width:480px;margin:0 auto">
         <p style="margin-bottom:14px;color:var(--muted);text-align:center">Ce module est réservé aux membres Premium.</p>
@@ -1467,27 +1465,19 @@ function openLesson(modId, lesId) {
       <a href="${S.gumroadPremium}" target="_blank"><button class="btn btn-pink" style="margin-top:4px;padding:14px 32px;font-size:15px">Passer Premium — 197€ →</button></a>
       <p style="margin-top:12px;font-size:12px;color:var(--muted)">Accès à vie · Paiement sécurisé via Gumroad</p>
     </div>`;
-  } else if (!isLessonAccessible(lesId, modId)) {
-    const prevLes = mod.lessons[modLesIdx - 1];
-    html += `<div class="lock-screen">
-      <div class="lock-icon">🔒</div>
-      <div class="lock-title">Leçon verrouillée</div>
-      <div class="lock-sub">Terminez d'abord <strong style="color:#fff">${prevLes.title}</strong> pour débloquer cette leçon.</div>
-      <button class="btn btn-secondary" style="margin-top:16px" onclick="openLesson(${modId},'${prevLes.id}')">← Leçon précédente</button>
-    </div>`;
   } else {
     // Header
     html += `<div class="les-header">
       <div class="les-tags">
         <span class="tag tag-mod" style="color:${modColor};border-color:${modColor}30;background:${modColor}15">${modIcon} ${mod.code}</span>
-        <span class="tag tag-dur">⏱ ${les.dur}</span>
+        <span class="tag tag-dur">${les.dur}</span>
         <span class="tag" style="background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border)">${modLesIdx+1} / ${mod.lessons.length}</span>
         ${!isDone(lesId) ? '' : '<span class="tag" style="background:rgba(0,229,160,.1);color:var(--success);border:1px solid rgba(0,229,160,.25)">✓ Terminée</span>'}
       </div>
       <h1 class="les-title-big">${les.title}</h1>
       <p class="les-intro">${content.intro}</p>
     </div>
-    ${content.objective ? `<div class="objective-box"><div class="obj-icon">🎯</div><div class="obj-inner"><div class="obj-label">Objectif</div><div class="obj-text">${content.objective}</div></div></div>` : ''}
+    ${content.objective ? `<div class="objective-box"><div class="obj-inner"><div class="obj-label">Objectif</div><div class="obj-text">${content.objective}</div></div></div>` : ''}
     <div class="divider"></div>`;
 
     // Content blocks
@@ -1500,8 +1490,7 @@ function openLesson(modId, lesId) {
 
     if (hasInlineEx) {
       const exCount = (LESSON_EXERCISES[lesId] || []).length;
-      html += `<div style="margin-top:32px;padding:24px;background:linear-gradient(135deg,rgba(0,229,255,.05),rgba(255,60,172,.05));border:1px solid rgba(0,229,255,.2);border-radius:12px;text-align:center">
-        <div style="font-size:28px;margin-bottom:10px">⚡</div>
+      html += `<div style="margin-top:32px;padding:24px;background:linear-gradient(135deg,rgba(0,229,255,.05),rgba(26,143,255,.05));border:1px solid rgba(0,229,255,.2);border-radius:12px;text-align:center">
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:8px">Exercices pratiques avec ARIA</div>
         <div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5">${exCount} exercices interactifs pour consolider les acquis de cette leçon.<br>ARIA te guidera pas à pas.</div>
         <button onclick="openAriaRunner(${modId},'${lesId}')" style="padding:13px 32px;background:linear-gradient(135deg,var(--accent),rgba(0,229,255,.7));color:#000;border:none;border-radius:8px;cursor:pointer;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.07em;transition:all .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
@@ -1589,7 +1578,6 @@ function renderExercisePage(modId, lesId) {
     exerciseHTML = renderExerciseChallenge(ex, lesId, next, modId, alreadyDone);
   } else {
     exerciseHTML = `<div class="ex-challenge-box" style="padding:40px;text-align:center">
-      <div style="font-size:36px;margin-bottom:12px">📖</div>
       <p style="font-size:14px;color:var(--muted);margin-bottom:20px">Tu as bien lu et compris cette leçon ?</p>
       <button class="btn btn-primary" onclick="autoMarkDone()">Oui, je valide cette leçon →</button>
     </div>`;
@@ -1597,7 +1585,7 @@ function renderExercisePage(modId, lesId) {
 
   // Message ARIA contextuel selon l'état
   const ariaMessages = alreadyDone ? [
-    "Tu l'as déjà réussi. Retour sur les bases ? 💪",
+    "Tu l'as déjà réussi. Retour sur les bases ?",
     "Exercice déjà dans la boîte. Tu veux revoir ?",
     "Maîtrisé ! Passe à la suite quand tu veux."
   ] : [
@@ -1619,7 +1607,7 @@ function renderExercisePage(modId, lesId) {
 
     <!-- MASCOTTE ARIA — placeholder, sera remplacée par la vraie mascotte -->
     <div class="mascot-row">
-      <div class="mascot-avatar" title="ARIA — Ton assistante IA">🤖</div>
+      <div class="mascot-avatar" title="ARIA — Ton assistante IA">AI</div>
       <div class="mascot-bubble">
         <div class="mascot-name">ARIA · Assistante IA</div>
         ${ariaMsg}
@@ -1636,14 +1624,13 @@ function renderExercisePage(modId, lesId) {
 }
 
 function renderExerciseChallenge(ex, lesId, next, modId, alreadyDone) {
-  const typeLabel = ex.type === 'qcm' ? '⚡ Quiz rapide' : '✍️ Exercice pratique';
+  const typeLabel = ex.type === 'qcm' ? 'Quiz rapide' : 'Exercice pratique';
 
   let inner = '';
 
   if (alreadyDone) {
     // Vue "déjà fait" avec bouton next
     inner = `<div style="text-align:center;padding:20px 0">
-      <div style="font-size:48px;margin-bottom:12px">🏆</div>
       <p style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--success);margin-bottom:6px">Exercice validé !</p>
       <p style="font-size:13px;color:var(--muted)">Tu as déjà réussi cet exercice avec succès.</p>
     </div>`;
@@ -1766,7 +1753,7 @@ function renderBlock(b, i) {
     return `<div class="content-block">
       <h2 class="block-title">${b.title}</h2>
       <table class="comp-table">
-        <thead><tr><th class="comp-head-bad">❌ ${b.labelBad || 'Sans la méthode'}</th><th class="comp-head-good">✅ ${b.labelGood || 'Avec la méthode'}</th></tr></thead>
+        <thead><tr><th class="comp-head-bad">✕ ${b.labelBad || 'Sans la méthode'}</th><th class="comp-head-good">✓ ${b.labelGood || 'Avec la méthode'}</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
@@ -1784,7 +1771,7 @@ function renderBlock(b, i) {
   }
   if (b.type === 'soon') {
     return `<div class="soon-screen">
-      <div class="soon-icon">🎬</div>
+      <div class="soon-icon">·</div>
       <div class="soon-title">Contenu en cours de préparation</div>
       <div class="soon-sub">Cette leçon sera disponible très bientôt. Rejoins le Discord pour être notifié.</div>
     </div>`;
@@ -1905,7 +1892,7 @@ function escHtml(s) {
 function updatePlanBadge() {
   const b = document.getElementById('plan-badge');
   b.className = S.plan === 'premium' ? 'badge badge-prm' : 'badge badge-std';
-  b.textContent = S.plan === 'premium' ? '👑 PREMIUM' : 'STANDARD';
+  b.textContent = S.plan === 'premium' ? 'PREMIUM' : 'STANDARD';
   // Bibliothèque de prompts — membres Premium uniquement
   const promBtn = document.getElementById('sb-prompts-btn');
   if (promBtn) promBtn.style.display = S.plan === 'premium' ? 'block' : 'none';
@@ -1929,7 +1916,7 @@ function updateStarsDisplay() {
 
   wrap.style.display = 'flex';
   const n = S.stars;
-  const filled = '⭐'.repeat(Math.max(0, n));
+  const filled = '<span class="stars-filled">★</span>'.repeat(Math.max(0, n));
   const empty  = '<span class="stars-empty">★</span>'.repeat(Math.max(0, 3 - n));
   if (iconsEl) iconsEl.innerHTML = filled + empty;
   if (countEl) countEl.textContent = n;
@@ -1940,10 +1927,10 @@ function updateStarsDisplay() {
 function renderStarSkipButton(lesId) {
   if (S.adminMode) return ''; // admin n'a pas besoin
   const n = S.stars;
-  const starsStr = '⭐'.repeat(n) + '★'.repeat(3 - n);
+  const starsStr = '★'.repeat(n) + '☆'.repeat(3 - n);
   return `<div class="star-skip-box" id="star-skip-zone">
     <div class="star-skip-info">
-      <div class="star-skip-title">⭐ Passer cet exercice (${n} étoile${n !== 1 ? 's' : ''} restante${n !== 1 ? 's' : ''})</div>
+      <div class="star-skip-title">Passer cet exercice (${n} étoile${n !== 1 ? 's' : ''} restante${n !== 1 ? 's' : ''})</div>
       <div class="star-skip-sub">Tu bloques sur cet exercice ? Utilise une étoile pour valider la leçon et continuer.<br>Chaque abonnement donne 3 étoiles — à utiliser sans modération sur les parties difficiles.</div>
     </div>
     <button class="star-skip-btn" id="star-skip-btn" onclick="useStarSkip('${lesId}')"
@@ -1998,11 +1985,11 @@ function renderFormationComplete() {
   const totalLessons = MODULES.flatMap(m => m.lessons).length;
   const doneLessons  = S.done.length;
   const starsUsed    = 3 - S.stars;
-  const plan         = S.plan === 'premium' ? 'Premium 👑' : 'Standard';
+  const plan         = S.plan === 'premium' ? 'Premium' : 'Standard';
 
   document.getElementById('main').innerHTML = `
   <div class="formation-complete">
-    <div class="fc-icon">🏆</div>
+    <div class="fc-icon"></div>
     <div class="fc-eyebrow">Formation terminée</div>
     <h1 class="fc-title">Tu as <span>tout maîtrisé.</span></h1>
     <p class="fc-sub">
@@ -2040,7 +2027,7 @@ function renderFormationComplete() {
 
     <div class="fc-actions">
       <button class="fc-btn-primary" onclick="renderHome()">← Retour au dashboard</button>
-      ${S.plan === 'standard' ? `<a href="${S.gumroadPremium}" target="_blank"><button class="fc-btn-secondary">Passer Premium 👑 →</button></a>` : ''}
+      ${S.plan === 'standard' ? `<a href="${S.gumroadPremium}" target="_blank"><button class="fc-btn-secondary">Passer Premium →</button></a>` : ''}
     </div>
 
     <div class="fc-cert-note">
@@ -2321,7 +2308,7 @@ async function adminSaveExercise(lesId, type) {
     btn.style.background = 'var(--success)';
     msg.style.display = 'inline';
     setTimeout(() => {
-      btn.textContent = '💾 Sauvegarder';
+      btn.textContent = 'Sauvegarder';
       btn.style.background = '';
       btn.disabled = false;
       msg.style.display = 'none';
@@ -2346,7 +2333,7 @@ async function adminResetExercise(lesId) {
 // Messages aléatoires d'ARIA pendant le chargement
 const ARIA_LOADING_MSGS = [
   "Prépare-toi — c'est là que ça devient concret.",
-  "Réfléchis bien, pas de triche sur celle-là 😄",
+  "Réfléchis bien, pas de triche sur celle-là.",
   "Je suis sûre que tu as tout retenu.",
   "Un exercice bien fait vaut 10 leçons relues.",
   "Montre-moi ce que tu sais faire.",
@@ -2358,7 +2345,7 @@ const ARIA_LOADING_MSGS = [
 function buildTransitionNodes() {
   const container = document.getElementById('ex-tr-nodes');
   if (container.children.length > 0) return;
-  const nodeColors = ['#00E5FF','#FF3CAC','#7B5EA7','#00E5A0'];
+  const nodeColors = ['#00E5FF','#1A8FFF','#7B5EA7','#00E5A0'];
   for (let i = 0; i < 18; i++) {
     const node = document.createElement('div');
     node.className = 'ex-tr-node';

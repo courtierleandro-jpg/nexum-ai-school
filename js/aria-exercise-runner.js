@@ -137,7 +137,7 @@ function _renderAR(ariaMsg) {
       <div class="ar-body">
 
         <div class="ar-aria-row">
-          <div class="ar-avatar">🤖</div>
+          <div class="ar-avatar">AI</div>
           <div class="ar-bubble">
             <div class="ar-bubble-name">ARIA</div>
             <div id="ar-bubble-txt">${ariaMsg}</div>
@@ -157,7 +157,7 @@ function _renderAR(ariaMsg) {
           <div class="ar-feedback" id="ar-feedback" style="display:none"></div>
           <div class="ar-btns" id="ar-btns">
             <button class="ar-btn-validate" id="ar-btn-val" onclick="arValidate()">Valider →</button>
-            ${S.stars > 0 && !isExDone(exId) ? `<button class="ar-btn-skip" onclick="arSkip()">⭐ Passer (${S.stars})</button>` : ''}
+            ${S.stars > 0 && !isExDone(exId) ? `<button class="ar-btn-skip" onclick="arSkip()">Passer (${S.stars})</button>` : ''}
           </div>
         </div>
 
@@ -732,12 +732,12 @@ function _arComplete() {
 
       <div class="ar-body">
         <div class="ar-aria-row">
-          <div class="ar-avatar">🤖</div>
+          <div class="ar-avatar">AI</div>
           <div class="ar-bubble"><div class="ar-bubble-name">ARIA</div><div>${ariaMsg}</div></div>
         </div>
 
         <div class="ar-complete-card">
-          <span class="ar-complete-icon">🏆</span>
+          <span class="ar-complete-icon"></span>
           <div class="ar-complete-title">Leçon terminée !</div>
           <div class="ar-complete-sub">${lesId} · ${mod.title}</div>
           <div class="ar-complete-stats">

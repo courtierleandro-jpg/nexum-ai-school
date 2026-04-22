@@ -1596,7 +1596,7 @@ const EXERCISES = {
   content:{
     question:"Lequel de ces posts LinkedIn est le moins générique ?",
     options:[
-      {text:"\"Le succès ne vient pas du hasard. Il vient du travail, de la persévérance et de la passion. Alors n'abandonnez jamais vos rêves ! 💪\"",correct:false,feedback:"Ce post pourrait être écrit par n'importe qui pour n'importe qui. Zéro information distinctive."},
+      {text:"\"Le succès ne vient pas du hasard. Il vient du travail, de la persévérance et de la passion. Alors n'abandonnez jamais vos rêves !\"",correct:false,feedback:"Ce post pourrait être écrit par n'importe qui pour n'importe qui. Zéro information distinctive."},
       {text:"\"J'ai raté mon premier lancement de formation. 3 ventes en 2 semaines. J'avais passé 6 mois à créer le contenu. Ce que j'avais mal fait : j'avais créé le produit avant de valider la demande. Ce que je ferais différemment : vendre d'abord, créer ensuite.\"",correct:true,feedback:"Spécifique, honnête, une leçon claire. On sent une personne réelle qui partage une expérience réelle."},
       {text:"\"5 conseils pour réussir en entrepreneuriat. 1. Travaillez dur. 2. Restez focus. 3. Entourez-vous bien. 4. Ne jamais abandonner. 5. Profitez du voyage.\"",correct:false,feedback:"Liste générique sans aucune spécificité. Tout le monde peut écrire ça pour tout le monde."},
       {text:"\"L'entrepreneuriat est un voyage difficile mais enrichissant qui transforme profondément notre vision du monde et nous apprend à nous dépasser.\"",correct:false,feedback:"Abstrait, vague, sans exemple concret ni point de vue distinctif."}
