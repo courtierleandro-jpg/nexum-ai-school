@@ -1338,9 +1338,12 @@ Crée une séquence de 7 emails sur 7 jours :
 Pour chaque email : objet + corps (150-200 mots) + CTA.` }
 ];
 
+window._plibContents = {};
+
 function renderPromptLibrary() {
   document.getElementById('main').scrollTop = 0;
   window.scrollTo(0, 0);
+  window._plibContents = {};
 
   const cats = [...new Set(PROMPT_LIBRARY.map(p => p.cat))];
 
@@ -1365,8 +1368,9 @@ function renderPromptLibrary() {
       </div>
       <div class="plib-grid">
         ${prompts.map((p, i) => {
-          const preview = p.content.slice(0, 160).replace(/\n/g,' ').trim() + '…';
           const uid = `plib-${cat.replace(/\s/g,'-')}-${i}`;
+          window._plibContents[uid] = p.content;
+          const preview = p.content.slice(0, 160).replace(/\n/g,' ').trim() + '…';
           return `<div class="plib-card" id="${uid}">
             <div class="plib-card-header">
               <div class="plib-card-name">${p.name}</div>
@@ -1374,8 +1378,8 @@ function renderPromptLibrary() {
             </div>
             <div class="plib-card-preview">${preview}</div>
             <div class="plib-card-footer">
-              <button class="plib-copy-btn" onclick="plibCopy(this, ${JSON.stringify(p.content)})">Copier le prompt</button>
-              <button class="plib-expand-btn" onclick="plibExpand('${uid}', ${JSON.stringify(p.content)})">Voir complet ↓</button>
+              <button class="plib-copy-btn" onclick="plibCopy(this, '${uid}')">Copier le prompt</button>
+              <button class="plib-expand-btn" onclick="plibExpand('${uid}')">Voir complet ↓</button>
             </div>
           </div>`;
         }).join('')}
@@ -1387,7 +1391,8 @@ function renderPromptLibrary() {
   document.getElementById('main').innerHTML = html;
 }
 
-function plibCopy(btn, content) {
+function plibCopy(btn, uid) {
+  const content = window._plibContents[uid];
   navigator.clipboard.writeText(content).then(() => {
     btn.textContent = '✓ Copié !';
     btn.classList.add('copied');
@@ -1398,18 +1403,19 @@ function plibCopy(btn, content) {
   });
 }
 
-function plibExpand(uid, content) {
+function plibExpand(uid) {
+  const content = window._plibContents[uid];
   const card = document.getElementById(uid);
   const preview = card.querySelector('.plib-card-preview');
   const btn = card.querySelector('.plib-expand-btn');
   const isExpanded = card.classList.contains('plib-expanded');
   if (isExpanded) {
     card.classList.remove('plib-expanded');
-    preview.innerHTML = content.slice(0, 160).replace(/\n/g,' ').trim() + '…';
+    preview.textContent = content.slice(0, 160).replace(/\n/g,' ').trim() + '…';
     btn.textContent = 'Voir complet ↓';
   } else {
     card.classList.add('plib-expanded');
-    preview.innerHTML = content.replace(/\n/g,'<br>');
+    preview.textContent = content;
     btn.textContent = 'Réduire ↑';
   }
 }

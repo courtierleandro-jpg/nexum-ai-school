@@ -73,13 +73,18 @@ const EXERCISES = {
   }
 },
 "01.01-D":{
-  type:"freetext",title:"La limite qui te concerne le plus",
-  instructions:"Dans TON activité, quelle limite te pose le plus de problèmes ? Explique pourquoi et quelle solution tu mets en place dès aujourd'hui.",
+  type:"qcm",title:"La limite la plus fréquente en pratique",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Dans mon activité [précise], la limite X me pose problème quand je [situation]. La solution que je mets en place : ...",
-    min_length:100,
-    feedback_ok:"Bonne réflexion appliquée. Reviens à cette réponse dans 30 jours — ta perception évolue avec la pratique.",
-    feedback_ko:"Trop théorique. Ancre-la dans ton contexte réel."
+    question:"Un consultant freelance utilise Claude chaque semaine pour des livrables clients. Quelle limitation modifie le plus son workflow au quotidien ?",
+    options:[
+      {text:"L'absence de mémoire — il doit rappeler son contexte client à chaque nouvelle conversation.",correct:true,feedback:"C'est la limite la plus quotidienne : chaque session repart de zéro. Solution : un bloc de contexte de 3-4 lignes au début de chaque conversation."},
+      {text:"L'hallucination — Claude invente parfois des faits.",correct:false,feedback:"L'hallucination se gère par vigilance sur les données précises. La mémoire impacte chaque session."},
+      {text:"Le biais de complaisance — Claude valide toujours ses idées.",correct:false,feedback:"Le biais s'évite avec la technique adversariale. La mémoire est plus contraignante au quotidien."},
+      {text:"La temporalité — Claude ignore les événements récents.",correct:false,feedback:"La temporalité impacte les questions d'actualité, pas la plupart des tâches de production."}
+    ],
+    feedback_ok:"L'absence de mémoire est la limite la plus quotidienne. Solution : commencer chaque session par un bloc de contexte de 3-4 lignes.",
+    feedback_ko:"La bonne réponse est A. La mémoire zéro entre sessions est la contrainte la plus fréquente — elle impose un protocole systématique."
   }
 },
 "01.01-E":{
@@ -117,17 +122,18 @@ const EXERCISES = {
   }
 },
 "01.01-G":{
-  type:"completion",title:"Les 4 limites en une phrase",
-  instructions:"Complète chaque définition de limite.",
+  type:"qcm",title:"Identifie les 4 limites de Claude",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"nom de la limite 1",hint:"Chaque conversation repart de zéro"},
-      {id:"BLANK_2",placeholder:"nom de la limite 2",hint:"Données arrêtées à une date donnée"},
-      {id:"BLANK_3",placeholder:"nom de la limite 3",hint:"Inventer des faits avec assurance"},
-      {id:"BLANK_4",placeholder:"nom de la limite 4",hint:"Confirmer ce que tu sembles croire"}
+    question:"Quelle liste correspond exactement aux 4 limites fondamentales de Claude ?",
+    options:[
+      {text:"Mémoire, Temporalité, Hallucination, Biais de complaisance",correct:true,feedback:"Ces 4 limites : 1-Mémoire (oublie entre sessions), 2-Temporalité (connaissance figée), 3-Hallucination (invente des faits), 4-Biais de complaisance (confirme tes croyances)."},
+      {text:"Vitesse, Mémoire, Coût, Disponibilité",correct:false,feedback:"Ces aspects sont pratiques mais pas les limites fondamentales à connaître pour un usage professionnel."},
+      {text:"Hallucination, Biais, Internet, Langage",correct:false,feedback:"'Internet' et 'Langage' ne sont pas des limitations au sens de risques opérationnels."},
+      {text:"Compréhension, Mémoire, Créativité, Logique",correct:false,feedback:"Claude ne manque pas de créativité ou de logique. Les limites sont Mémoire, Temporalité, Hallucination et Biais de complaisance."}
     ],
-    feedback_ok:"Les 4 limites mémorisées. Ce sont les 4 situations où Claude peut te coûter du temps ou de la crédibilité.",
-    feedback_ko:"Les 4 limites : 1-Mémoire, 2-Temporalité, 3-Hallucination, 4-Biais de complaisance."
+    feedback_ok:"Les 4 limites : Mémoire + Temporalité + Hallucination + Biais de complaisance. Ce sont les 4 situations à risque dans un usage professionnel.",
+    feedback_ko:"La bonne réponse est A. Les 4 limites fondamentales sont Mémoire, Temporalité, Hallucination et Biais de complaisance."
   }
 },
 "01.01-H":{
@@ -146,13 +152,18 @@ const EXERCISES = {
   ]}
 },
 "01.01-I":{
-  type:"freetext",title:"3 cas d'hallucination dans ton métier",
-  instructions:"Donne 3 situations concrètes dans ton activité où une hallucination de Claude pourrait être dangereuse (pour toi, ton client, ou ta crédibilité).",
+  type:"qcm",title:"Quand l'hallucination de Claude est la plus dangereuse",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Situation 1 : Si je demande à Claude de [tâche], il pourrait inventer [quoi], ce qui causerait [conséquence].\nSituation 2 : ...\nSituation 3 : ...",
-    min_length:120,
-    feedback_ok:"Excellente prise de conscience. Ces 3 situations sont maintenant dans ta mémoire — tu seras plus vigilant quand tu approcheras ces cas.",
-    feedback_ko:"Les situations sont trop génériques. Ancre-les dans ton activité précise avec les conséquences réelles."
+    question:"Dans quelle situation le risque d'hallucination de Claude est-il le plus élevé et le plus coûteux professionnellement ?",
+    options:[
+      {text:"Quand tu lui demandes de rédiger un post LinkedIn créatif.",correct:false,feedback:"La rédaction créative est peu risquée — une imprécision dans un post n'a pas de conséquences graves."},
+      {text:"Quand tu lui demandes des statistiques, des études ou des chiffres précis à présenter à un client.",correct:true,feedback:"Les données chiffrées sont la zone rouge : Claude peut inventer des stats avec un ton parfaitement assuré. Règle : toute donnée chiffrée doit être vérifiée à la source primaire."},
+      {text:"Quand tu lui demandes de résumer un document que tu lui as fourni.",correct:false,feedback:"Sur un document fourni, Claude résume ce qui est dans le texte — moins de risque d'hallucination que sur des faits extérieurs."},
+      {text:"Quand tu lui demandes de formuler un email de relance.",correct:false,feedback:"La rédaction d'emails ne nécessite pas de connaissances factuelles précises — le risque d'hallucination est faible."}
+    ],
+    feedback_ok:"Les données chiffrées, études et statistiques sont les zones de danger absolu. Jamais de stat Claude sans vérification à la source.",
+    feedback_ko:"La bonne réponse est B. Les chiffres et études = zone rouge. Claude peut fabriquer des données précises avec un ton assuré."
   }
 },
 "01.01-J":{
@@ -200,19 +211,18 @@ const EXERCISES = {
   }
 },
 "01.02-C":{
-  type:"completion",title:"Complète le prompt universel",
-  instructions:"Remplis les blancs avec TES vraies informations.",
+  type:"qcm",title:"Les éléments d'un prompt universel efficace",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"rôle précis avec expérience",hint:"Ex: expert en copywriting avec 10 ans en B2B"},
-      {id:"BLANK_2",placeholder:"ton activité en 1 phrase",hint:"Ex: consultant SEO pour e-commerçants Shopify"},
-      {id:"BLANK_3",placeholder:"ton offre principale",hint:"Ex: un audit SEO mensuel à 500€"},
-      {id:"BLANK_4",placeholder:"ta cible précise",hint:"Ex: gérants de boutiques mode en ligne"},
-      {id:"BLANK_5",placeholder:"1 seule tâche précise",hint:"Ex: génère 10 scripts d'accroche LinkedIn"},
-      {id:"BLANK_6",placeholder:"longueur + structure + ton",hint:"Ex: liste de 10 points, 2 lignes max, ton direct"}
+    question:"Un prompt universel efficace doit contenir dans l'ordre :",
+    options:[
+      {text:"Rôle → Activité → Offre → Cible → Tâche → Format",correct:true,feedback:"C'est la séquence optimale : positionner l'expert (rôle), donner le contexte (activité + offre + cible), puis la demande précise (tâche) et enfin la forme attendue (format)."},
+      {text:"Question → Réponse → Exemple → Correction",correct:false,feedback:"Cette séquence décrit un dialogue pédagogique, pas un prompt universel de travail."},
+      {text:"Sujet → Longueur → Ton → Deadline",correct:false,feedback:"Incomplet — cette séquence oublie le rôle expert et le contexte métier, les deux éléments les plus impactants."},
+      {text:"Tâche → Rôle → Format → Contexte",correct:false,feedback:"L'ordre n'est pas optimal : le Rôle doit venir avant la Tâche pour calibrer la perspective experte dès le début."}
     ],
-    feedback_ok:"Prompt solide. Ce template couvre 80% de tes besoins pour les 6 prochains mois.",
-    feedback_ko:"Certains blancs sont encore trop vagues. Reprends avec ton activité précise."
+    feedback_ok:"Rôle → Activité → Offre → Cible → Tâche → Format = la séquence universelle pour obtenir des réponses personnalisées et utilisables.",
+    feedback_ko:"La bonne réponse est A. L'ordre optimal : Rôle (expert), Contexte (activité + offre + cible), Tâche (une seule), Format (comment répondre)."
   }
 },
 "01.02-D":{
@@ -291,13 +301,18 @@ const EXERCISES = {
   }
 },
 "01.02-I":{
-  type:"freetext",title:"Analyse tes 3 derniers prompts",
-  instructions:"Pense aux 3 derniers vrais prompts que tu as envoyés à Claude. Identifie pour chacun quelle(s) erreur(s) tu faisais et comment tu les améliorerais.",
+  type:"qcm",title:"L'erreur principale dans un prompt débutant",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Prompt 1 : [Ce que j'avais tapé]\nErreur commise : [vague / empilage / pas de format / contexte manquant]\nVersion améliorée : [...]\n\nPrompt 2 : ...\nPrompt 3 : ...",
-    min_length:150,
-    feedback_ok:"Cet exercice d'auto-analyse est le plus utile de la leçon. Tu viens d'identifier tes propres schémas d'erreur — c'est la base du progrès réel.",
-    feedback_ko:"Sois plus spécifique sur les vrais prompts que tu as utilisés. L'exercice n'a de valeur que si c'est concret et réel."
+    question:"Un utilisateur envoie ce prompt : 'Aide-moi à rédiger un email professionnel.' Quelle est l'erreur PRINCIPALE qui va donner une réponse générique ?",
+    options:[
+      {text:"Le ton n'est pas spécifié.",correct:false,feedback:"Le ton est important, mais l'absence de contexte est le problème principal ici."},
+      {text:"Le contexte manque totalement : on ne sait pas à qui, pourquoi, ni quel objectif.",correct:true,feedback:"Sans contexte (qui envoie, à qui, pour quoi), Claude va produire un template universel inutilisable. Le contexte est l'ingrédient n°1."},
+      {text:"'Professionnel' est un adjectif trop subjectif.",correct:false,feedback:"C'est un problème secondaire. Le vrai problème est l'absence totale de contexte."},
+      {text:"La demande est trop courte.",correct:false,feedback:"La longueur n'est pas le problème — un prompt de 3 lignes précis vaut mieux qu'un long prompt vague."}
+    ],
+    feedback_ok:"L'absence de contexte (expéditeur, destinataire, objectif) est l'erreur n°1. Sans contexte, Claude improvise.",
+    feedback_ko:"La bonne réponse est B. Le contexte manquant est l'erreur principale — Claude ne sait pas pour qui ni pourquoi."
   }
 },
 "01.02-J":{
@@ -401,28 +416,33 @@ const EXERCISES = {
   }
 },
 "01.03-F":{
-  type:"completion",title:"Complète les descriptions",
-  instructions:"Complète chaque description avec le bon type d'IA.",
+  type:"qcm",title:"Quelle famille d'IA pour quelle description ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"type d'IA",hint:"Traite le texte, l'analyse, le raisonnement"},
-      {id:"BLANK_2",placeholder:"type d'IA",hint:"Génère des images à partir de descriptions texte"},
-      {id:"BLANK_3",placeholder:"type d'IA",hint:"Synthétise et clone des voix humaines"},
-      {id:"BLANK_4",placeholder:"type d'IA",hint:"Génère et édite des clips vidéo"},
-      {id:"BLANK_5",placeholder:"outil spécifique",hint:"LLM développé par Anthropic"}
+    question:"Un LLM comme Claude est principalement conçu pour :",
+    options:[
+      {text:"Générer des images à partir de descriptions textuelles.",correct:false,feedback:"C'est le rôle des modèles de diffusion (Midjourney, DALL-E, Flux). Claude est un modèle de langage."},
+      {text:"Traiter, analyser et générer du texte avec raisonnement.",correct:true,feedback:"LLM = Large Language Model. Claude analyse des textes, raisonne, génère du contenu écrit, code, répond à des questions — tout ce qui relève du langage."},
+      {text:"Synthétiser et cloner des voix humaines.",correct:false,feedback:"C'est le rôle des modèles TTS/STT comme ElevenLabs ou Whisper."},
+      {text:"Générer des clips vidéo à partir de prompts.",correct:false,feedback:"C'est le rôle des modèles de génération vidéo comme Runway, Kling AI, ou Pika."}
     ],
-    feedback_ok:"Taxonomie maîtrisée. Tu peux maintenant choisir le bon outil sans hésiter.",
-    feedback_ko:"Les 4 familles : LLM (langage), Diffusion (image), TTS/STT (audio), Génération vidéo."
+    feedback_ok:"LLM = traitement et génération de texte avec raisonnement. C'est la famille la plus utile au quotidien pour les entrepreneurs.",
+    feedback_ko:"La bonne réponse est B. Un LLM (Large Language Model) est spécialisé dans le traitement et la génération de texte avec raisonnement."
   }
 },
 "01.03-G":{
-  type:"freetext",title:"Ton stack IA idéal",
-  instructions:"Liste les 3 familles d'IA dont tu as besoin dans ton activité. Pour chacune, précise le cas d'usage concret et l'outil que tu utiliserais.",
+  type:"qcm",title:"Le bon outil pour chaque besoin",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Famille 1 : [LLM/Image/Audio/Vidéo]\nCas d'usage dans mon activité : [...]\nOutil choisi : [...] parce que [...]\n\nFamille 2 : ...\nFamille 3 : ...",
-    min_length:120,
-    feedback_ok:"Stack personnalisé défini. C'est la base de ta stratégie IA — 3 outils maîtrisés valent mieux que 10 testés superficiellement.",
-    feedback_ko:"Sois plus spécifique sur les cas d'usage concrets dans TON activité."
+    question:"Un coach indépendant veut : 1) rédiger ses emails clients, 2) créer des visuels Instagram, 3) transcrire ses appels coaching de 60 min. Combien d'outils IA distincts a-t-il besoin ?",
+    options:[
+      {text:"1 — Claude peut tout faire.",correct:false,feedback:"Claude excelle en texte mais ne génère pas d'images professionnelles ni ne transcrit l'audio."},
+      {text:"2 — Un LLM pour le texte et la transcription, un outil image pour les visuels.",correct:false,feedback:"La transcription audio est une famille distincte (Whisper). Il faut 3 outils."},
+      {text:"3 — Claude pour les emails, Midjourney pour les visuels, Whisper pour les transcriptions.",correct:true,feedback:"3 familles d'IA distinctes : LLM (texte), Image (visuels), Audio/STT (transcription). Chaque outil dans son domaine."},
+      {text:"4 — Un outil différent pour chaque sous-tâche.",correct:false,feedback:"Un outil par famille, pas par sous-tâche. 3 familles = 3 outils suffisent."}
+    ],
+    feedback_ok:"Claude → texte, Midjourney → images, Whisper → transcription. 3 familles, 3 outils spécialisés.",
+    feedback_ko:"La bonne réponse est C. Chaque besoin correspond à une famille d'IA distincte — 3 besoins = 3 outils."
   }
 },
 "01.03-H":{
@@ -490,13 +510,18 @@ const EXERCISES = {
   }
 },
 "01.04-B":{
-  type:"freetext",title:"Tes instructions personnalisées Claude",
-  instructions:"Rédige tes instructions personnalisées complètes avec le template de la leçon. Tes vraies informations.",
+  type:"qcm",title:"Que doivent inclure les instructions personnalisées Claude ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"MON PRÉNOM : ...\nMON ACTIVITÉ : ...\nCE QUE JE VENDS : ...\nMA CIBLE IDÉALE : ...\nMES PROJETS EN COURS : ...\nMON TON PRÉFÉRÉ : ...\nCE QUE JE NE VEUX PAS : ...\nMES OUTILS HABITUELS : ...",
-    min_length:150,
-    feedback_ok:"Instructions solides. Test : colle-les dans Claude → Settings → Personal preferences. Nouvelle conversation → 'Que sais-tu de moi ?' Si Claude reformule correctement ton activité — ça fonctionne.",
-    feedback_ko:"Les instructions sont trop vagues. L'objectif : que Claude te comprenne sans que tu te réexpliques. Ajoute activité précise, cible précise, et au moins 1 projet en cours."
+    question:"Tu configures les instructions personnalisées Claude pour ton activité. Quel ensemble d'informations est le plus utile ?",
+    options:[
+      {text:"Ton prénom et ta ville.",correct:false,feedback:"Trop peu de contexte — Claude ne peut pas personnaliser ses réponses avec seulement un prénom et une ville."},
+      {text:"Ton activité, ta cible, tes projets en cours, ton ton préféré, ce que tu ne veux pas.",correct:true,feedback:"Ces 5 éléments donnent à Claude le contexte permanent pour adapter chaque réponse à ton contexte réel sans que tu le réexpliques."},
+      {text:"La liste de tes outils préférés.",correct:false,feedback:"Utile mais secondaire — l'activité et la cible ont plus d'impact sur la qualité des réponses."},
+      {text:"Tes créneaux de disponibilité.",correct:false,feedback:"Les créneaux ne servent à rien dans les instructions — Claude n'a pas de notion du temps."}
+    ],
+    feedback_ok:"Activité + cible + projets + ton + interdits = les 5 éléments qui permettent à Claude de te comprendre sans réexplication.",
+    feedback_ko:"La bonne réponse est B. Ces 5 éléments constituent le contexte permanent que Claude utilisera dans toutes tes conversations."
   }
 },
 "01.04-C":{
@@ -574,17 +599,18 @@ const EXERCISES = {
   }
 },
 "01.04-H":{
-  type:"completion",title:"Les forces de chaque LLM en une ligne",
-  instructions:"Complète chaque description.",
+  type:"qcm",title:"Quelle est la force principale de Claude ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"force de Claude",hint:"Documents longs, raisonnement, nuance"},
-      {id:"BLANK_2",placeholder:"force de ChatGPT",hint:"Écosystème, plugins, API la plus utilisée"},
-      {id:"BLANK_3",placeholder:"force de Gemini",hint:"Intégration Google, web en temps réel"},
-      {id:"BLANK_4",placeholder:"règle de choix",hint:"Dépend de la tâche, pas de la popularité"}
+    question:"Parmi ces descriptions, laquelle correspond le mieux à la force principale de Claude ?",
+    options:[
+      {text:"Écosystème le plus large, API la plus utilisée, intégrations nombreuses.",correct:false,feedback:"C'est la force de ChatGPT/OpenAI, pas de Claude."},
+      {text:"Analyse de documents longs, raisonnement nuancé, écriture naturelle.",correct:true,feedback:"C'est exactement là où Claude se distingue : grande fenêtre de contexte pour les documents denses, raisonnement subtil sur des sujets complexes, et écriture qui sonne humaine."},
+      {text:"Intégration Google, accès web en temps réel, multimodal natif.",correct:false,feedback:"C'est la force de Gemini (Google), pas de Claude."},
+      {text:"Open source, économique, adapté aux usages techniques sensibles.",correct:false,feedback:"C'est la force de Mistral (modèle européen open source), pas de Claude."}
     ],
-    feedback_ok:"Mapping clair. Tu peux maintenant choisir le bon LLM selon la tâche.",
-    feedback_ko:"Mémo : Claude → analyse longue, ChatGPT → écosystème, Gemini → Google+web."
+    feedback_ok:"Claude = documents longs + raisonnement nuancé + écriture naturelle. C'est son triptyque de forces distinctives.",
+    feedback_ko:"La bonne réponse est B. Claude excelle sur les documents denses, le raisonnement nuancé et l'écriture de qualité."
   }
 },
 "01.04-I":{
@@ -600,13 +626,18 @@ const EXERCISES = {
   }
 },
 "01.04-J":{
-  type:"freetext",title:"Ton setup LLM personnel",
-  instructions:"Décris ton setup LLM idéal pour les 3 prochains mois : quel LLM pour quelle catégorie de tâches dans ton activité, et pourquoi.",
+  type:"qcm",title:"Quel LLM pour quelle tâche ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Mon activité principale : [...]\n\nPour les tâches de [catégorie], j'utilise [LLM] parce que [...]\nPour les tâches de [catégorie], j'utilise [LLM] parce que [...]\nPour les tâches de [catégorie], j'utilise [LLM] parce que [...]\n\nBudget mensuel estimé : [...]",
-    min_length:120,
-    feedback_ok:"Setup personnel défini. La clarté sur 'quel outil pour quoi' évite la paralysie du choix et l'abonnement inutile à tout.",
-    feedback_ko:"Sois plus spécifique sur tes cas d'usage réels et les raisons concrètes de ton choix."
+    question:"Pour un consultant freelance, quel est le meilleur setup LLM selon les tâches ?",
+    options:[
+      {text:"Claude pour tout — il est le plus complet.",correct:false,feedback:"Claude est excellent pour les documents longs et le raisonnement, mais pas optimal pour toutes les tâches (ex: actualité récente)."},
+      {text:"ChatGPT pour tout — il a le plus de plugins.",correct:false,feedback:"Les plugins sont utiles, mais ChatGPT n'est pas le meilleur sur les documents longs et le raisonnement nuancé."},
+      {text:"Claude pour analyser des documents longs et rédiger du contenu, Gemini pour les recherches d'infos récentes.",correct:true,feedback:"Chaque LLM dans sa force : Claude → documents + raisonnement, Gemini → actualité + web. C'est le setup optimal."},
+      {text:"Utiliser le même LLM pour tout pour éviter les abonnements multiples.",correct:false,feedback:"La logique de coût est compréhensible, mais le bon outil pour chaque tâche donne de meilleurs résultats."}
+    ],
+    feedback_ok:"Claude pour l'analyse et le contenu, Gemini pour l'actualité. Chaque LLM dans son domaine d'excellence.",
+    feedback_ko:"La bonne réponse est C. Le bon setup : Claude pour les documents longs, Gemini pour les infos récentes."
   }
 },
 
@@ -614,20 +645,18 @@ const EXERCISES = {
 // MODULE 02 · Leçon 02.01 — La formule RCTFE
 // ══════════════════════════════════════════════════════════════════
 "02.01-A":{
-  type:"completion",title:"Complète le prompt RCTFE",
-  instructions:"Remplis les blancs avec TES vraies informations.",
+  type:"qcm",title:"Que signifie l'acronyme RCTFE ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"expert précis avec expérience chiffrée",hint:"Ex: directeur marketing B2B avec 12 ans en SaaS"},
-      {id:"BLANK_2",placeholder:"ton activité",hint:"Ex: consultant en recrutement pour PME industrielles"},
-      {id:"BLANK_3",placeholder:"ton offre",hint:"Ex: des accompagnements de recrutement de cadres"},
-      {id:"BLANK_4",placeholder:"ta cible",hint:"Ex: DRH de PME 50-200 salariés en industrie"},
-      {id:"BLANK_5",placeholder:"contexte spécifique",hint:"Ex: je prépare ma première campagne LinkedIn"},
-      {id:"BLANK_6",placeholder:"verbe d'action + livrable précis",hint:"Ex: génères 10 messages de prospection LinkedIn"},
-      {id:"BLANK_7",placeholder:"longueur / structure / ton",hint:"Ex: 10 messages numérotés, 3 lignes max, ton direct"}
+    question:"La formule RCTFE signifie :",
+    options:[
+      {text:"Rôle, Contexte, Tâche, Format, Exemples",correct:true,feedback:"C'est la formule complète : R (Rôle expert), C (Contexte de ta situation), T (Tâche précise), F (Format de sortie), E (Exemples de ce que tu attends). Ces 5 éléments transforment n'importe quelle demande en prompt professionnel."},
+      {text:"Résultat, Clarté, Temps, Fichier, Évaluation",correct:false,feedback:"Ces mots ne correspondent pas à la formule RCTFE. Les 5 éléments sont Rôle, Contexte, Tâche, Format, Exemples."},
+      {text:"Rédiger, Corriger, Tester, Filtrer, Exécuter",correct:false,feedback:"Ces verbes décrivent un processus, pas les composantes d'un prompt structuré."},
+      {text:"Rôle, Contenu, Type, Forme, Évaluation",correct:false,feedback:"Proche mais incorrect. C'est Contexte (pas Contenu) et Exemples (pas Évaluation) qui complètent la formule."}
     ],
-    feedback_ok:"Prompt complet. Envoie-le dans Claude — si la réponse est utilisable à 80%+ sans retouche majeure, ton RCTFE était bon.",
-    feedback_ko:"Certains blancs sont encore trop génériques. Un Rôle efficace a une expérience chiffrée. Un Contexte efficace a activité précise + cible précise."
+    feedback_ok:"RCTFE = Rôle + Contexte + Tâche + Format + Exemples. Ces 5 éléments sont la base de tout prompt professionnel.",
+    feedback_ko:"La bonne réponse est A. RCTFE : Rôle, Contexte, Tâche, Format, Exemples — mémorise cet acronyme."
   }
 },
 "02.01-B":{
@@ -719,13 +748,18 @@ const EXERCISES = {
   }
 },
 "02.01-H":{
-  type:"freetext",title:"Construis un RCTFE pour une tâche difficile",
-  instructions:"Pense à une tâche pour laquelle tu as du mal à obtenir de bons résultats de Claude. Construis le RCTFE complet pour cette tâche.",
+  type:"qcm",title:"Quel élément RCTFE manque le plus souvent ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Tâche difficile : [...]\n\nR: Tu es [rôle précis avec expérience]\nC: Je suis [activité], je vends [offre] à [cible]. Contexte actuel : [situation]\nT: Je veux que tu [action précise + livrable]\nF: Format : [longueur, structure, ton]\nE: Exemple de ce que j'attends : [si applicable]",
-    min_length:150,
-    feedback_ok:"RCTFE complet sur une tâche difficile. Lance-le sur Claude et compare avec tes anciens prompts sur la même tâche. La différence devrait être immédiatement visible.",
-    feedback_ko:"Le RCTFE est incomplet. Au minimum R+C+T doivent être précis. Le Format est optionnel mais très recommandé."
+    question:"Prompt : 'Tu es consultant RH avec 10 ans d'expérience. Rédige 5 questions pour un entretien de recrutement. Format : liste numérotée.' Quel élément RCTFE manque ?",
+    options:[
+      {text:"Le Rôle — il n'est pas assez précis.",correct:false,feedback:"Le rôle est correct : consultant RH avec 10 ans d'expérience."},
+      {text:"Le Contexte — on ne sait pas pour quel poste, quelle entreprise, quel type de candidat.",correct:true,feedback:"Sans contexte (poste, entreprise, niveau, secteur), Claude va générer des questions génériques valables pour n'importe quel entretien."},
+      {text:"La Tâche — '5 questions' n'est pas assez précis.",correct:false,feedback:"La tâche est claire : rédige 5 questions pour un entretien de recrutement."},
+      {text:"Le Format — une liste numérotée n'est pas assez structurée.",correct:false,feedback:"Le format est clair. Le problème est le contexte manquant."}
+    ],
+    feedback_ok:"Le Contexte est l'élément le plus souvent oublié. Sans poste/secteur/niveau précis, les questions seront génériques.",
+    feedback_ko:"La bonne réponse est B. Le Contexte (pour quel poste, quel secteur, quel candidat) est l'élément manquant."
   }
 },
 "02.01-I":{
@@ -818,17 +852,18 @@ const EXERCISES = {
   ]}
 },
 "02.02-E":{
-  type:"completion",title:"Complète la version expert",
-  instructions:"Complète ce prompt basique pour le transformer en prompt expert.",
+  type:"qcm",title:"Transformer un prompt basique en expert",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"rôle avec expérience",hint:"Spécialiste en [domaine] avec [X ans] en [secteur]"},
-      {id:"BLANK_2",placeholder:"ton activité",hint:"Je suis [métier], je vends [offre] à [cible]"},
-      {id:"BLANK_3",placeholder:"tâche précise",hint:"Verbe d'action + livrable + nombre si applicable"},
-      {id:"BLANK_4",placeholder:"format détaillé",hint:"Longueur + structure + ton + forme"}
+    question:"Prompt basique : 'Aide-moi à trouver des clients.' Quelle version améliorée est la meilleure ?",
+    options:[
+      {text:"'Aide-moi rapidement et efficacement à trouver des clients.'",correct:false,feedback:"Ajouter des adverbes ne remplace pas le contexte. La demande reste inutilisable."},
+      {text:"'Donne-moi des conseils pour prospecter des clients.'",correct:false,feedback:"'Conseils' est vague — Claude va lister des généralités. Un prompt expert demande un livrable précis."},
+      {text:"'Tu es expert en développement commercial avec 10 ans en B2B de services. Je suis consultant SEO freelance, je cible des e-commerçants Shopify. Génère 5 scripts d'approche LinkedIn pour ce profil. Format : structure en 3 parties (accroche + problème + CTA). Ton direct.'",correct:true,feedback:"RCTFE complet : rôle précis + contexte exact (qui prospecte, qui est prospecté) + tâche unique + format + ton = prompt expert. La réponse est directement utilisable."},
+      {text:"'Comment trouver des clients en tant que freelance ?'",correct:false,feedback:"Question générique = réponse générique. Sans contexte sur ton activité et ta cible, la réponse vaut pour n'importe qui."}
     ],
-    feedback_ok:"Transformation réussie. Compare la longueur et la précision avec le prompt de départ.",
-    feedback_ko:"Au moins le rôle et la tâche doivent être précis. Recommence en pensant à une vraie situation."
+    feedback_ok:"RCTFE complet = réponse directement utilisable. Rôle précis + contexte exact + tâche unique + format = transformation réussie.",
+    feedback_ko:"La bonne réponse est C. C'est la seule version avec les 5 composantes RCTFE complètes."
   }
 },
 "02.02-F":{
@@ -847,13 +882,18 @@ const EXERCISES = {
   }
 },
 "02.02-G":{
-  type:"freetext",title:"Transforme ce prompt médiocre",
-  instructions:"Reçois ce prompt basique et écris la version expert complète avec RCTFE pour TON activité.",
+  type:"qcm",title:"Comment améliorer 'Aide-moi à me faire connaître' ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Prompt original : 'Aide-moi à me faire connaître.'\n\nMa version expert :\nR: Tu es...\nC: Je suis..., je vends... à...\nT: Je veux que tu...\nF: Format : ...",
-    min_length:120,
-    feedback_ok:"Transformation réussie. La version que tu viens d'écrire vaut 10 fois le prompt original. Utilise-la vraiment cette semaine.",
-    feedback_ko:"La transformation est incomplète. Assure-toi que le contexte contient TON activité réelle et TA cible précise."
+    question:"Prompt original : 'Aide-moi à me faire connaître.' Quelle version améliorée est la meilleure ?",
+    options:[
+      {text:"'Aide-moi à me faire connaître rapidement et efficacement.'",correct:false,feedback:"Ajouter des adverbes ne remplace pas le contexte. La demande reste vague."},
+      {text:"'Donne-moi 10 idées pour me faire connaître en ligne.'",correct:false,feedback:"Mieux — il y a un livrable précis. Mais toujours sans contexte sur qui tu es, ta cible, ton secteur."},
+      {text:"'Tu es expert en personal branding. Je suis architecte freelance spécialisé en rénovation pour clients 45-60 ans. Génère 5 stratégies pour me faire connaître auprès de cette cible sans budget pub. Format : liste avec une action concrète par point.'",correct:true,feedback:"RCTFE complet : rôle, contexte précis (activité + cible), tâche unique, contrainte, format. C'est la transformation optimale."},
+      {text:"'Comment est-ce que je peux me faire connaître dans mon domaine ?'",correct:false,feedback:"Question légèrement plus précise mais toujours sans contexte sur qui tu es ni ta cible."}
+    ],
+    feedback_ok:"RCTFE complet : rôle + contexte précis + tâche + contrainte + format = réponse directement actionnable.",
+    feedback_ko:"La bonne réponse est C. C'est la seule version avec rôle + contexte précis + tâche + format."
   }
 },
 "02.02-H":{
@@ -988,17 +1028,18 @@ const EXERCISES = {
   }
 },
 "02.03-F":{
-  type:"completion",title:"Corrige ce prompt sans les erreurs",
-  instructions:"Réécris ce prompt en éliminant toutes les erreurs. Prompt original : 'Tu es un expert. Aide-moi avec mon business. Sois créatif mais raisonnable et pas trop long mais complet.'",
+  type:"qcm",title:"Corriger un prompt avec plusieurs erreurs",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"rôle précis sans contradiction",hint:"Expert en [domaine précis] avec [X ans] en [contexte]"},
-      {id:"BLANK_2",placeholder:"contexte réel de ton activité",hint:"Je suis [métier], je vends [offre] à [cible]"},
-      {id:"BLANK_3",placeholder:"une tâche précise et unique",hint:"1 seul livrable, verbe d'action, critères de qualité"},
-      {id:"BLANK_4",placeholder:"format sans contradiction",hint:"Longueur précise OU structure précise — pas les deux en conflit"}
+    question:"Prompt original : 'Tu es un expert. Aide-moi avec mon business. Sois créatif mais raisonnable et pas trop long mais complet.' Quelle correction est la meilleure ?",
+    options:[
+      {text:"'Tu es un expert en business. Aide-moi de façon créative et complète.'",correct:false,feedback:"Le rôle reste vague et les contraintes sont toujours contradictoires."},
+      {text:"'Tu es consultant en stratégie commerciale avec 12 ans en services B2B. Je suis coach en reconversion professionnelle. Identifie mes 3 leviers de croissance prioritaires pour les 90 prochains jours. Format : liste numérotée avec 1 action concrète par levier.'",correct:true,feedback:"Les erreurs corrigées : rôle précis (consultant + 12 ans), contexte réel (coach en reconversion), tâche unique (3 leviers), format sans contradiction (liste numérotée)."},
+      {text:"'Aide-moi avec mon business de façon professionnelle.'",correct:false,feedback:"'Professionnelle' ne remplace pas le contexte manquant. La demande reste inutilisable."},
+      {text:"'Expert, aide-moi business, créatif, 200 mots.'",correct:false,feedback:"Trop fragmenté — la structure est perdue. Un bon prompt est une phrase complète avec du contexte."}
     ],
-    feedback_ok:"Prompt corrigé. Sans contradictions, sans ambiguité — Claude peut maintenant travailler efficacement.",
-    feedback_ko:"Vérifie que tes critères ne s'annulent pas mutuellement (ex: court ET complet → précise 3 points max)."
+    feedback_ok:"Rôle précis + contexte réel + tâche unique + format clair = toutes les erreurs corrigées en une version.",
+    feedback_ko:"La bonne réponse est B. Elle corrige les 3 problèmes : rôle vague, contexte manquant, et contraintes contradictoires."
   }
 },
 "02.03-G":{
@@ -1029,13 +1070,18 @@ const EXERCISES = {
   }
 },
 "02.03-I":{
-  type:"freetext",title:"Mes 3 erreurs principales",
-  instructions:"Identifie les 3 erreurs que TU commets le plus souvent dans tes prompts. Donne un exemple réel de chacune et comment tu vas la corriger.",
+  type:"qcm",title:"Quelle est l'erreur avancée la plus coûteuse ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Erreur 1 que je commets : [...]\nExemple réel : [...]\nComment je la corrige : [...]\n\nErreur 2 : ...\nErreur 3 : ...",
-    min_length:150,
-    feedback_ok:"Auto-diagnostic précis. Ces 3 erreurs identifiées sont maintenant des signaux d'alerte — tu les reconnaîtras avant d'envoyer ton prochain prompt.",
-    feedback_ko:"Trop générique. Identifie des erreurs que TU commets vraiment avec des exemples concrets de tes conversations Claude."
+    question:"Parmi les 5 erreurs avancées de prompt, laquelle a les conséquences les plus graves pour les décisions business ?",
+    options:[
+      {text:"Les contraintes contradictoires — Claude produit un résultat médiocre.",correct:false,feedback:"Les contradictions donnent un résultat médiocre mais identifiable. Le biais de complaisance est plus insidieux."},
+      {text:"Le biais de complaisance non contré — Claude valide de mauvaises décisions avec assurance.",correct:true,feedback:"C'est l'erreur la plus dangereuse : Claude confirme une mauvaise stratégie avec un argumentaire convaincant. La décision semble validée alors qu'elle ne l'est pas."},
+      {text:"Le contexte mensonger — Claude donne des conseils inadaptés.",correct:false,feedback:"Le contexte mensonger donne des conseils inadaptés mais tu le sais. Le biais de complaisance te convainc d'une fausse réalité."},
+      {text:"Changer de sujet dans la conversation — les réponses sont moins cohérentes.",correct:false,feedback:"Ce problème est réel mais facilement identifiable et correctible."}
+    ],
+    feedback_ok:"Le biais de complaisance est l'erreur la plus dangereuse : Claude valide tes mauvaises idées avec autant de conviction que les bonnes.",
+    feedback_ko:"La bonne réponse est B. Le biais de complaisance non contré peut conduire à des décisions business erronées confirmées par Claude."
   }
 },
 "02.03-J":{
@@ -1120,18 +1166,18 @@ const EXERCISES = {
   }
 },
 "03.01-E":{
-  type:"completion",title:"Le template d'email universel",
-  instructions:"Complète ce template d'email avec TES vraies informations.",
+  type:"qcm",title:"Quels éléments constituent un bon template d'email ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"type d'email",hint:"Prospection / Relance / Devis / Remerciement"},
-      {id:"BLANK_2",placeholder:"destinataire précis",hint:"Poste + secteur + taille d'entreprise"},
-      {id:"BLANK_3",placeholder:"problème ou contexte du destinataire",hint:"Ce qu'ils vivent, leur enjeu actuel"},
-      {id:"BLANK_4",placeholder:"valeur que tu apportes",hint:"Ce que TU résous en 1 phrase"},
-      {id:"BLANK_5",placeholder:"CTA précis",hint:"1 seule action demandée, facile à faire"}
+    question:"Pour créer un template d'email de prospection réutilisable, quels éléments sont indispensables dans le prompt Claude ?",
+    options:[
+      {text:"Le type d'email + le destinataire précis + le problème du destinataire + la valeur apportée + le CTA.",correct:true,feedback:"Ces 5 éléments permettent à Claude de générer un email centré sur le prospect (pas sur toi), avec une proposition de valeur claire et un appel à l'action précis."},
+      {text:"La longueur de l'email + le nombre de paragraphes + le style de salutation.",correct:false,feedback:"Ces paramètres de format sont secondaires — le contenu (problème + valeur + CTA) est ce qui fait un bon email."},
+      {text:"Ton prénom + le nom de ton entreprise + ta liste de services.",correct:false,feedback:"Ces informations sont centrées sur toi, pas sur le prospect. Un bon email de prospection part du problème du destinataire."},
+      {text:"La date d'envoi + le canal + le budget du prospect.",correct:false,feedback:"La date et le budget ne font pas partie du template — ils varient par prospect."}
     ],
-    feedback_ok:"Template personnalisé prêt. Lance ce prompt dans Claude et tu as un email utilisable en 30 secondes.",
-    feedback_ko:"Le destinataire et le CTA sont les deux éléments les plus importants. Sois plus précis sur ces deux-là."
+    feedback_ok:"Type + destinataire + problème + valeur + CTA = les 5 éléments d'un template d'email de prospection efficace.",
+    feedback_ko:"La bonne réponse est A. Ces 5 éléments permettent de générer un email centré sur le prospect avec une proposition de valeur claire."
   }
 },
 "03.01-F":{
@@ -1162,12 +1208,18 @@ const EXERCISES = {
   }
 },
 "03.01-H":{
-  type:"freetext",title:"Crée ta bibliothèque d'emails",
-  instructions:"Liste les 5 types d'emails que tu envoies le plus souvent dans ton activité. Pour chacun, décris en 2 lignes le contexte type et ce que tu attends comme résultat.",
+  type:"qcm",title:"Comment créer une bibliothèque d'emails avec Claude ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Email type 1 : [ex: relance devis]\nContexte type : [à qui, pourquoi, quelle situation]\nRésultat attendu : [réponse, RDV, paiement...]\n\nEmail type 2 : ...",
-    min_length:150,
-    feedback_ok:"Bibliothèque identifiée. L'étape suivante : créer un prompt RCTFE pour chacun de ces 5 types et les sauvegarder dans tes instructions personnalisées Claude."
+    question:"Tu veux créer des templates d'emails réutilisables avec Claude pour tes 5 types d'emails les plus fréquents. Quelle est la meilleure méthode ?",
+    options:[
+      {text:"Créer 5 emails séparément en 5 sessions Claude différentes.",correct:false,feedback:"5 sessions séparées = 5 reconfigurages du contexte. Moins efficace qu'une session unifiée."},
+      {text:"Définir une fois ton contexte (activité, cible, ton) puis demander à Claude de générer les 5 templates en une session.",correct:true,feedback:"Une session unique avec ton contexte complet produit des templates cohérents entre eux et adaptés à ton style. C'est la méthode batch."},
+      {text:"Copier des templates génériques et les adapter manuellement.",correct:false,feedback:"Claude peut générer des templates déjà adaptés à ton contexte — l'adaptation manuelle n'est plus nécessaire."},
+      {text:"Utiliser les templates par défaut de ton outil d'emailing.",correct:false,feedback:"Les templates génériques ne sont pas adaptés à ton style ni à ta cible spécifique."}
+    ],
+    feedback_ok:"1 session avec contexte complet = templates cohérents. Méthode batch : donne ton contexte une fois, génère tout en une session.",
+    feedback_ko:"La bonne réponse est B. Une session contextualisée produit des templates cohérents et adaptés à ton style."
   }
 },
 "03.01-I":{
@@ -1267,12 +1319,18 @@ const EXERCISES = {
   }
 },
 "03.02-E":{
-  type:"freetext",title:"Le document que tu lis le moins",
-  instructions:"Pense au type de document que tu reçois régulièrement mais que tu lis rarement faute de temps (conditions générales, rapports, études...). Décris comment tu vas utiliser Claude pour l'analyser à partir de maintenant.",
+  type:"qcm",title:"Quel type de document bénéficie le plus de l'analyse Claude ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Le document que je reçois mais ne lis pas : [...]\nPourquoi je ne le lis pas : [...]\nComment je vais l'analyser avec Claude à partir de maintenant :\nPrompt que je vais utiliser : [...]",
-    min_length:100,
-    feedback_ok:"Excellent cas d'usage identifié. Ce type de document non lu est souvent source de risques ou d'opportunités manquées. Claude devient ton filtre de première lecture."
+    question:"Pour quel type de document l'analyse par Claude apporte-t-elle le plus de valeur par rapport à une lecture manuelle ?",
+    options:[
+      {text:"Un email de 5 lignes d'un client.",correct:false,feedback:"Un email court se lit en 30 secondes — Claude n'apporte pas de valeur supplémentaire significative."},
+      {text:"Un contrat de 20 pages avec des clauses juridiques complexes.",correct:true,feedback:"Un document long et dense avec jargon juridique : Claude peut extraire en 2 minutes les risques clés qu'une lecture manuelle aurait pris 1 heure à identifier. C'est le cas d'usage idéal."},
+      {text:"Un devis d'un prestataire avec 5 lignes.",correct:false,feedback:"Un devis court se compare facilement manuellement."},
+      {text:"Une newsletter que tu as écrite toi-même.",correct:false,feedback:"Analyser son propre texte est utile pour la relecture, mais ce n'est pas là que le gain de temps est le plus important."}
+    ],
+    feedback_ok:"Les documents longs et denses (contrats, rapports, études) sont le cas d'usage idéal — Claude lit en secondes ce qui prendrait des heures.",
+    feedback_ko:"La bonne réponse est B. Les documents longs et complexes (contrats, rapports) donnent le ROI maximum à l'analyse Claude."
   }
 },
 "03.02-F":{
@@ -1414,12 +1472,18 @@ const EXERCISES = {
   }
 },
 "03.03-E":{
-  type:"freetext",title:"Mon projet de la semaine décomposé",
-  instructions:"Prends ton projet le plus important de cette semaine. Utilise Claude pour le décomposer en tâches concrètes avec deadlines. Colle le résultat et note la différence avec ta façon habituelle de planifier.",
+  type:"qcm",title:"Comment décomposer efficacement un projet avec Claude ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Mon projet : [...]\nRésultat de la décomposition par Claude :\n[...]\nDifférence vs ma façon habituelle de planifier : [...]",
-    min_length:120,
-    feedback_ok:"Excellent. La décomposition en sous-tâches transforme un projet 'insurmontable' en liste d'actions concrètes. C'est l'une des utilisations les plus impactantes de Claude au quotidien."
+    question:"Tu as un projet complexe à finir en 4 semaines et tu te sens submergé. Quel prompt va produire le plan le plus utile ?",
+    options:[
+      {text:"'Aide-moi à planifier mon projet.'",correct:false,feedback:"Sans délai, sans ressources, sans contexte du projet, Claude génère un plan générique inutilisable."},
+      {text:"'Tu es chef de projet. Je dois livrer [projet précis] dans 4 semaines, seul, avec [outils]. Décompose en tâches par semaine avec durée estimée, dépendances et risques. Format : tableau.'",correct:true,feedback:"Contexte précis + contraintes réelles (seul, outils, délai) + format structuré = plan réaliste et actionnable."},
+      {text:"'Quelles sont les étapes générales pour mener un projet ?'",correct:false,feedback:"Question générique = réponse générique. Claude ignore les spécificités de ton projet."},
+      {text:"'Fais-moi une liste de tâches pour mon projet.'",correct:false,feedback:"Sans contexte ni délai, la liste sera générique et non priorisée."}
+    ],
+    feedback_ok:"Contexte précis + contraintes réelles + format structuré = plan de projet directement utilisable.",
+    feedback_ko:"La bonne réponse est B. Donne à Claude le contexte complet : quoi, dans combien de temps, avec quoi, comment."
   }
 },
 "03.03-F":{
@@ -1483,12 +1547,18 @@ const EXERCISES = {
   }
 },
 "03.03-J":{
-  type:"freetext",title:"Mon rituel hebdomadaire avec Claude",
-  instructions:"Décris le rituel d'organisation hebdomadaire que tu vas mettre en place avec Claude. Sois précis : quand, quoi, comment.",
+  type:"qcm",title:"Quel est le rituel d'organisation optimal avec Claude ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Mon rituel : chaque [jour] à [heure], je donne à Claude :\n1. [quoi]\n2. [quoi]\n\nClaude m'aide à :\n[...]\n\nCe que j'attends comme résultat : [...]",
-    min_length:100,
-    feedback_ok:"Rituel défini. La régularité fait toute la différence — un rituel hebdomadaire avec Claude peut économiser 3-5 heures par semaine sur la planification et la gestion de projets."
+    question:"Quelle approche maximise l'utilité de Claude pour l'organisation hebdomadaire ?",
+    options:[
+      {text:"Utiliser Claude uniquement quand tu es bloqué sur une tâche.",correct:false,feedback:"Usage réactif = gain de temps limité. L'usage proactif (planification en début de semaine) libère bien plus de temps."},
+      {text:"Chaque lundi, donner à Claude ta liste de projets + contraintes + disponibilités → obtenir un planning priorisé pour la semaine.",correct:true,feedback:"Le rituel de planification du lundi est le cas d'usage le plus transformateur : 10-15 minutes avec Claude = semaine structurée et priorisée."},
+      {text:"Demander à Claude de planifier ta journée chaque matin.",correct:false,feedback:"La granularité journalière est trop fine — la planification hebdomadaire donne une meilleure vue d'ensemble."},
+      {text:"Utiliser Claude pour réviser ton planning en fin de semaine.",correct:false,feedback:"La révision est utile mais la planification en début de semaine a plus d'impact sur la productivité."}
+    ],
+    feedback_ok:"Rituel lundi matin : projets + contraintes → Claude génère le planning priorisé → semaine structurée.",
+    feedback_ko:"La bonne réponse est B. Le planning du lundi matin avec Claude est le rituel le plus impactant pour la productivité."
   }
 },
 
@@ -1555,27 +1625,33 @@ const EXERCISES = {
   }
 },
 "04.01-E":{
-  type:"freetext",title:"Décrire ta voix en 5 points",
-  instructions:"Décris ton style d'écriture en 5 points que tu donneras à Claude comme instructions. Sois spécifique — pas 'professionnel', mais 'direct, sans fioritures, avec des phrases courtes et des exemples concrets'.",
+  type:"qcm",title:"Quels éléments définissent ta voix pour Claude ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Ma voix en 5 points :\n1. Mon ton : [ex: direct, pas de formule bateau, comme si je parlais à un pair]\n2. Ma structure préférée : [ex: phrase d'accroche courte, développement en 2-3 blocs, conclusion actionnable]\n3. Ce que j'utilise souvent : [ex: questions rhétoriques, chiffres précis, analogies]\n4. Ce que j'évite : [ex: jargon, listes à puces systématiques, 'il est essentiel de noter que']\n5. Mon niveau de langage : [ex: accessible mais précis, pas condescendant]",
-    min_length:150,
-    feedback_ok:"Voix définie. Ces 5 points deviennent tes instructions de style permanentes dans Claude. Plus tu les affines, moins tu réécriras."
+    question:"Tu veux que Claude reproduise ta voix dans ses contenus. Quel ensemble d'instructions lui est le plus utile ?",
+    options:[
+      {text:"'Écris de façon professionnelle et accessible.'",correct:false,feedback:"Trop vague — 'professionnel et accessible' peut signifier n'importe quoi selon l'interprétation de Claude."},
+      {text:"Ton en 3 adjectifs + structure préférée + formules à ne jamais utiliser + 2 exemples de tes textes.",correct:true,feedback:"Ces 4 éléments calibrent précisément le style. Les exemples de tes textes sont le signal le plus puissant — ils montrent la voix plutôt que de la décrire."},
+      {text:"La longueur idéale de tes contenus.",correct:false,feedback:"La longueur seule ne capte pas le style. La structure, le ton et les exemples sont bien plus importants."},
+      {text:"La liste des sujets sur lesquels tu veux écrire.",correct:false,feedback:"Les sujets n'ont rien à voir avec la voix. La voix, c'est le comment, pas le quoi."}
+    ],
+    feedback_ok:"Ton + structure + interdits + exemples réels = les 4 éléments qui définissent une voix d'écriture pour Claude.",
+    feedback_ko:"La bonne réponse est B. Les exemples de tes textes sont le signal le plus puissant — Claude voit ta voix plutôt que de l'interpréter."
   }
 },
 "04.01-F":{
-  type:"completion",title:"Le prompt de style universel",
-  instructions:"Complète ce prompt de style avec tes vraies caractéristiques.",
+  type:"qcm",title:"Qu'est-ce qui définit un bon prompt de style ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"3 adjectifs pour ton ton",hint:"Ex: direct, chaleureux, pragmatique"},
-      {id:"BLANK_2",placeholder:"structure que tu utilises",hint:"Ex: accroche + 3 points + call-to-action"},
-      {id:"BLANK_3",placeholder:"ce que tu n'utilises jamais",hint:"Ex: jargon corporate, phrases passives, listes systématiques"},
-      {id:"BLANK_4",placeholder:"exemples de phrases-types que tu écris",hint:"Colle 1-2 exemples de tes vraies formulations"},
-      {id:"BLANK_5",placeholder:"niveau de vocabulaire",hint:"Ex: courant mais précis, pas de mots techniques sans explication"}
+    question:"Pour que Claude reproduise fidèlement ta voix, quels éléments dans le prompt de style sont les plus importants ?",
+    options:[
+      {text:"La longueur préférée de tes textes.",correct:false,feedback:"La longueur seule ne capte pas le style. Le ton, la structure et surtout les exemples réels sont bien plus importants."},
+      {text:"3 adjectifs de ton ton + ta structure préférée + ce que tu n'écris jamais + des exemples de tes vrais textes.",correct:true,feedback:"Les exemples de tes propres textes sont le signal le plus puissant. Les 3 adjectifs + structure + interdits complètent le profil de style. Claude voit ta voix plutôt que de l'interpréter."},
+      {text:"La liste de tes sujets habituels.",correct:false,feedback:"Les sujets n'ont rien à voir avec la voix d'écriture — c'est le comment, pas le quoi."},
+      {text:"Ton niveau de vocabulaire seulement.",correct:false,feedback:"Le vocabulaire est un aspect parmi d'autres. Le ton, la structure et les exemples concrets sont bien plus discriminants."}
     ],
-    feedback_ok:"Prompt de style complet. Colle-le dans tes instructions personnalisées Claude pour l'appliquer à tous tes contenus.",
-    feedback_ko:"Les exemples de phrases-types (BLANK_4) sont les plus importants. Sans exemples, le style restera approximatif."
+    feedback_ok:"Adjectifs + structure + interdits + exemples réels = prompt de style complet. Les exemples sont le signal n°1.",
+    feedback_ko:"La bonne réponse est B. Les exemples de tes propres textes sont l'ingrédient le plus puissant pour calibrer ton style."
   }
 },
 "04.01-G":{
@@ -1702,27 +1778,33 @@ const EXERCISES = {
   }
 },
 "04.02-E":{
-  type:"freetext",title:"Mon plan éditorial du mois",
-  instructions:"Utilise Claude pour créer ton plan éditorial du mois prochain. Liste les 10 sujets sur lesquels tu veux communiquer avec l'angle et le format pour chacun.",
+  type:"qcm",title:"Comment créer un mois de contenu efficacement avec Claude ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    placeholder:"Sujet 1 : [Thème]\nAngle : [Ex: counter-intuitive, histoire personnelle, conseil pratique...]\nFormat : [Post / Thread / Newsletter / Carrousel]\n\nSujet 2 : ...\n[Continue pour 10 sujets]",
-    min_length:150,
-    feedback_ok:"Plan éditorial défini. L'étape suivante : donne ce plan à Claude avec ton contexte et ton style pour générer les 10 premiers posts en une session."
+    question:"Tu veux produire 10 posts LinkedIn pour le mois prochain en une session Claude. Quelle est la meilleure approche ?",
+    options:[
+      {text:"Demander '10 posts LinkedIn sur l'IA' sans plus de contexte.",correct:false,feedback:"Sans contexte sur ta cible et ton style, les 10 posts seront génériques et inutilisables."},
+      {text:"Donner ton style + ta cible + les 10 sujets avec angle, puis demander la génération en batch.",correct:true,feedback:"Une session complète avec contexte donne 10 posts cohérents dans ton style. Plus tu précises l'angle de chaque sujet, plus les posts sont prêts à publier."},
+      {text:"Générer les posts un par un en 10 sessions séparées.",correct:false,feedback:"10 sessions = 10 re-calibrages du style et du contexte. Inefficace — une session batch est bien meilleure."},
+      {text:"Demander à Claude de choisir lui-même les 10 sujets du mois.",correct:false,feedback:"Claude ne connaît pas ta stratégie éditoriale. Tu définis les sujets, Claude rédige."}
+    ],
+    feedback_ok:"Style + cible + 10 sujets avec angles → génération batch en une session = 10 posts cohérents et rapides.",
+    feedback_ko:"La bonne réponse est B. La méthode batch (tout en une session avec contexte complet) est la plus efficace."
   }
 },
 "04.02-F":{
-  type:"completion",title:"Le template de post LinkedIn universel",
-  instructions:"Complète ce template avec les éléments de ton prochain post.",
+  type:"qcm",title:"Quels éléments constituent un bon post LinkedIn ?",
+  instructions:"Une seule bonne réponse.",
   content:{
-    blanks:[
-      {id:"BLANK_1",placeholder:"ton hook (première ligne)",hint:"Contre-intuition, chiffre, question ou histoire"},
-      {id:"BLANK_2",placeholder:"ton sujet principal en 1 phrase",hint:"Ce dont tu vas parler concrètement"},
-      {id:"BLANK_3",placeholder:"ta cible",hint:"Qui lit ce post et pour qui il est écrit"},
-      {id:"BLANK_4",placeholder:"la valeur concrète que tu apportes",hint:"Ce que le lecteur va retenir"},
-      {id:"BLANK_5",placeholder:"ton CTA",hint:"1 seule action demandée : commentaire, partage, lien..."}
+    question:"Dans quel ordre les éléments d'un post LinkedIn efficace doivent-ils apparaître ?",
+    options:[
+      {text:"Introduction → développement → conclusion → hashtags",correct:false,feedback:"Cette structure académique est l'opposé de ce qui fonctionne sur LinkedIn. L'accroche forte doit venir en premier."},
+      {text:"Hook (accroche) → sujet principal → valeur concrète → CTA",correct:true,feedback:"C'est la structure optimale : l'accroche arrête le scroll, le sujet clarifie de quoi on parle, la valeur prouve l'expertise, le CTA déclenche l'action."},
+      {text:"CTA → valeur → accroche → introduction",correct:false,feedback:"Commencer par le CTA avant d'avoir créé de l'intérêt = taux d'engagement minimal."},
+      {text:"Contexte → problème → solution → conclusion",correct:false,feedback:"Cette structure narrative est utile pour une newsletter mais trop longue pour un post LinkedIn où l'accroche doit être immédiate."}
     ],
-    feedback_ok:"Template complet. Lance-le dans Claude avec ce contexte + ton style et tu as un post prêt en 30 secondes.",
-    feedback_ko:"Le hook (BLANK_1) et la valeur concrète (BLANK_4) sont les deux éléments les plus importants. Sois plus précis."
+    feedback_ok:"Hook → sujet → valeur → CTA. C'est la structure qui maximise l'engagement sur LinkedIn.",
+    feedback_ko:"La bonne réponse est B. Hook fort → sujet clair → valeur concrète → CTA précis : la structure gagnante du post LinkedIn."
   }
 },
 "04.02-G":{
@@ -1817,10 +1899,21 @@ const EXERCISES = {
   column_b:[{id:"A",text:"'Génère un QCM de 10 questions sur ce concept. Évalue mes réponses.'"},{id:"B",text:"'Explique ce concept comme si j'avais 12 ans. Si je ne comprends pas ça, je ne comprends rien.'"},{id:"C",text:"'Crée un plan de révision avec J+1, J+7, J+30 pour ancrer ce concept.'"},{id:"D",text:"'Explique ce concept en faisant une analogie avec [quelque chose que je connais bien].'"} ],
   answers:{"1":"B","2":"A","3":"C","4":"D"}
 }},
-"05.01-E":{type:"freetext",title:"La compétence que tu veux apprendre",instructions:"Décris la compétence ou le sujet que tu veux apprendre dans les 30 prochains jours. Comment vas-tu utiliser Claude pour accélérer cet apprentissage ?",content:{
-  placeholder:"Compétence à apprendre : [...]\nPourquoi : [...]\nComment je vais utiliser Claude :\n1. Pour créer le plan d'apprentissage\n2. Pour [méthode spécifique]\n3. Pour [test actif / exercices / etc]\nPremière session prévue : [quand]",
-  min_length:100,feedback_ok:"Plan d'apprentissage défini. Lance la première session avec Claude cette semaine — pas cette année, cette semaine."
-}},
+"05.01-E":{
+  type:"qcm",title:"Comment structurer un apprentissage accéléré avec Claude ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Tu veux apprendre la comptabilité de base pour gérer ton activité freelance. Quelle est la meilleure façon de démarrer avec Claude ?",
+    options:[
+      {text:"'Explique-moi la comptabilité.'",correct:false,feedback:"Question trop large — Claude va te donner un cours magistral de 2000 mots sans savoir ce dont tu as besoin."},
+      {text:"'Je suis freelance débutant. Crée-moi un plan d'apprentissage de la comptabilité en 4 semaines, 2h par semaine. Objectif : gérer mes factures et ma TVA seul. Commence par les 5 notions indispensables.'",correct:true,feedback:"Contexte + objectif concret + délai + point de départ = plan d'apprentissage personnalisé et actionnable."},
+      {text:"'Quels livres dois-je lire sur la comptabilité ?'",correct:false,feedback:"Les livres sont une bonne ressource mais Claude peut aller plus vite en t'enseignant directement selon ton niveau."},
+      {text:"'Génère-moi un QCM sur la comptabilité.'",correct:false,feedback:"Un QCM sans avoir d'abord appris les bases est inutile — commence par le plan d'apprentissage."}
+    ],
+    feedback_ok:"Contexte + objectif + délai = plan d'apprentissage personnalisé. Claude devient ton tuteur sur mesure.",
+    feedback_ko:"La bonne réponse est B. Donne à Claude ton contexte, ton objectif et tes contraintes de temps — il structure l'apprentissage pour toi."
+  }
+},
 "05.01-F":{type:"qcm",title:"Comment corriger ses erreurs avec Claude ?",instructions:"Une seule bonne réponse.",content:{
   question:"Tu t'entraînes à un exercice pratique et tu fais une erreur. Quelle est la meilleure façon d'utiliser Claude pour progresser ?",
   options:[
@@ -1836,11 +1929,21 @@ const EXERCISES = {
   items:[{id:"g1",text:"Je commence par donner mon niveau actuel et mon objectif"},{id:"g2",text:"Je demande un plan d'apprentissage structuré avant de commencer"},{id:"g3",text:"Après chaque concept, je me teste avec un QCM généré par Claude"},{id:"g4",text:"Quand je me trompe, j'analyse l'erreur avec Claude avant de continuer"},{id:"g5",text:"Je demande des analogies avec ce que je connais déjà pour ancrer les nouveaux concepts"}],
   feedback_thresholds:[{min:5,max:5,message:"Rituel complet. Tu vas apprendre 3-5x plus vite qu'en self-study classique."},{min:3,max:4,message:"Bien. Les éléments non cochés sont ceux qui font la différence entre comprendre et retenir."},{min:0,max:2,message:"Commence par j1 et j3 — niveau + contexte au début, test actif après chaque concept."}]
 }},
-"05.01-H":{type:"completion",title:"Mon prompt de tuteur personnalisé",instructions:"Complète ce prompt de tuteur avec tes vraies informations.",content:{
-  blanks:[{id:"BLANK_1",placeholder:"sujet à apprendre",hint:"Ex: Excel avancé, SEO, droit des contrats"},{id:"BLANK_2",placeholder:"ton niveau actuel",hint:"Ex: débutant complet / bases comprises / intermédiaire"},{id:"BLANK_3",placeholder:"ton objectif concret",hint:"Ex: être capable de créer des tableaux croisés dynamiques"},{id:"BLANK_4",placeholder:"ton disponibilité",hint:"Ex: 1 heure par jour, 3 fois par semaine"},{id:"BLANK_5",placeholder:"style d'apprentissage",hint:"Ex: exemples concrets, étape par étape, beaucoup de pratique"}],
-  feedback_ok:"Prompt de tuteur personnalisé prêt. Commence ta première session avec Claude aujourd'hui.",
-  feedback_ko:"L'objectif concret (BLANK_3) et le niveau actuel (BLANK_2) sont les deux éléments qui personnalisent vraiment le tuteur."
-}},
+"05.01-H":{
+  type:"qcm",title:"Que doit contenir un bon prompt de tuteur Claude ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Pour que Claude soit un tuteur efficace sur un sujet précis, quels éléments sont indispensables dans le prompt initial ?",
+    options:[
+      {text:"Le sujet uniquement — Claude s'adaptera.",correct:false,feedback:"Sans niveau actuel ni objectif précis, Claude va expliquer au niveau moyen — peut-être trop avancé ou trop simple pour toi."},
+      {text:"Le sujet + ton niveau actuel + ton objectif concret + ta disponibilité + ton style d'apprentissage.",correct:true,feedback:"Ces 5 éléments permettent à Claude de personnaliser vraiment : niveau adapté, exemples pertinents, rythme correct. Un tuteur générique donne un apprentissage générique."},
+      {text:"Uniquement ton objectif final.",correct:false,feedback:"L'objectif final sans niveau de départ ni délai ne permet pas à Claude de structurer un parcours adapté."},
+      {text:"La liste des ressources que tu as déjà lues.",correct:false,feedback:"Les ressources passées sont utiles pour éviter les répétitions, mais elles ne définissent pas le plan d'apprentissage."}
+    ],
+    feedback_ok:"Sujet + niveau + objectif + disponibilité + style = prompt de tuteur personnalisé. Claude s'adapte à qui tu es, pas à un apprenant moyen.",
+    feedback_ko:"La bonne réponse est B. Ces 5 éléments permettent à Claude de construire un plan d'apprentissage réellement adapté à ta situation."
+  }
+},
 "05.01-I":{type:"ranking",title:"Méthodes d'apprentissage par efficacité",instructions:"Classe ces méthodes de la plus efficace (1) à la moins efficace (5) selon la science de l'apprentissage.",content:{
   items:[{id:"1",text:"Relire ses notes plusieurs fois"},{id:"2",text:"Se tester activement sur le sujet"},{id:"3",text:"Expliquer le concept à quelqu'un d'autre (ou à Claude)"},{id:"4",text:"Écouter une conférence ou regarder une vidéo"},{id:"5",text:"Pratiquer avec des exercices progressifs"}],
   correct_order:["2","3","5","4","1"],
@@ -1886,10 +1989,21 @@ const EXERCISES = {
   column_b:[{id:"A",text:"'Génère 10 questions qui mélangent les concepts 1, 2 et 3 que j'ai appris cette semaine.'"},{id:"B",text:"'Identifie les 5 concepts qui couvrent 80% de mes besoins pour [objectif].'"},{id:"C",text:"'Génère des exercices sur mon point le plus faible. Si je me trompe, analyse mon erreur immédiatement.'"},{id:"D",text:"'Crée un calendrier de révision : J+1, J+3, J+7, J+30 pour ce concept.'"}],
   answers:{"1":"B","2":"C","3":"D","4":"A"}
 }},
-"05.02-E":{type:"freetext",title:"Mon sprint d'apprentissage",instructions:"Définis un sprint d'apprentissage de 2 semaines sur une compétence précise. Utilise Claude pour structurer les sessions quotidiennes.",content:{
-  placeholder:"Compétence : [...]\nObjectif à 2 semaines : [ce que je serai capable de faire]\nSession type (30 min) :\n- 10 min : [concept ou révision]\n- 15 min : [pratique ou exercices]\n- 5 min : [test actif]\nComment Claude m'aide dans chaque phase : [...]",
-  min_length:120,feedback_ok:"Sprint défini. 2 semaines de sessions de 30 minutes ciblées valent plus que 2 mois de lectures aléatoires."
-}},
+"05.02-E":{
+  type:"qcm",title:"Comment structurer un sprint d'apprentissage efficace ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Tu veux apprendre les bases du copywriting en 2 semaines. Quelle structure de session est la plus efficace ?",
+    options:[
+      {text:"1 heure de lecture de contenus sur le copywriting chaque jour.",correct:false,feedback:"La lecture passive crée l'illusion d'apprentissage. Sans pratique et test actif, 70% est oublié en 24h."},
+      {text:"30 min : apprendre un concept avec Claude + 15 min : écrire un vrai texte en l'appliquant + 5 min : faire analyser le texte par Claude.",correct:true,feedback:"Concept → pratique immédiate → feedback = la boucle d'apprentissage la plus efficace. 50 minutes ciblées valent 2h de lecture."},
+      {text:"Regarder des tutoriels YouTube sur le copywriting chaque soir.",correct:false,feedback:"La vidéo passive est légèrement mieux que la lecture mais sans pratique réelle, l'apprentissage ne s'ancre pas."},
+      {text:"Lire un livre complet sur le copywriting avant de commencer à pratiquer.",correct:false,feedback:"Théorie avant pratique = apprentissage lent. La pratique dès le début accélère l'ancrage."}
+    ],
+    feedback_ok:"Concept + pratique immédiate + feedback = la boucle gagnante. 50 minutes ciblées > 2h de consommation passive.",
+    feedback_ko:"La bonne réponse est B. Concept → pratique → analyse = la boucle d'apprentissage délibéré avec Claude."
+  }
+},
 "05.02-F":{type:"qcm",title:"Construire une base solide rapidement",instructions:"Une seule bonne réponse.",content:{
   question:"Tu dois être opérationnel en gestion de projet dans 3 semaines (sans formation préalable). Quelle est la stratégie la plus efficace avec Claude ?",
   options:[
@@ -1956,15 +2070,36 @@ const EXERCISES = {
   feedback_ok:"Haute fréquence + répétitivité + processus stable = candidat idéal. Ces 3 critères garantissent un ROI rapide.",
   feedback_ko:"La bonne réponse est B. Cherche les tâches que tu refais exactement de la même façon à chaque fois."
 }},
-"06.01-D":{type:"freetext",title:"Mes 3 tâches à automatiser",instructions:"Identifie les 3 tâches dans ton activité qui remplissent les critères : répétitives, fréquentes, toujours le même processus. Décris chacune avec le processus exact et l'impact estimé si automatisée.",content:{
-  placeholder:"Tâche 1 : [nom]\nFréquence : [X fois/semaine]\nProcessus actuel : [étape 1 → étape 2 → étape 3]\nTemps par occurrence : [X min]\nImpact si automatisé : [X heures économisées/mois]\n\nTâche 2 : ...\nTâche 3 : ...",
-  min_length:150,feedback_ok:"Analyse de ROI faite. La tâche avec le meilleur ratio (impact/complexité) est ton premier projet d'automatisation."
-}},
-"06.01-E":{type:"completion",title:"Le schéma d'une automatisation simple",instructions:"Complète ce schéma d'automatisation avec les bons termes.",content:{
-  blanks:[{id:"BLANK_1",placeholder:"le déclencheur",hint:"Quand [cet événement] se produit"},{id:"BLANK_2",placeholder:"l'action 1",hint:"Alors [faire ceci]"},{id:"BLANK_3",placeholder:"l'action 2 optionnelle",hint:"Puis [faire cela]"},{id:"BLANK_4",placeholder:"le résultat final",hint:"Pour obtenir [ce résultat]"},{id:"BLANK_5",placeholder:"l'outil d'automatisation",hint:"Make.com, Zapier, n8n..."}],
-  feedback_ok:"Schéma d'automatisation compris. La prochaine étape : appliquer ce schéma à ta tâche prioritaire.",
-  feedback_ko:"Les 4 éléments clés : trigger → action(s) → résultat → outil. Tous ont leur rôle."
-}},
+"06.01-D":{
+  type:"qcm",title:"Quelle tâche automatiser en priorité ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Parmi ces tâches, laquelle est la MEILLEURE candidate pour une première automatisation avec Make.com ?",
+    options:[
+      {text:"Rédiger une proposition commerciale personnalisée pour chaque nouveau prospect.",correct:false,feedback:"Trop variable — chaque prospect est différent. Les automatisations fonctionnent mieux sur les tâches répétitives et structurées."},
+      {text:"Envoyer un email de bienvenue identique à chaque nouvelle inscription à ta liste.",correct:true,feedback:"Répétitif + même processus à chaque fois + haute fréquence = candidat parfait. Cette automatisation peut être créée en 30 minutes."},
+      {text:"Décider quelle offre proposer à un prospect selon son profil.",correct:false,feedback:"Les décisions complexes basées sur le jugement humain ne s'automatisent pas bien."},
+      {text:"Créer ta stratégie de contenu du trimestre.",correct:false,feedback:"La stratégie est une tâche créative et variable — pas un candidat pour l'automatisation."}
+    ],
+    feedback_ok:"Répétitif + même processus + haute fréquence = automatisation prioritaire. L'email de bienvenue est le cas d'école.",
+    feedback_ko:"La bonne réponse est B. Le critère : même processus à chaque fois, haute fréquence, pas de jugement variable."
+  }
+},
+"06.01-E":{
+  type:"qcm",title:"Quelle est la structure d'une automatisation Make.com simple ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Dans un scénario Make.com basique, quel est le bon ordre des éléments ?",
+    options:[
+      {text:"Action → Trigger → Résultat",correct:false,feedback:"L'ordre est inversé. Le Trigger déclenche toujours le scénario — il vient en premier."},
+      {text:"Trigger → Action(s) → Résultat",correct:true,feedback:"C'est la structure universelle : le Trigger (quand X se passe) déclenche une ou plusieurs Actions (faire Y) qui produisent un Résultat. Tout scénario Make.com suit cette logique."},
+      {text:"Résultat → Action → Trigger",correct:false,feedback:"On ne peut pas commencer par le résultat dans un scénario automatisé — le Trigger est toujours le point de départ."},
+      {text:"Condition → Trigger → Action",correct:false,feedback:"Les conditions peuvent exister dans un scénario mais elles viennent après le Trigger, pas avant."}
+    ],
+    feedback_ok:"Trigger → Action(s) → Résultat. C'est la structure universelle de toute automatisation Make.com.",
+    feedback_ko:"La bonne réponse est B. Trigger (déclencheur) → Actions (ce qui se passe) → Résultat : l'ordre logique immuable."
+  }
+},
 "06.01-F":{type:"qcm",title:"Make.com vs Zapier — lequel choisir ?",instructions:"Une seule bonne réponse.",content:{
   question:"Tu démarres les automatisations sans code. Tu hésites entre Make.com et Zapier. Quel est le principal avantage de Make.com pour débuter ?",
   options:[
@@ -2036,10 +2171,21 @@ const EXERCISES = {
   column_b:[{id:"A",text:"Le mapping des données entre les modules est mal configuré"},{id:"B",text:"La clé API Anthropic est invalide ou absente"},{id:"C",text:"Le trigger n'est pas bien configuré ou l'événement ne correspond pas"},{id:"D",text:"Le compte de connexion utilisé en test diffère de celui en production"}],
   answers:{"1":"C","2":"B","3":"A","4":"D"}
 }},
-"06.02-E":{type:"freetext",title:"Mon premier scénario réel",instructions:"Décris en détail le premier scénario Make.com + Claude que tu vas créer. Trigger précis, actions, données qui circulent, résultat attendu.",content:{
-  placeholder:"Mon scénario :\n\nTrigger : Quand [événement précis] dans [app]\nAction 1 : [description + app]\nAction 2 (Claude) : Avec ces données [quoi], Claude génère [quoi]\nAction 3 : [description + app]\nRésultat : [ce qui se passe au final]\n\nTemps économisé estimé par occurrence : [X min]\nFréquence : [X fois/semaine]",
-  min_length:120,feedback_ok:"Scénario bien défini. Maintenant, construis-le dans Make.com en testant chaque module avant de l'activer."
-}},
+"06.02-E":{
+  type:"qcm",title:"Comment bien concevoir un scénario Make.com + Claude ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Tu veux créer un scénario qui automatise les réponses à tes emails de demande de devis. Quelle est la bonne façon de commencer ?",
+    options:[
+      {text:"Ouvrir Make.com et commencer à ajouter des modules.",correct:false,feedback:"Sans plan préalable, tu vas tourner en rond. Toujours concevoir avant de construire."},
+      {text:"Utiliser Claude pour designer le scénario sur papier : trigger précis, actions dans l'ordre, données qui circulent, point d'intégration Claude.",correct:true,feedback:"Concevoir avec Claude avant de construire dans Make.com révèle les problèmes de logique avant qu'ils deviennent des bugs. 30 minutes de design évitent 3 heures de débogage."},
+      {text:"Chercher un scénario Make.com existant sur Google à copier.",correct:false,feedback:"Les scénarios génériques ne correspondent pas à ton process exact. Concevoir le tien prend moins de temps qu'adapter un scénario étranger."},
+      {text:"Demander à Claude d'écrire le code du scénario.",correct:false,feedback:"Make.com est no-code — pas besoin de code. Et Claude ne peut pas créer directement des scénarios Make.com."}
+    ],
+    feedback_ok:"Concevoir avec Claude avant de construire dans Make.com = meilleure approche. Le design révèle les incohérences logiques.",
+    feedback_ko:"La bonne réponse est B. Toujours designer le scénario complet avec Claude avant d'ouvrir Make.com."
+  }
+},
 "06.02-F":{type:"checklist",title:"Mon scénario est-il prêt à activer ?",instructions:"Coche chaque vérification avant d'activer ton scénario.",content:{
   items:[{id:"f1",text:"J'ai testé chaque module séparément"},{id:"f2",text:"J'ai vérifié que les données passent bien d'un module à l'autre"},{id:"f3",text:"J'ai testé avec des données réelles, pas seulement des données fictives"},{id:"f4",text:"J'ai configuré une notification en cas d'erreur"},{id:"f5",text:"J'ai documenté ce que fait le scénario pour pouvoir le modifier plus tard"}],
   feedback_thresholds:[{min:5,max:5,message:"Scénario prêt. Active-le et surveille les premières exécutions."},{min:3,max:4,message:"Complète les vérifications restantes — elles évitent les mauvaises surprises en production."},{min:0,max:2,message:"Ne pas activer sans avoir testé — un scénario non testé peut créer des données erronées ou des actions indésirables."}]
@@ -2067,10 +2213,21 @@ const EXERCISES = {
   ],
   feedback:"Claude dans une automatisation = données brutes → informations enrichies et actionnables. C'est le saut qualitatif."
 }},
-"06.02-J":{type:"freetext",title:"Mon plan d'automatisation à 30 jours",instructions:"Définis ton plan d'automatisation pour les 30 prochains jours : 3 scénarios à créer, de la plus simple à la plus complexe.",content:{
-  placeholder:"Semaine 1 — Scénario simple :\nTâche : [...]\nEstimation : 1-2h pour créer\nTemps économisé : [...]\n\nSemaine 2-3 — Scénario intermédiaire :\nTâche : [...]\n\nSemaine 4 — Scénario avec Claude :\nTâche : [...]\nComme j'intègre Claude : [...]",
-  min_length:120,feedback_ok:"Plan d'automatisation défini. Commence par le scénario simple — le succès du premier crée l'élan pour les suivants."
-}},
+"06.02-J":{
+  type:"qcm",title:"Dans quel ordre créer ses automatisations ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Tu démarres les automatisations avec Make.com. Dans quel ordre dois-tu créer tes scénarios pour maximiser le succès ?",
+    options:[
+      {text:"Commencer par le scénario le plus complexe pour en apprendre le plus.",correct:false,feedback:"Commencer par le plus complexe = risque d'échec élevé et de découragement. L'apprentissage se fait mieux avec les succès progressifs."},
+      {text:"Commencer par la tâche la plus répétitive sans Claude, puis ajouter la complexité progressivement.",correct:true,feedback:"Simple → intermédiaire → avec Claude = la progression optimale. Le premier succès crée l'élan et la confiance pour les scénarios suivants."},
+      {text:"Commencer par le scénario qui intègre Claude immédiatement.",correct:false,feedback:"Intégrer Claude dès le départ ajoute une couche de complexité (appels API) à maîtriser en même temps que Make.com."},
+      {text:"Automatiser tout en une fois pour gagner du temps.",correct:false,feedback:"Tout automatiser d'un coup = trop de variables à gérer simultanément. La progression par étapes est plus efficace."}
+    ],
+    feedback_ok:"Simple → intermédiaire → avec Claude. Chaque succès construit la confiance et les compétences pour le suivant.",
+    feedback_ko:"La bonne réponse est B. Progression par complexité croissante : simple d'abord, puis Claude ensuite."
+  }
+},
 
 // ─── MODULE 07 ───────────────────────────────────────────────────────────────
 "07.01-A":{type:"truefalse",title:"Comprendre un marché avec Claude",instructions:"Vrai ou faux ? Réponds à chaque affirmation.",content:{
@@ -2090,15 +2247,21 @@ const EXERCISES = {
   feedback_ok:"Rôle + cible + structure = analyse actionnelle. C'est la formule pour tout prompt d'analyse.",
   feedback_ko:"La bonne réponse est B. Contexte précis + cible définie + structure demandée = résultat exploitable."
 }},
-"07.01-C":{type:"completion",title:"Anatomie d'un prompt d'analyse de marché",instructions:"Complète les blancs avec les bons termes.",content:{
-  text:"Pour analyser un marché avec Claude, il faut d'abord définir le [BLANK1] de la cible (qui elle est, ses problèmes, son budget), puis demander les [BLANK2] des concurrents, et enfin identifier les [BLANK3] non exploités dans le marché.",
-  blanks:[
-    {id:"BLANK1",answer:"profil",alternatives:["persona","portrait","profil détaillé"]},
-    {id:"BLANK2",answer:"failles",alternatives:["faiblesses","limites","défauts","points faibles"]},
-    {id:"BLANK3",answer:"angles",alternatives:["niches","opportunités","gaps","espaces"]}
-  ],
-  feedback:"Profil cible → failles concurrents → angles libres. C'est le triptyque de toute analyse marché avec Claude."
-}},
+"07.01-C":{
+  type:"qcm",title:"Que faut-il inclure dans un prompt d'analyse de marché ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Pour analyser un marché efficacement avec Claude, quel est le triptyque indispensable ?",
+    options:[
+      {text:"Profil de la cible → failles des concurrents → angles non exploités",correct:true,feedback:"Ce triptyque est complet : connaître sa cible (profil), identifier les limites de la concurrence (failles), et trouver son espace de différenciation (angles). C'est la base de tout positionnement."},
+      {text:"Prix du marché → nombre de concurrents → taille du marché",correct:false,feedback:"Ces données chiffrées sont utiles mais Claude n'est pas fiable pour les statistiques récentes. L'analyse qualitative (profil + failles + angles) est sa vraie valeur."},
+      {text:"Tendances → innovations → réglementations",correct:false,feedback:"Ces éléments nécessitent des données récentes que Claude ne peut pas fournir avec fiabilité."},
+      {text:"Mission → vision → valeurs de la concurrence",correct:false,feedback:"La mission et vision des concurrents sont des éléments de communication, pas des insights stratégiques exploitables."}
+    ],
+    feedback_ok:"Profil cible + failles concurrents + angles libres = le triptyque de l'analyse marché avec Claude.",
+    feedback_ko:"La bonne réponse est A. Ces 3 éléments sont fiables pour Claude et directement exploitables pour créer une offre différenciée."
+  }
+},
 "07.01-D":{type:"promptlab",title:"Analyse ta cible idéale",instructions:"Écris un prompt pour que Claude te dresse le portrait complet de ta cible idéale (peurs, désirs, vocabulaire, objections).",content:{
   context:"Tu vends une formation ou un service. Tu veux comprendre ta cible avant de créer ton offre.",
   example_prompt:"Tu es expert en psychologie des consommateurs. Ma cible : [DÉCRIS TA CIBLE EN 2 PHRASES]. Dresse son portrait complet : ses 5 peurs profondes liées à [TON DOMAINE], ses 3 désirs cachés, le vocabulaire exact qu'elle utilise pour décrire son problème, et ses 3 principales objections à l'achat.",
@@ -2146,10 +2309,21 @@ const EXERCISES = {
   feedback_ok:"Claude structure, le terrain valide. C'est la boucle gagnante pour les indépendants qui démarrent.",
   feedback_ko:"La bonne réponse est B. L'analyse Claude = hypothèses structurées → à valider par conversations réelles."
 }},
-"07.01-J":{type:"freetext",title:"Mon analyse de marché en 5 points",instructions:"Utilise Claude pour analyser ton propre marché et résume ici les 5 insights les plus importants.",content:{
-  placeholder:"1. Douleur principale de ma cible : [...]\n2. Désir profond de ma cible : [...]\n3. Principale faille de la concurrence : [...]\n4. Angle différenciant que je pourrais exploiter : [...]\n5. Phrase exacte que ma cible utilise pour décrire son problème : [...]",
-  min_length:100,feedback_ok:"Analyse synthétisée. Ces 5 points sont la base de ton positionnement et de ton copywriting."
-}},
+"07.01-J":{
+  type:"qcm",title:"Quels éléments constituent une bonne analyse de marché avec Claude ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Quelle combinaison d'éléments produit l'analyse de marché la plus utile avec Claude ?",
+    options:[
+      {text:"Douleurs de la cible + désirs profonds + failles concurrents + angles différenciants.",correct:true,feedback:"Ces 4 éléments donnent les matériaux directement utilisables : le copywriting (douleurs + désirs), le positionnement (angles différenciants), et la stratégie (failles concurrents)."},
+      {text:"Taille du marché en euros + nombre de concurrents + croissance annuelle.",correct:false,feedback:"Ces données chiffrées sont utiles mais Claude ne peut pas les fournir avec fiabilité (connaissance figée). L'analyse qualitative est sa vraie valeur."},
+      {text:"Liste des concurrents + leurs prix + leurs réseaux sociaux.",correct:false,feedback:"Une liste de concurrents sans analyse stratégique ne donne pas d'avantage compétitif."},
+      {text:"Tendances du secteur + nouvelles réglementations + évolutions technologiques.",correct:false,feedback:"Ces informations nécessitent des données récentes que Claude n'a pas toujours. L'analyse psychographique de ta cible est plus fiable."}
+    ],
+    feedback_ok:"Douleurs + désirs + failles concurrents + angles = les 4 éléments qui alimentent directement ton positionnement et ton copywriting.",
+    feedback_ko:"La bonne réponse est A. Ces 4 éléments sont fiables pour Claude (qualitatif) et directement utilisables pour créer ton offre."
+  }
+},
 
 "07.02-A":{type:"truefalse",title:"Créer une offre irrésistible",instructions:"Vrai ou faux ?",content:{
   statements:[
@@ -2168,16 +2342,21 @@ const EXERCISES = {
   feedback_ok:"Résultat chiffré + délai + cible + obstacle levé = promesse forte. À appliquer à ton offre.",
   feedback_ko:"La bonne réponse est C. La formule gagnante : résultat concret + délai + pour qui + obstacle levé."
 }},
-"07.02-C":{type:"completion",title:"La formule de l'offre irrésistible",instructions:"Complète cette formule.",content:{
-  text:"Une offre irrésistible aide [BLANK1] à obtenir [BLANK2] en [BLANK3], même si [BLANK4].",
-  blanks:[
-    {id:"BLANK1",answer:"ta cible précise",alternatives:["ta cible","ton client idéal","les indépendants"]},
-    {id:"BLANK2",answer:"un résultat spécifique",alternatives:["un résultat concret","la transformation","le bénéfice"]},
-    {id:"BLANK3",answer:"un délai défini",alternatives:["X jours","30 jours","un temps précis"]},
-    {id:"BLANK4",answer:"ils ont un obstacle spécifique",alternatives:["sans expérience","même débutant","même sans tech"]}
-  ],
-  feedback:"[Cible] + [Résultat] + [Délai] + [Obstacle levé] = formule universelle de la promesse forte."
-}},
+"07.02-C":{
+  type:"qcm",title:"Quelle est la formule d'une offre irrésistible ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Laquelle de ces promesses suit la formule d'une offre irrésistible complète ?",
+    options:[
+      {text:"'Formation IA pour entrepreneurs — 8 modules, accès à vie'",correct:false,feedback:"Description de contenu, pas une promesse. La formule doit inclure le résultat, le délai et l'obstacle levé."},
+      {text:"'Les consultants indépendants gagnent 10h par semaine grâce à l'IA en 30 jours, même s'ils n'ont jamais touché à un outil tech.'",correct:true,feedback:"[Cible = consultants indépendants] + [Résultat = 10h/semaine] + [Délai = 30 jours] + [Obstacle levé = même sans tech] = formule complète."},
+      {text:"'La meilleure formation IA du marché'",correct:false,feedback:"Supérlatif sans preuve. La promesse doit décrire un résultat concret, pas une qualité comparative."},
+      {text:"'Rejoins 500 entrepreneurs qui utilisent déjà l'IA'",correct:false,feedback:"Preuve sociale utile mais ce n'est pas une promesse — on ne sait pas quel résultat on obtient."}
+    ],
+    feedback_ok:"[Cible] + [Résultat mesurable] + [Délai] + [Obstacle levé] = formule universelle de la promesse forte.",
+    feedback_ko:"La bonne réponse est B. La formule : [Cible] obtient [Résultat] en [Délai], même si [Obstacle]. Tous les éléments sont présents."
+  }
+},
 "07.02-D":{type:"promptlab",title:"Générer des variantes de ta promesse",instructions:"Écris un prompt pour demander à Claude de créer 5 versions de ta promesse commerciale.",content:{
   context:"Tu as une offre mais tu ne sais pas comment la formuler de façon irrésistible.",
   example_prompt:"Tu es expert en copywriting d'offres digitales. Voici mon offre : [DÉCRIS TON OFFRE EN 3 PHRASES]. Ma cible : [QUI]. Crée 5 variantes de ma promesse principale en suivant cette formule : '[Cible] obtient [Résultat spécifique] en [Délai], même si [Obstacle].' Varie les angles : résultat financier, gain de temps, confiance, liberté.",
@@ -2227,10 +2406,21 @@ const EXERCISES = {
   ],
   feedback:"Chaque mot sur une page de vente doit réduire le risque perçu ou augmenter le désir. Claude peut t'y aider."
 }},
-"07.02-J":{type:"freetext",title:"Ma promesse d'offre irrésistible",instructions:"Rédige la promesse principale de ton offre en utilisant la formule : [Cible] obtient [Résultat spécifique] en [Délai], même si [Obstacle].",content:{
-  placeholder:"Ma promesse :\n[Ta cible] obtient [résultat spécifique et mesurable] en [délai], même si [obstacle principal de ta cible].\n\nPourquoi cette promesse est crédible pour moi :\n[...]",
-  min_length:80,feedback_ok:"Promesse rédigée. Maintenant teste-la sur 3 personnes de ta cible et observe leur réaction."
-}},
+"07.02-J":{
+  type:"qcm",title:"Quelle est la formule d'une promesse d'offre forte ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Parmi ces formulations, laquelle est la promesse d'offre la plus forte pour une formation sur l'IA ?",
+    options:[
+      {text:"'Formation complète sur l'IA pour les entrepreneurs'",correct:false,feedback:"Générique — ne dit pas quel résultat, pour qui exactement, en combien de temps, ni quel obstacle est levé."},
+      {text:"'Apprends à utiliser Claude et ChatGPT'",correct:false,feedback:"Orienté contenu, pas résultat. 'Apprends à utiliser' n'est pas une transformation business."},
+      {text:"'Gagne 10h par semaine grâce à l'IA en 30 jours — même si tu n'as jamais codé'",correct:true,feedback:"Résultat chiffré (10h) + délai (30 jours) + obstacle levé (même sans code) = formule gagnante. On voit immédiatement ce qu'on obtient."},
+      {text:"'La meilleure formation IA du marché'",correct:false,feedback:"Supérlatif sans preuve. La promesse doit décrire un résultat, pas une qualité comparative."}
+    ],
+    feedback_ok:"Résultat chiffré + délai + obstacle levé = la formule d'une promesse forte. Applique-la à ton offre.",
+    feedback_ko:"La bonne réponse est C. La formule gagnante : [résultat mesurable] + [délai] + [même si obstacle]. C'est la structure d'une promesse irrésistible."
+  }
+},
 
 "07.03-A":{type:"truefalse",title:"Déléguer les tâches épuisantes",instructions:"Vrai ou faux ?",content:{
   statements:[
@@ -2289,16 +2479,21 @@ const EXERCISES = {
   feedback_ok:"Bibliothèque de prompts = ton actif productivité le plus précieux. Construis-la dès maintenant.",
   feedback_ko:"La bonne réponse est B. Templates réutilisables + amélioration continue = système durable."
 }},
-"07.03-H":{type:"completion",title:"Formule de délégation efficace",instructions:"Complète cette formule pour créer un prompt de délégation efficace.",content:{
-  text:"Pour déléguer une tâche à Claude, commence par lui donner le [BLANK1] (qui tu es, dans quel contexte), puis décris la [BLANK2] précisément, puis précise le [BLANK3] attendu (format, longueur, ton), et enfin donne-lui les [BLANK4] s'il doit choisir.",
-  blanks:[
-    {id:"BLANK1",answer:"contexte",alternatives:["contexte complet","background","situation"]},
-    {id:"BLANK2",answer:"tâche",alternatives:["mission","demande","travail"]},
-    {id:"BLANK3",answer:"livrable",alternatives:["format de sortie","résultat","output"]},
-    {id:"BLANK4",answer:"contraintes",alternatives:["limites","critères","règles"]}
-  ],
-  feedback:"Contexte + tâche + livrable + contraintes = structure universelle pour tout prompt de délégation."
-}},
+"07.03-H":{
+  type:"qcm",title:"Quelle est la structure d'un prompt de délégation efficace ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Pour déléguer une tâche à Claude avec un résultat professionnel, quel est l'ordre optimal ?",
+    options:[
+      {text:"Tâche → Contexte → Format → Contraintes",correct:false,feedback:"Commencer par la tâche sans le contexte donne un résultat générique. Le contexte doit venir en premier pour calibrer la réponse."},
+      {text:"Contexte → Tâche → Livrable attendu → Contraintes",correct:true,feedback:"C'est l'ordre optimal : Claude comprend d'abord qui tu es et dans quel contexte (Contexte), puis ce qu'il doit faire (Tâche), sous quelle forme (Livrable), et avec quelles limites (Contraintes)."},
+      {text:"Contraintes → Tâche → Contexte → Livrable",correct:false,feedback:"Commencer par les contraintes avant que Claude sache ce qu'il fait crée de la confusion."},
+      {text:"Livrable → Contraintes → Contexte → Tâche",correct:false,feedback:"Cet ordre est inversé — sans contexte ni tâche, le livrable et les contraintes n'ont pas de sens."}
+    ],
+    feedback_ok:"Contexte → Tâche → Livrable → Contraintes = la structure de délégation universelle. Dans cet ordre, Claude produit un livrable utilisable directement.",
+    feedback_ko:"La bonne réponse est B. Contexte d'abord (pour calibrer), tâche ensuite, livrable (pour le format), contraintes (pour les limites)."
+  }
+},
 "07.03-I":{type:"beforeafter",title:"Délégation inefficace vs efficace",instructions:"Identifie ce qui rend une délégation à Claude efficace.",content:{
   pairs:[
     {before:"'Rédige un email pour mon client.'",after:"'Tu es mon assistant commercial. Client : Entreprise Martin, directeur commercial, intéressé par notre offre de formation mais pas répondu depuis 10 jours. Rédige un email de relance chaleureux (5 lignes max), qui rappelle la valeur principale de l'offre et propose un appel de 15 min cette semaine.'",error_type:"Vague → Structuré",explanation:"La version B donne tout le contexte nécessaire pour un email utilisable sans modification."},
@@ -2306,10 +2501,21 @@ const EXERCISES = {
   ],
   feedback:"Plus tu donnes de contexte et de matière brute, plus le livrable est directement utilisable."
 }},
-"07.03-J":{type:"freetext",title:"Ma liste de délégation Claude",instructions:"Identifie tes 3 tâches les plus épuisantes et crée un template de prompt pour chacune.",content:{
-  placeholder:"Tâche 1 : [Nom de la tâche]\nTemps perdu/semaine : [...]\nTemplate de prompt :\n[Ton prompt template]\n\nTâche 2 : [Nom de la tâche]\nTemps perdu/semaine : [...]\nTemplate de prompt :\n[Ton prompt template]\n\nTâche 3 : [Nom de la tâche]\nTemps perdu/semaine : [...]\nTemplate de prompt :\n[Ton prompt template]",
-  min_length:150,feedback_ok:"3 templates créés. Tu viens de construire le début de ta bibliothèque de prompts — la vraie valeur durable."
-}},
+"07.03-J":{
+  type:"qcm",title:"Comment créer un système de délégation durable avec Claude ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Quelle approche crée la meilleure bibliothèque de prompts de délégation sur le long terme ?",
+    options:[
+      {text:"Écrire un nouveau prompt à chaque tâche déléguée à Claude.",correct:false,feedback:"Sans templates, tu réinventes la roue à chaque fois. Ce n'est pas scalable."},
+      {text:"Créer un template de prompt pour chaque tâche répétitive, sauvegarder dans un document, itérer à chaque usage.",correct:true,feedback:"Template → sauvegarde → itération = ton capital productivité. Chaque template s'améliore à l'usage et devient plus précis."},
+      {text:"Laisser Claude générer ses propres instructions à chaque fois.",correct:false,feedback:"Claude a besoin de tes instructions — il ne peut pas deviner ton contexte et tes standards."},
+      {text:"Utiliser les prompts par défaut de Claude sans personnalisation.",correct:false,feedback:"Les prompts génériques donnent des résultats génériques. La personnalisation fait toute la différence."}
+    ],
+    feedback_ok:"Template + sauvegarde + itération = bibliothèque de prompts qui s'améliore. C'est ton actif productivité le plus précieux.",
+    feedback_ko:"La bonne réponse est B. Templates réutilisables + amélioration continue = système de délégation durable."
+  }
+},
 // ─── MODULE 08 (PREMIUM) ─────────────────────────────────────────────────────
 "08.01-A":{type:"truefalse",title:"Méta-prompts et system prompts",instructions:"Vrai ou faux ?",content:{
   statements:[
@@ -2342,16 +2548,21 @@ const EXERCISES = {
   ],
   feedback:"Un system prompt complet adresse : qui Claude est, comment il répond, ce qu'il ne fait pas, et pourquoi."
 }},
-"08.01-E":{type:"completion",title:"Structure du méta-prompt",instructions:"Complète la structure d'un méta-prompt efficace.",content:{
-  text:"Un méta-prompt demande à Claude de créer un [BLANK1] pour un cas d'usage précis. Il précise le [BLANK2] de l'assistant final, son [BLANK3] cible, et les [BLANK4] à ne jamais franchir.",
-  blanks:[
-    {id:"BLANK1",answer:"prompt ou system prompt",alternatives:["prompt","system prompt","template de prompt"]},
-    {id:"BLANK2",answer:"rôle",alternatives:["profil","expertise","identité"]},
-    {id:"BLANK3",answer:"public",alternatives:["audience","cible","utilisateur"]},
-    {id:"BLANK4",answer:"limites",alternatives:["contraintes","lignes rouges","interdits"]}
-  ],
-  feedback:"Méta-prompt = demander à Claude d'être le prompt engineer à ta place. Redoutablement efficace."
-}},
+"08.01-E":{
+  type:"qcm",title:"Qu'est-ce qu'un méta-prompt ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Quelle est la définition exacte d'un méta-prompt ?",
+    options:[
+      {text:"Un prompt très long et détaillé.",correct:false,feedback:"La longueur n'est pas ce qui définit un méta-prompt. Un prompt de 1000 mots n'est pas un méta-prompt."},
+      {text:"Un prompt qui demande à Claude de créer d'autres prompts pour un cas d'usage spécifique.",correct:true,feedback:"C'est exactement ça : le méta-prompt transforme Claude en expert prompt engineer. Au lieu de créer toi-même le prompt, tu demandes à Claude de le créer pour toi, avec le rôle, le public et les contraintes définis."},
+      {text:"Un prompt avec des variables à remplir.",correct:false,feedback:"Un prompt avec variables est un template, pas un méta-prompt. Le méta-prompt génère des prompts, pas seulement les remplit."},
+      {text:"Un system prompt qui configure Claude globalement.",correct:false,feedback:"Le system prompt définit le comportement global de Claude. Le méta-prompt lui demande de créer d'autres prompts — ce sont deux choses différentes."}
+    ],
+    feedback_ok:"Méta-prompt = demander à Claude d'être le prompt engineer à ta place. Il crée le prompt, tu l'utilises.",
+    feedback_ko:"La bonne réponse est B. Un méta-prompt demande à Claude de générer des prompts optimisés — Claude travaille sur les prompts, pas sur la tâche finale."
+  }
+},
 "08.01-F":{type:"qcm",title:"Utiliser les variables dans les prompts",instructions:"Comment rendre un prompt réutilisable grâce aux variables ?",content:{
   options:[
     {text:"En réécrivant le prompt entièrement à chaque usage.",correct:false,feedback:"Réécrire = perte de temps. Les templates avec variables sont là pour ça."},
@@ -2385,10 +2596,21 @@ const EXERCISES = {
   correct_order:["3","2","4","5","1"],
   feedback:"System → Méta → Template → Chain → Ponctuel. Du permanent au spécifique — c'est l'architecture d'un système de prompts."
 }},
-"08.01-J":{type:"freetext",title:"Mon system prompt métier",instructions:"Rédige le system prompt idéal pour Claude spécialisé dans ton activité ou domaine.",content:{
-  placeholder:"[System Prompt — MON ASSISTANT IA]\n\nRôle : Tu es [EXPERTISE] spécialisé en [DOMAINE].\nContexte : Je suis [QUI TU ES], mon activité est [ACTIVITÉ].\nObjectif : Tu m'aides à [OBJECTIFS PRINCIPAUX].\nTon : [TON SOUHAITÉ]\nFormat préféré : [FORMAT]\nContraintes : Tu ne [LIMITES].",
-  min_length:100,feedback_ok:"System prompt créé. Configure-le dans Project Instructions sur Claude.ai et teste-le sur tes cas d'usage du quotidien."
-}},
+"08.01-J":{
+  type:"qcm",title:"Quels éléments rendent un system prompt efficace ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Tu configures un system prompt pour Claude dans ton activité de consultant indépendant. Quel ensemble d'éléments est le plus complet ?",
+    options:[
+      {text:"Ton prénom et ton entreprise.",correct:false,feedback:"Trop peu d'information — Claude ne peut pas adapter son comportement avec seulement un prénom et un nom d'entreprise."},
+      {text:"Rôle + expertise + public cible + objectifs + ton + contraintes (ce qu'il ne fait jamais).",correct:true,feedback:"Ces 6 éléments constituent un system prompt complet : Claude sait qui il est, pour qui il travaille, dans quel but, et ce qu'il ne doit pas faire."},
+      {text:"La liste de tes services et tarifs.",correct:false,feedback:"Les tarifs ne font pas partie d'un system prompt — Claude ne sert pas à vendre mais à t'aider à travailler."},
+      {text:"Le format de réponse uniquement.",correct:false,feedback:"Le format seul ne définit pas un assistant — sans rôle ni objectif, le comportement reste générique."}
+    ],
+    feedback_ok:"Rôle + expertise + public + objectifs + ton + contraintes = system prompt complet. Claude est calibré de façon permanente.",
+    feedback_ko:"La bonne réponse est B. Ces 6 éléments définissent complètement le comportement de Claude dans ton contexte."
+  }
+},
 
 "08.02-A":{type:"truefalse",title:"Construire des agents IA",instructions:"Vrai ou faux ?",content:{
   statements:[
@@ -2421,16 +2643,21 @@ const EXERCISES = {
   example_prompt:"Aide-moi à concevoir un agent IA pour mon activité. Voici la tâche que je veux automatiser : [DÉCRIS LA TÂCHE]. Propose : 1) L'objectif précis de l'agent, 2) Les données d'entrée dont il a besoin, 3) Les étapes de traitement, 4) Le livrable final, 5) Les outils nécessaires (Make.com, Google Sheets, Gmail, etc.).",
   what_to_test:"Demande à Claude de concevoir l'agent, puis identifie si tu peux le construire avec Make.com."
 }},
-"08.02-E":{type:"completion",title:"Vocabulaire des agents IA",instructions:"Complète les définitions clés des agents IA.",content:{
-  text:"Un agent IA utilise un [BLANK1] (Claude, GPT) pour raisonner, des [BLANK2] pour agir (APIs, webhooks), et une [BLANK3] pour améliorer ses résultats. Dans Make.com, chaque module représente un [BLANK4] de l'agent.",
-  blanks:[
-    {id:"BLANK1",answer:"LLM",alternatives:["modèle de langage","modèle IA","cerveau"]},
-    {id:"BLANK2",answer:"outils",alternatives:["tools","actions","connecteurs"]},
-    {id:"BLANK3",answer:"boucle de feedback",alternatives:["boucle d'amélioration","loop","itération"]},
-    {id:"BLANK4",answer:"outil",alternatives:["étape","action","node"]}
-  ],
-  feedback:"LLM + outils + boucle = agent. Dans Make.com, tu assembles visuellement ces composants sans code."
-}},
+"08.02-E":{
+  type:"qcm",title:"Quelle est l'architecture fondamentale d'un agent IA ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Un agent IA est fondamentalement composé de :",
+    options:[
+      {text:"Un LLM + une interface graphique + une base de données.",correct:false,feedback:"Ces éléments peuvent faire partie d'un agent, mais ils ne décrivent pas l'architecture fondamentale. L'interface et la BDD sont optionnelles."},
+      {text:"Un LLM pour raisonner + des outils pour agir + une boucle de feedback pour améliorer.",correct:true,feedback:"C'est l'architecture ReAct : Le LLM (Claude) raisonne, les outils (APIs, webhooks) agissent, et la boucle de feedback permet d'itérer si l'objectif n'est pas atteint."},
+      {text:"Plusieurs LLMs qui se parlent entre eux.",correct:false,feedback:"C'est l'architecture multi-agents — plus avancée. Un agent simple commence avec 1 LLM + outils."},
+      {text:"Un prompt très détaillé + un humain pour valider chaque étape.",correct:false,feedback:"Un agent IA est conçu pour agir de façon autonome entre les validations humaines — pas une validation à chaque micro-étape."}
+    ],
+    feedback_ok:"LLM (cerveau) + outils (actions) + boucle de feedback (amélioration) = architecture d'agent. Dans Make.com, chaque module est un outil.",
+    feedback_ko:"La bonne réponse est B. LLM + outils + boucle de feedback = architecture ReAct. C'est le fondement de tout agent IA."
+  }
+},
 "08.02-F":{type:"checklist",title:"Checklist de construction d'agent",instructions:"Évalue ta préparation avant de construire un agent.",content:{
   items:[
     {text:"J'ai défini précisément l'objectif de l'agent (1 tâche, 1 livrable)",points:2},
@@ -2464,10 +2691,21 @@ const EXERCISES = {
   ],
   feedback:"Chaque nœud d'un agent peut intégrer Claude comme couche d'intelligence. C'est là que la valeur se crée."
 }},
-"08.02-J":{type:"freetext",title:"Mon premier agent IA à construire",instructions:"Décris le premier agent que tu vas construire : tâche, données, étapes, livrable.",content:{
-  placeholder:"Nom de l'agent : [...]\nTâche automatisée : [...]\nDéclencheur : [Quand l'agent se lance]\nDonnées d'entrée : [...]\nTraitement par Claude (prompt) : [...]\nLivrable final : [...]\nOutils Make.com utilisés : [...]\nTemps estimé de construction : [...]\nTemps économisé/semaine : [...]",
-  min_length:100,feedback_ok:"Agent conçu sur papier. Il ne reste qu'à le construire dans Make.com — tu as tout le plan."
-}},
+"08.02-J":{
+  type:"qcm",title:"Quelle est la meilleure stratégie pour créer son premier agent IA ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Tu veux créer ton premier agent IA avec Make.com + Claude. Quelle approche maximise les chances de succès ?",
+    options:[
+      {text:"Créer immédiatement un agent complexe qui gère plusieurs types de tâches.",correct:false,feedback:"Un agent trop ambitieux dès le départ = trop de variables à gérer. Le piège classique du premier agent."},
+      {text:"Choisir 1 seule tâche répétitive bien définie, créer l'agent minimal, le perfectionner avant d'ajouter des fonctionnalités.",correct:true,feedback:"1 tâche → 1 agent simple → perfection → extension. C'est la méthode qui garantit un agent qui fonctionne vraiment."},
+      {text:"Copier un agent existant trouvé sur YouTube.",correct:false,feedback:"Un agent copié sans comprendre son fonctionnement devient impossible à maintenir quand il y a des erreurs."},
+      {text:"Créer l'agent directement dans Make.com sans concevoir le prompt Claude d'abord.",correct:false,feedback:"Le prompt Claude est le cerveau de l'agent. Sans un bon prompt, l'agent fait tout mal — même si la plomberie Make.com est correcte."}
+    ],
+    feedback_ok:"1 tâche simple + perfection + extension progressive = la stratégie gagnante pour un premier agent réussi.",
+    feedback_ko:"La bonne réponse est B. Commence avec 1 tâche simple et perfectionne-la avant d'ajouter de la complexité."
+  }
+},
 
 "08.03-A":{type:"truefalse",title:"L'avenir du travail avec l'IA",instructions:"Vrai ou faux ?",content:{
   statements:[
@@ -2534,14 +2772,36 @@ const EXERCISES = {
   ],
   feedback:"L'IA ne te remplace pas — elle te libère de l'exécution pour que tu puisses te concentrer sur ce que seul toi peux faire."
 }},
-"08.03-I":{type:"freetext",title:"Ma vision IA dans 12 mois",instructions:"Décris ta situation professionnelle idéale dans 12 mois grâce à l'IA.",content:{
-  placeholder:"Dans 12 mois, grâce à l'IA je vais :\n\nTâches que j'aurai automatisées :\n1. [...]\n2. [...]\n3. [...]\n\nTemps libéré par semaine : [...]\n\nCe que je ferai de ce temps libéré :\n[...]\n\nL'agent IA que j'aurai construit :\n[...]\n\nComment je me distinguerai de mes concurrents :\n[...]",
-  min_length:100,feedback_ok:"Vision claire. Une vision précrite est la première étape pour la réaliser — ton plan IA commence maintenant."
-}},
-"08.03-J":{type:"freetext",title:"Ce que j'emporte de cette formation",instructions:"Résume les 3 transformations les plus importantes que cette formation a apportées à ta façon de travailler.",content:{
-  placeholder:"Transformation 1 — Ma façon d'utiliser Claude :\nAvant : [...]\nMaintenant : [...]\n\nTransformation 2 — Ma productivité :\nAvant : [...]\nMaintenant : [...]\n\nTransformation 3 — Mon positionnement :\nAvant : [...]\nMaintenant : [...]\n\nL'action que je vais faire dans les 24 prochaines heures : [...]",
-  min_length:100,feedback_ok:"Formation terminée. Tu fais partie des professionnels qui ont choisi d'amplifier leur valeur avec l'IA plutôt que de la subir. Continue."
-}}
+"08.03-I":{
+  type:"qcm",title:"Quelle est la stratégie d'intégration IA la plus efficace sur 12 mois ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Pour maximiser son ROI IA sur 12 mois, quelle est la meilleure stratégie de progression ?",
+    options:[
+      {text:"Commencer par les agents IA complexes pour avoir le plus grand impact immédiat.",correct:false,feedback:"Les agents complexes sans maîtrise des bases = beaucoup d'erreurs et peu de résultats. La progression par étapes est indispensable."},
+      {text:"Templates de prompts (M1-3) → automatisations simples (M4-6) → agents spécialisés (M7-12).",correct:true,feedback:"Cette progression capitalise : chaque étape renforce la suivante. Les templates forment la base, les automatisations multiplient l'impact, les agents créent l'avantage compétitif durable."},
+      {text:"Attendre que les outils IA soient plus matures avant d'investir.",correct:false,feedback:"L'avantage compétitif est maximal maintenant — attendre, c'est laisser l'avance aux autres."},
+      {text:"Se former uniquement aux outils IA sans développer l'expertise métier.",correct:false,feedback:"L'expertise métier est le socle. Les outils IA amplifient cette expertise — sans elle, les outputs IA sont génériques."}
+    ],
+    feedback_ok:"Templates → automatisations → agents. Chaque phase renforce la suivante et l'avantage compétitif s'accumule.",
+    feedback_ko:"La bonne réponse est B. La progression par phases garantit une intégration solide et un ROI croissant."
+  }
+},
+"08.03-J":{
+  type:"qcm",title:"Quelle est la transformation principale après cette formation ?",
+  instructions:"Une seule bonne réponse.",
+  content:{
+    question:"Quelle est la différence principale entre un utilisateur IA débutant et un utilisateur expert après cette formation ?",
+    options:[
+      {text:"L'expert a accès à des outils IA plus puissants.",correct:false,feedback:"Les outils sont les mêmes pour tous. C'est la façon de les utiliser qui fait la différence."},
+      {text:"L'expert a un abonnement plus cher.",correct:false,feedback:"Le prix de l'abonnement n'a aucun rapport avec le niveau d'utilisation."},
+      {text:"L'expert utilise Claude comme multiplicateur de productivité avec des prompts précis, des templates et des automatisations — pas juste comme outil de recherche.",correct:true,feedback:"La différence fondamentale : le débutant pose des questions, l'expert délègue des tâches. Le débutant accepte les réponses, l'expert les optimise. C'est ça la transformation."},
+      {text:"L'expert utilise Claude plus longtemps chaque jour.",correct:false,feedback:"L'expert utilise Claude moins longtemps mais plus efficacement. La productivité n'est pas dans la durée d'utilisation."}
+    ],
+    feedback_ok:"Déléguer + templates + automatisations = l'expert IA. Pas juste poser des questions — orchestrer un système.",
+    feedback_ko:"La bonne réponse est C. La transformation : passer de 'utilisateur' à 'orchestrateur' — tu délègues, automatises, et construis des systèmes."
+  }
+}
 }; // end EXERCISES
 
 const MODULES = [

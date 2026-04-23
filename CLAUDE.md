@@ -36,7 +36,7 @@
 | **Co-développeur** | `Hhhsimo — développement technique dashboard` |
 | **Statut** | `🟡 En cours` |
 | **Démarré le** | `2026-04-08` |
-| **Dernière mise à jour** | `2026-04-22 — Session 6` |
+| **Dernière mise à jour** | `2026-04-23 — Session 7` |
 
 ---
 
@@ -345,6 +345,33 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 > Toutes les sessions sont archivées ici. Ne jamais supprimer. Ajouter au-dessus (la plus récente en premier).
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
+
+### Session 7 — 2026-04-23
+**Durée estimée** : 1h  
+**Objectif de la session** : Conversion de tous les exercices freetext/completion en QCM + fix lisibilité CSS
+
+**✅ Réalisé :**
+- Exécution du script Python `convert_exercises.py` : 44 exercices convertis en QCM (27 freetext + 17 completion → 0 restant)
+- Fix bug `07.01-C` : clé `right:false` → `correct:false` sur la dernière option
+- Fix lisibilité QCM dans le runner ARIA : ajout `color:rgba(255,255,255,.88)` sur `.ar-qcm-opt` (le texte héritait de `var(--text)` = `#1a1a2e` noir, invisible sur fond sombre)
+- Fix état "mauvaise réponse" : remplacement de `opacity:.7` par `color:rgba(255,255,255,.5)` pour atténuer uniquement le texte sans assombrir le fond rouge
+- Fix états selected/correct : `color:#fff!important` pour garantir la lisibilité dans tous les états
+
+**🔧 Modifié / Créé :**
+- `js/data-exercises.js` — 44 exercices freetext/completion → qcm (0 freetext, 0 completion restant, 91 qcm total)
+- `css/dashboard.css` — `.ar-qcm-opt`, `.ar-qcm-sel`, `.ar-qcm-ok`, `.ar-qcm-ko`, `.ar-qcm-ko .ar-qcm-letter`, `.ar-qcm-text` : couleurs de texte explicites pour lisibilité sur fond sombre
+- `convert_exercises.py` — script Python créé (session précédente) et exécuté cette session
+
+**⚠️ Points en suspens :**
+- Tester le runner ARIA en navigation réelle après les conversions QCM
+- Vérifier que les 44 nouveaux QCM s'affichent et valident correctement
+- Module 08 Premium : vérifier lock pour comptes Standard
+
+**💡 Décisions prises :**
+- Tous les exercices freetext/completion convertis en QCM → réduit la marge d'erreur utilisateur, réponses précises
+- Les exercices `promptlab` (20 total) intentionnellement non convertis — nécessitent une interaction réelle avec Claude externe
+
+---
 
 ### Session 6 — 2026-04-22
 **Durée estimée** : 3h  
