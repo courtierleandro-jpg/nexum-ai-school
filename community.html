@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUM AI SCHOOL — Communauté</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-DMZba1BONZiQPyFSk4oqvSq7k_oWX94",
+    authDomain: "la-school-83571.firebaseapp.com",
+    projectId: "la-school-83571",
+    databaseURL: "https://ia-school-83571-default-rtdb.europe-west1.firebasedatabase.app",
+    storageBucket: "la-school-83571.firebasestorage.app",
+    messagingSenderId: "1036511097172",
+    appId: "1:1036511097172:web:blc2b5598fcf40aa2658c1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
+<style>
+:root {
+  --bg: #040407;
+  --surface: #0c0c14;
+  --surface2: #111120;
+  --border: rgba(255,255,255,0.07);
+  --accent: #7B5EA7;
+  --cyan: #00E5FF;
+  --pink: #FF3CAC;
+  --text: #E8E8F0;
+  --muted: #6B6B80;
+  --success: #00E5A0;
+  --warn: #F5C842;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; overflow-x:hidden; min-height:100vh; }
+
+/* TOPBAR */
+.topbar {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  height:60px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px;
+  background:rgba(4,4,7,0.96); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:17px; letter-spacing:.12em; color:#fff; }
+.topbar-logo span { color:var(--cyan); }
+.topbar-back {
+  font-family:'Space Mono',monospace; font-size:11px; color:var(--muted);
+  text-decoration:none; padding:6px 14px; border:1px solid var(--border);
+  border-radius:2px; transition:all .2s; letter-spacing:.06em;
+}
+.topbar-back:hover { color:var(--cyan); border-color:rgba(0,229,255,.3); }
+.topbar-left { display:flex; align-items:center; gap:16px; }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.badge { font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.1em; padding:5px 12px; border-radius:2px; text-transform:uppercase; }
+.badge-std { background:rgba(0,229,255,.1); color:var(--cyan); border:1px solid rgba(0,229,255,.25); }
+.badge-prem { background:rgba(123,94,167,.15); color:var(--accent); border:1px solid rgba(123,94,167,.3); }
+
+/* LAYOUT */
+.community-layout {
+  display:flex; padding-top:60px; min-height:100vh;
+}
+
+/* SIDEBAR */
+.community-sidebar {
+  width:240px; min-width:240px;
+  background:var(--surface); border-right:1px solid var(--border);
+  height:calc(100vh - 60px); position:sticky; top:60px; overflow-y:auto;
+  padding:16px 0;
+}
+.sb-section {
+  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); padding:0 16px 10px;
+}
+.leader-item {
+  display:flex; align-items:center; gap:10px; padding:10px 16px;
+  border-bottom:1px solid var(--border); transition:background .15s;
+}
+.leader-item:hover { background:rgba(255,255,255,.02); }
+.leader-rank { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:var(--muted); min-width:22px; }
+.leader-rank.gold { color:#FFD700; }
+.leader-rank.silver { color:#C0C0C0; }
+.leader-rank.bronze { color:#CD7F32; }
+.leader-info { flex:1; min-width:0; }
+.leader-alias { font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.leader-stats { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); margin-top:2px; }
+
+/* MAIN */
+.community-main { flex:1; padding:36px 44px; max-width:900px; }
+
+/* HEADER */
+.community-header {
+  display:flex; justify-content:space-between; align-items:flex-start;
+  margin-bottom:28px; gap:20px;
+}
+.home-greeting { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.home-title { font-family:'Syne',sans-serif; font-weight:800; font-size:28px; color:#fff; margin-bottom:6px; line-height:1.2; }
+.home-title span { background:linear-gradient(135deg,var(--cyan),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.home-sub { font-size:14px; color:var(--muted); }
+.btn-publish {
+  padding:12px 24px; white-space:nowrap; align-self:flex-start; margin-top:8px;
+  background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(255,60,172,0.15));
+  border:1px solid rgba(0,229,255,0.3); color:var(--cyan);
+  font-family:'Space Mono',monospace; font-size:11px; font-weight:700;
+  letter-spacing:.08em; cursor:pointer; border-radius:2px; transition:all .2s;
+}
+.btn-publish:hover { background:linear-gradient(135deg,rgba(0,229,255,0.25),rgba(255,60,172,0.25)); }
+
+/* FILTRES */
+.feed-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+.filter-btn {
+  padding:7px 16px; background:var(--surface); border:1px solid var(--border);
+  color:var(--muted); font-family:'Space Mono',monospace; font-size:10px;
+  cursor:pointer; border-radius:2px; transition:all .2s;
+  text-transform:uppercase; letter-spacing:.06em;
+}
+.filter-btn:hover, .filter-btn.active {
+  background:rgba(0,229,255,0.08); border-color:rgba(0,229,255,.25); color:var(--cyan);
+}
+
+/* POST CARD */
+.post-card {
+  background:var(--surface); border:1px solid var(--border);
+  padding:20px 22px; margin-bottom:14px; cursor:pointer;
+  transition:border-color .2s, background .2s;
+}
+.post-card:hover { border-color:rgba(0,229,255,.2); background:var(--surface2); }
+.post-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.post-type-badge {
+  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.1em; padding:3px 9px;
+  border-radius:2px; text-transform:uppercase;
+  background:rgba(123,94,167,.15); color:var(--accent); border:1px solid rgba(123,94,167,.25);
+}
+.post-author { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); }
+.post-title { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:#fff; margin-bottom:8px; line-height:1.3; }
+.post-desc {
+  font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:14px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.post-actions { display:flex; align-items:center; gap:10px; }
+.action-btn {
+  display:flex; align-items:center; gap:6px; padding:6px 14px;
+  background:transparent; border:1px solid var(--border); color:var(--muted);
+  font-family:'Space Mono',monospace; font-size:10px; cursor:pointer;
+  border-radius:2px; transition:all .2s; text-transform:uppercase; letter-spacing:.04em;
+}
+.action-btn:hover { background:rgba(255,255,255,.04); color:var(--text); }
+.action-btn.rocketed { background:rgba(0,229,255,.08); border-color:rgba(0,229,255,.25); color:var(--cyan); }
+.action-btn.saved { background:rgba(245,200,66,.08); border-color:rgba(245,200,66,.25); color:var(--warn); }
+.post-date { margin-left:auto; font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
+
+/* FEED EMPTY */
+.feed-empty { text-align:center; padding:60px 20px; }
+.feed-loading { padding:40px; text-align:center; font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); }
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  position:fixed; inset:0; z-index:1000;
+  background:rgba(4,4,7,0.88); backdrop-filter:blur(10px);
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* PUBLISH MODAL */
+.publish-modal {
+  background:var(--surface); border:1px solid var(--border);
+  padding:32px 36px; width:600px; max-width:95vw;
+  max-height:85vh; overflow-y:auto;
+}
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+.modal-header h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:#fff; }
+.modal-close {
+  background:transparent; border:none; color:var(--muted);
+  font-size:16px; cursor:pointer; padding:4px 8px; line-height:1;
+}
+.modal-close:hover { color:var(--text); }
+.form-group { margin-bottom:18px; }
+.form-group label {
+  display:block; font-family:'Space Mono',monospace; font-size:10px;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;
+}
+.form-group input, .form-group textarea {
+  width:100%; padding:12px 14px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--text);
+  font-family:'DM Sans',sans-serif; font-size:13px; border-radius:2px;
+  outline:none; resize:vertical; transition:border-color .2s;
+}
+.form-group input:focus, .form-group textarea:focus { border-color:rgba(0,229,255,.3); }
+.type-selector { display:flex; gap:8px; flex-wrap:wrap; }
+.type-btn {
+  padding:7px 16px; background:var(--surface2); border:1px solid var(--border);
+  color:var(--muted); font-family:'Space Mono',monospace; font-size:10px;
+  cursor:pointer; border-radius:2px; transition:all .2s;
+}
+.type-btn.active { background:rgba(0,229,255,.08); border-color:rgba(0,229,255,.3); color:var(--cyan); }
+.modal-footer { display:flex; gap:12px; justify-content:flex-end; margin-top:8px; }
+.btn-cancel-modal {
+  padding:10px 22px; background:transparent; border:1px solid var(--border);
+  color:var(--muted); font-family:'Space Mono',monospace; font-size:10px; cursor:pointer; border-radius:2px;
+}
+.btn-submit-post {
+  padding:11px 24px; background:linear-gradient(135deg,var(--cyan),var(--pink));
+  border:none; color:#000; font-family:'Space Mono',monospace;
+  font-size:11px; font-weight:700; letter-spacing:.08em; cursor:pointer; border-radius:2px;
+}
+.cant-post-banner {
+  padding:16px 20px; background:rgba(123,94,167,.1); border:1px solid rgba(123,94,167,.25);
+  border-radius:4px; font-size:13px; color:var(--accent); margin-bottom:20px; text-align:center;
+}
+
+/* POST DETAIL MODAL */
+.post-detail-modal {
+  background:var(--surface); border:1px solid var(--border);
+  padding:32px 36px; width:700px; max-width:95vw;
+  max-height:85vh; overflow-y:auto; position:relative;
+}
+.modal-close-top {
+  display:flex; align-items:center; gap:8px; margin-bottom:20px;
+  background:transparent; border:1px solid var(--border); color:var(--muted);
+  font-family:'Space Mono',monospace; font-size:10px; padding:7px 14px;
+  cursor:pointer; border-radius:2px; transition:all .2s; letter-spacing:.06em;
+}
+.modal-close-top:hover { border-color:var(--border); color:var(--text); }
+
+/* TOAST */
+@keyframes slideInToast { from { transform:translateY(10px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <a href="dashboard.html" class="topbar-back">← Dashboard</a>
+    <div class="topbar-logo">NEXUM<span>//</span>AI</div>
+  </div>
+  <div class="topbar-right">
+    <span class="badge badge-std" id="user-badge" style="display:none"></span>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="community-layout">
+
+  <!-- SIDEBAR : Leaderboard -->
+  <aside class="community-sidebar">
+    <div class="sb-section">🏆 Classement</div>
+    <div id="leaderboard-list">
+      <div class="feed-loading" style="font-size:10px;padding:20px 16px">Chargement...</div>
+    </div>
+  </aside>
+
+  <!-- FEED PRINCIPAL -->
+  <main class="community-main">
+
+    <div class="community-header">
+      <div>
+        <div class="home-greeting">Partagez · Inspirez · Progressez</div>
+        <h1 class="home-title">Communauté <span>Nexum</span></h1>
+        <p class="home-sub">Partagez vos projets, prompts et expériences avec la communauté.</p>
+      </div>
+      <button class="btn-publish" id="btn-publish" onclick="openPublishModal()">
+        + Publier un projet
+      </button>
+    </div>
+
+    <!-- FILTRES -->
+    <div class="feed-filters">
+      <button class="filter-btn active" onclick="setFilter('recent',this)">🕐 Récent</button>
+      <button class="filter-btn" onclick="setFilter('top',this)">🚀 Top rockets</button>
+      <button class="filter-btn" onclick="setFilter('copied',this)">📋 Plus copiés</button>
+      <button class="filter-btn" onclick="setTypeFilter('code',this)">💻 Code</button>
+      <button class="filter-btn" onclick="setTypeFilter('projet',this)">🎯 Projets</button>
+      <button class="filter-btn" onclick="setTypeFilter('experience',this)">💡 Expériences</button>
+      <button class="filter-btn" onclick="setTypeFilter(null,this)">Tout</button>
+    </div>
+
+    <!-- FEED -->
+    <div id="posts-feed">
+      <div class="feed-loading">Chargement des posts...</div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL PUBLICATION -->
+<div class="modal-overlay" id="publish-modal" style="display:none">
+  <div class="publish-modal">
+    <div class="modal-header">
+      <h2>Publier un projet</h2>
+      <button class="modal-close" onclick="closePublishModal()">✕</button>
+    </div>
+    <div id="cant-post-msg" style="display:none">
+      <div class="cant-post-banner">
+        🔒 Tu pourras publier une fois toutes les leçons terminées. Continue ta formation !
+      </div>
+      <div style="text-align:center"><button class="btn-cancel-modal" onclick="closePublishModal()">Fermer</button></div>
+    </div>
+    <div id="publish-form">
+      <div class="form-group">
+        <label>Type de publication</label>
+        <div class="type-selector">
+          <button class="type-btn active" onclick="selectType('code',this)">💻 Code</button>
+          <button class="type-btn" onclick="selectType('projet',this)">🎯 Projet</button>
+          <button class="type-btn" onclick="selectType('experience',this)">💡 Expérience</button>
+          <button class="type-btn" onclick="selectType('feedback',this)">📝 Feedback</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Titre</label>
+        <input type="text" id="post-title" placeholder="Ex: Assistant email automatique avec Claude..." maxlength="100">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="post-description" placeholder="Décris ton projet en quelques lignes..." rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Contenu <span style="color:var(--muted);font-size:9px">(code, prompt, ou texte)</span></label>
+        <textarea id="post-content" placeholder="Colle ton code ou prompt ici..." rows="8" style="font-family:'Space Mono',monospace;font-size:12px"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel-modal" onclick="closePublishModal()">Annuler</button>
+        <button class="btn-submit-post" onclick="submitPost()">Publier 🚀</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETAIL POST -->
+<div class="modal-overlay" id="post-detail-modal" style="display:none" onclick="if(event.target===this)closePostDetail()">
+  <div class="post-detail-modal">
+    <button class="modal-close-top" onclick="closePostDetail()">✕ Fermer</button>
+    <div id="post-detail-content"></div>
+  </div>
+</div>
+
+<script>
+// ── ÉTAT ─────────────────────────────────────────────────────
+const userKey    = localStorage.getItem('nx_key');
+let allPosts     = [];
+let currentSort  = 'recent';
+let currentType  = null;
+let selectedType = 'code';
+
+// ── ALIAS ANONYME ────────────────────────────────────────────
+function getUserAlias(key) {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash = ((hash << 5) - hash) + key.charCodeAt(i);
+    hash |= 0;
+  }
+  return 'Membre #' + (Math.abs(hash) % 9999 + 1);
+}
+
+// ── ACCÈS PUBLICATION ────────────────────────────────────────
+async function canPost() {
+  if (!userKey) return false;
+  try {
+    const snap = await db.ref('members/' + userKey + '/done').get();
+    const done = snap.val() || [];
+    return Array.isArray(done) ? done.length >= 22 : Object.keys(done).length >= 22;
+  } catch(e) { return false; }
+}
+
+// ── CHARGEMENT ───────────────────────────────────────────────
+function loadPosts() {
+  db.ref('community').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    allPosts = Object.values(data).sort((a,b) => b.createdAt - a.createdAt);
+    renderPosts();
+    renderLeaderboard();
+  });
+}
+
+// ── FILTRES ──────────────────────────────────────────────────
+function setFilter(sort, btn) {
+  currentSort = sort;
+  currentType = null;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderPosts();
+}
+
+function setTypeFilter(type, btn) {
+  currentType = type;
+  currentSort = 'recent';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderPosts();
+}
+
+// ── RENDU POSTS ──────────────────────────────────────────────
+function renderPosts() {
+  let posts = [...allPosts];
+  if (currentType) posts = posts.filter(p => p.type === currentType);
+  if (currentSort === 'top') posts.sort((a,b) => (b.rockets||0) - (a.rockets||0));
+  else if (currentSort === 'copied') posts.sort((a,b) => (b.copies||0) - (a.copies||0));
+  else posts.sort((a,b) => b.createdAt - a.createdAt);
+
+  const feed = document.getElementById('posts-feed');
+  if (posts.length === 0) {
+    feed.innerHTML = `<div class="feed-empty">
+      <div style="font-size:36px;margin-bottom:12px">🚀</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;margin-bottom:6px">Aucun post pour l'instant</div>
+      <div style="font-size:13px;color:var(--muted)">Sois le premier à partager un projet !</div>
+    </div>`;
+    return;
+  }
+  feed.innerHTML = posts.map(p => renderPostCard(p)).join('');
+}
+
+const TYPE_LABELS = { code:'💻 Code', projet:'🎯 Projet', experience:'💡 Expérience', feedback:'📝 Feedback' };
+
+function renderPostCard(post) {
+  const safeKey    = userKey ? userKey.replace(/\./g,'_') : null;
+  const isRocketed = safeKey && post.rocketedBy && post.rocketedBy[safeKey];
+  const isSaved    = safeKey && post.savedBy    && post.savedBy[safeKey];
+  const date       = new Date(post.createdAt).toLocaleDateString('fr-FR', {day:'numeric',month:'short'});
+  return `
+    <div class="post-card" onclick="openPostDetail('${esc(post.id)}')">
+      <div class="post-card-top">
+        <span class="post-type-badge">${TYPE_LABELS[post.type]||post.type}</span>
+        <span class="post-author">${esc(post.authorAlias)}</span>
+      </div>
+      <div class="post-title">${esc(post.title)}</div>
+      <div class="post-desc">${esc(post.description)}</div>
+      <div class="post-actions" onclick="event.stopPropagation()">
+        <button class="action-btn ${isRocketed?'rocketed':''}" onclick="toggleRocket('${esc(post.id)}')">🚀 ${post.rockets||0}</button>
+        <button class="action-btn" onclick="copyPostContent('${esc(post.id)}')">📋 ${post.copies||0}</button>
+        <button class="action-btn ${isSaved?'saved':''}" onclick="toggleSave('${esc(post.id)}')">⭐ ${isSaved?'Sauvé':'Sauvegarder'}</button>
+        <span class="post-date">${date}</span>
+      </div>
+    </div>`;
+}
+
+// ── INTERACTIONS ─────────────────────────────────────────────
+async function toggleRocket(postId) {
+  if (!userKey) return showToast('Connecte-toi pour réagir');
+  const post    = allPosts.find(p => p.id === postId);
+  if (!post) return;
+  const safeKey = userKey.replace(/\./g,'_');
+  const ref     = db.ref('community/' + postId);
+  if (post.rocketedBy && post.rocketedBy[safeKey]) {
+    await ref.update({ rockets: Math.max(0,(post.rockets||1)-1), ['rocketedBy/'+safeKey]: null });
+  } else {
+    await ref.update({ rockets: (post.rockets||0)+1, ['rocketedBy/'+safeKey]: true });
+  }
+}
+
+async function copyPostContent(postId) {
+  const post = allPosts.find(p => p.id === postId);
+  if (!post || !post.content) return showToast('Aucun contenu à copier');
+  try {
+    await navigator.clipboard.writeText(post.content);
+    const safeKey = userKey ? userKey.replace(/\./g,'_') : 'anon';
+    await db.ref('community/' + postId).update({ copies: (post.copies||0)+1, ['copiedBy/'+safeKey]: true });
+    showToast('Copié ! 📋');
+  } catch(e) { showToast('Erreur de copie'); }
+}
+
+async function toggleSave(postId) {
+  if (!userKey) return showToast('Connecte-toi pour sauvegarder');
+  const post    = allPosts.find(p => p.id === postId);
+  if (!post) return;
+  const safeKey = userKey.replace(/\./g,'_');
+  const isSaved = post.savedBy && post.savedBy[safeKey];
+  await db.ref('community/' + postId).update({ ['savedBy/'+safeKey]: isSaved ? null : true });
+  showToast(isSaved ? 'Retiré des favoris' : 'Sauvegardé ⭐');
+}
+
+// ── PUBLICATION ──────────────────────────────────────────────
+async function openPublishModal() {
+  document.getElementById('publish-modal').style.display = 'flex';
+  const ok = await canPost();
+  document.getElementById('publish-form').style.display  = ok ? 'block' : 'none';
+  document.getElementById('cant-post-msg').style.display = ok ? 'none'  : 'block';
+}
+
+function closePublishModal() {
+  document.getElementById('publish-modal').style.display = 'none';
+}
+
+function selectType(type, btn) {
+  selectedType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+async function submitPost() {
+  const title       = document.getElementById('post-title').value.trim();
+  const description = document.getElementById('post-description').value.trim();
+  const content     = document.getElementById('post-content').value.trim();
+  if (!title)       { showToast('Titre requis'); return; }
+  if (!description) { showToast('Description requise'); return; }
+  if (!(await canPost())) return;
+
+  const postId = 'post_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  await db.ref('community/' + postId).set({
+    id: postId,
+    authorKey:   userKey,
+    authorAlias: getUserAlias(userKey),
+    title, description, content,
+    type:      selectedType,
+    createdAt: Date.now(),
+    rockets:   0, copies: 0,
+    rocketedBy: {}, savedBy: {}, copiedBy: {}
+  });
+  closePublishModal();
+  showToast('Publié ! 🚀');
+  document.getElementById('post-title').value = '';
+  document.getElementById('post-description').value = '';
+  document.getElementById('post-content').value = '';
+}
+
+// ── DETAIL POST ──────────────────────────────────────────────
+function openPostDetail(postId) {
+  const post = allPosts.find(p => p.id === postId);
+  if (!post) return;
+  const date    = new Date(post.createdAt).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  const safeKey = userKey ? userKey.replace(/\./g,'_') : null;
+  document.getElementById('post-detail-content').innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <span class="post-type-badge">${TYPE_LABELS[post.type]||post.type}</span>
+        <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">${esc(post.authorAlias)} · ${date}</span>
+      </div>
+      <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#fff;margin-bottom:10px">${esc(post.title)}</h2>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px">${esc(post.description)}</p>
+    </div>
+    ${post.content ? `
+      <div style="margin-bottom:24px">
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Contenu</div>
+        <pre style="background:var(--surface2);border:1px solid var(--border);padding:16px 18px;overflow-x:auto;font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;color:var(--text);white-space:pre-wrap;word-break:break-all">${esc(post.content)}</pre>
+      </div>` : ''}
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="action-btn ${post.rocketedBy&&safeKey&&post.rocketedBy[safeKey]?'rocketed':''}" onclick="toggleRocket('${esc(post.id)}')">🚀 ${post.rockets||0}</button>
+      <button class="action-btn" onclick="copyPostContent('${esc(post.id)}')">📋 Copier (${post.copies||0})</button>
+    </div>`;
+  document.getElementById('post-detail-modal').style.display = 'flex';
+}
+
+function closePostDetail() {
+  document.getElementById('post-detail-modal').style.display = 'none';
+}
+
+// ── LEADERBOARD ──────────────────────────────────────────────
+function renderLeaderboard() {
+  const scores = {};
+  allPosts.forEach(post => {
+    const key = post.authorKey || post.authorAlias;
+    if (!scores[key]) scores[key] = { alias: post.authorAlias, rockets:0, copies:0, posts:0 };
+    scores[key].rockets += post.rockets || 0;
+    scores[key].copies  += post.copies  || 0;
+    scores[key].posts++;
+  });
+
+  const sorted = Object.values(scores)
+    .map(s => ({ ...s, score: s.rockets*3 + s.copies*2 + s.posts }))
+    .sort((a,b) => b.score - a.score).slice(0,10);
+
+  const container = document.getElementById('leaderboard-list');
+  if (!container) return;
+  if (!sorted.length) {
+    container.innerHTML = '<div style="padding:16px;font-size:11px;color:var(--muted);text-align:center">Aucun classement</div>';
+    return;
+  }
+
+  const rankCls = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
+  const rankSym = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1);
+  container.innerHTML = sorted.map((m,i) => `
+    <div class="leader-item">
+      <div class="leader-rank ${rankCls(i)}">${rankSym(i)}</div>
+      <div class="leader-info">
+        <div class="leader-alias">${esc(m.alias)}</div>
+        <div class="leader-stats">🚀${m.rockets} · 📋${m.copies} · ${m.posts} post${m.posts>1?'s':''}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── UTILITAIRES ──────────────────────────────────────────────
+function esc(str) {
+  return String(str||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;font-family:\'Space Mono\',monospace;font-size:11px;border-radius:2px;animation:slideInToast .2s ease;';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  if (userKey) {
+    const badge = document.getElementById('user-badge');
+    if (badge) { badge.textContent = userKey.slice(0,14) + '…'; badge.style.display = 'inline'; }
+  }
+  loadPosts();
+});
+</script>
+</body>
+</html>
