@@ -495,38 +495,12 @@ function arValidate() {
     btns.innerHTML = `<button class="ar-btn-next" onclick="arNext()">${isLast ? 'Voir le résultat →' : 'Exercice suivant →'}</button>`;
   }
 
-  // Mark done
+  // Enregistrer l'exercice si réussi — la validation de leçon se fait dans _arComplete()
   if (result.ok !== false) {
     S.exDone = S.exDone || [];
     if (!S.exDone.includes(exId)) {
       S.exDone.push(exId);
       save();
-      // Check if lesson is complete
-      const allDone = (_ar.ids || []).every(id => S.exDone.includes(id));
-      if (allDone) {
-        const modId = _ar.modId;
-        const lesId = _ar.lesId;
-        if (!isDone(lesId)) {
-          S.done.push(lesId);
-          // Unlock next lesson
-          const mod = MODULES.find(m => m.id === modId);
-          if (mod) {
-            const lesIdx = mod.lessons.findIndex(l => l.id === lesId);
-            if (lesIdx >= 0 && lesIdx < mod.lessons.length - 1) {
-              // next lesson in same module — already accessible
-            } else {
-              // last lesson of module — unlock next module
-              const modIdx = MODULES.indexOf(mod);
-              if (modIdx >= 0 && modIdx < MODULES.length - 1) {
-                const nextMod = MODULES[modIdx + 1];
-                if (!S.open.includes(nextMod.id)) S.open.push(nextMod.id);
-              }
-            }
-          }
-          save();
-          updateProgressBar();
-        }
-      }
     }
   }
 }
@@ -709,15 +683,38 @@ function arNext() {
 
 function _arComplete() {
   const { modId, lesId, ids, passed, skipped } = _ar;
-  const mod  = MODULES.find(m => m.id === modId);
-  const total = ids.length;
-  const done  = passed + skipped;
-  const pct   = Math.round(passed / total * 100);
+  const mod       = MODULES.find(m => m.id === modId);
+  const total     = ids.length;
+  const pct       = Math.round(passed / total * 100);
+  const threshold = Math.ceil(total * 0.5);
+  const validated = passed >= threshold;
+
+  // Valider la leçon si seuil ≥ 50% atteint
+  if (validated && !isDone(lesId)) {
+    S.done.push(lesId);
+    // Débloquer le module suivant si c'est la dernière leçon du module
+    const curMod = MODULES.find(m => m.id === modId);
+    if (curMod) {
+      const lesIdx = curMod.lessons.findIndex(l => l.id === lesId);
+      if (lesIdx === curMod.lessons.length - 1) {
+        const modIdx = MODULES.indexOf(curMod);
+        if (modIdx >= 0 && modIdx < MODULES.length - 1) {
+          const nextMod = MODULES[modIdx + 1];
+          if (!S.open.includes(nextMod.id)) S.open.push(nextMod.id);
+        }
+      }
+    }
+    save();
+  }
+
   const allLes = MODULES.flatMap(m => m.lessons.map(l => ({ ...l, modId: m.id })));
   const idx    = allLes.findIndex(l => l.id === lesId);
   const next   = allLes[idx + 1];
+  const isLastAccessible = !next || (MODULES.find(m => m.id === next.modId)?.premium && S.plan === 'standard');
 
-  const ariaMsg = _rnd(_AR_COMPLETE).replace('{n}', total);
+  const ariaMsg = validated
+    ? _rnd(_AR_COMPLETE).replace('{n}', total)
+    : _rnd(_AR_FAIL_MSG).replace('{pct}', pct).replace('{threshold}', Math.round(threshold / total * 100));
 
   document.getElementById('main').innerHTML = `
     <div class="ar-wrap">
@@ -736,19 +733,20 @@ function _arComplete() {
           <div class="ar-bubble"><div class="ar-bubble-name">ARIA</div><div>${ariaMsg}</div></div>
         </div>
 
-        <div class="ar-complete-card">
-          <span class="ar-complete-icon"></span>
-          <div class="ar-complete-title">Leçon terminée !</div>
+        <div class="ar-complete-card ${validated ? '' : 'ar-complete-fail'}">
+          <span class="ar-complete-icon">${validated ? '🏆' : '⚠️'}</span>
+          <div class="ar-complete-title">${validated ? 'Leçon validée !' : 'Score insuffisant'}</div>
           <div class="ar-complete-sub">${lesId} · ${mod.title}</div>
           <div class="ar-complete-stats">
             <div class="ar-cstat"><div class="ar-cstat-val" style="color:var(--success)">${passed}</div><div class="ar-cstat-lbl">Réussis</div></div>
             <div class="ar-cstat"><div class="ar-cstat-val" style="color:#fbbf24">${skipped}</div><div class="ar-cstat-lbl">Passés</div></div>
             <div class="ar-cstat"><div class="ar-cstat-val">${total}</div><div class="ar-cstat-lbl">Total</div></div>
-            <div class="ar-cstat"><div class="ar-cstat-val" style="color:var(--accent)">${pct}%</div><div class="ar-cstat-lbl">Score</div></div>
+            <div class="ar-cstat"><div class="ar-cstat-val" style="color:${validated ? 'var(--success)' : '#FF5454'}">${pct}%</div><div class="ar-cstat-lbl">Score</div></div>
           </div>
+          ${!validated ? `<div class="ar-fail-banner"><span class="ar-fail-threshold">Seuil requis : 50%</span><span>Ton score : ${pct}%. Réessaie pour débloquer la leçon suivante.</span></div>` : ''}
           <div class="ar-complete-btns">
-            ${next ? `<button class="ar-btn-next" onclick="openLesson(${next.modId},'${next.id}')">Leçon suivante : ${next.title} →</button>` : ''}
-            <button class="ar-btn-validate" onclick="openAriaRunner(${modId},'${lesId}')">Recommencer →</button>
+            ${validated && next && !isLastAccessible ? `<button class="ar-btn-next" onclick="openLesson(${next.modId},'${next.id}')">Leçon suivante : ${next.title} →</button>` : ''}
+            <button class="${validated ? 'ar-btn-validate' : 'ar-btn-next'}" onclick="openAriaRunner(${modId},'${lesId}')">${validated ? 'Recommencer →' : 'Réessayer →'}</button>
             <button class="ar-back" onclick="renderHome()">Retour accueil</button>
           </div>
         </div>
@@ -765,4 +763,10 @@ const _AR_COMPLETE = [
   "C'est fini. {n} exercices. La plupart des gens ne font pas ça — toi oui.",
   "Leçon complète. {n} exercices. Tu es prêt pour la suite.",
   "Bien joué. {n} exercices faits."
+];
+
+const _AR_FAIL_MSG = [
+  "Pas assez. {pct}% alors que le seuil est {threshold}%. Tu connais les questions maintenant — réessaie.",
+  "Score insuffisant : {pct}%. Il te faut {threshold}% pour valider. Un autre tour et c'est bon.",
+  "{pct}% — il manque quelques bonnes réponses. Seuil : {threshold}%. Reprends, tu vas y arriver."
 ];

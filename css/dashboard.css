@@ -103,6 +103,17 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 .sb-discord-title { font-family:'Outfit',sans-serif; font-weight:700; font-size:13px; color:#fff; display:flex; align-items:center; gap:7px; }
 .sb-discord p { font-size:11px; color:var(--muted); margin-top:3px; }
 
+/* ── COMMUNAUTÉ SIDEBAR ── */
+.sb-community {
+  margin:8px 14px 0;
+  padding:14px; background:rgba(0,229,255,0.05);
+  border:1px solid rgba(0,229,255,0.15); border-radius:4px;
+  cursor:pointer; text-decoration:none; display:block; transition:background .2s;
+}
+.sb-community:hover { background:rgba(0,229,255,0.1); }
+.sb-community-title { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:#fff; display:flex; align-items:center; gap:7px; }
+.sb-community p { font-size:11px; color:var(--muted); margin-top:3px; }
+
 /* ── MAIN ── */
 .main { flex:1; min-width:0; padding:96px 44px 36px; max-width:860px; }
 
@@ -1155,6 +1166,9 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 
 /* Complete screen */
 .ar-complete-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:44px 36px;max-width:620px;width:100%;text-align:center;animation:arCardIn .35s cubic-bezier(.4,0,.2,1)}
+.ar-complete-fail{border-color:rgba(255,84,84,.25);background:rgba(255,84,84,.04)}
+.ar-fail-banner{display:flex;flex-direction:column;gap:6px;align-items:center;padding:14px 20px;background:rgba(255,84,84,.08);border:1px solid rgba(255,84,84,.2);border-radius:8px;margin:0 0 24px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5}
+.ar-fail-threshold{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#FF5454;letter-spacing:.06em}
 .ar-complete-icon{font-size:54px;display:block;margin-bottom:18px;animation:arCompleteIn .5s cubic-bezier(.17,.67,.29,1.3)}
 @keyframes arCompleteIn{from{transform:scale(0) rotate(-15deg)}to{transform:scale(1) rotate(0)}}
 .ar-complete-title{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;background:linear-gradient(135deg,var(--accent),#FF3CAC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
