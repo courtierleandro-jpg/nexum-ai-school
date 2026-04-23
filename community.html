@@ -25,210 +25,149 @@
 
 <style>
 :root {
-  --bg: #040407;
-  --surface: #0c0c14;
-  --surface2: #111120;
-  --border: rgba(255,255,255,0.07);
-  --accent: #7B5EA7;
-  --cyan: #00E5FF;
-  --pink: #FF3CAC;
-  --text: #E8E8F0;
-  --muted: #6B6B80;
-  --success: #00E5A0;
-  --warn: #F5C842;
+  --bg:#040407; --surface:#0c0c14; --surface2:#111120;
+  --border:rgba(255,255,255,0.07); --accent:#7B5EA7;
+  --cyan:#00E5FF; --pink:#FF3CAC; --text:#E8E8F0;
+  --muted:#6B6B80; --success:#00E5A0; --warn:#F5C842;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; overflow-x:hidden; min-height:100vh; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;min-height:100vh;}
 
 /* TOPBAR */
-.topbar {
-  position:fixed; top:0; left:0; right:0; z-index:200;
-  height:60px; display:flex; align-items:center; justify-content:space-between;
-  padding:0 24px;
-  background:rgba(4,4,7,0.96); backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-}
-.topbar-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:17px; letter-spacing:.12em; color:#fff; }
-.topbar-logo span { color:var(--cyan); }
-.topbar-back {
-  font-family:'Space Mono',monospace; font-size:11px; color:var(--muted);
-  text-decoration:none; padding:6px 14px; border:1px solid var(--border);
-  border-radius:2px; transition:all .2s; letter-spacing:.06em;
-}
-.topbar-back:hover { color:var(--cyan); border-color:rgba(0,229,255,.3); }
-.topbar-left { display:flex; align-items:center; gap:16px; }
-.topbar-right { display:flex; align-items:center; gap:12px; }
-.badge { font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.1em; padding:5px 12px; border-radius:2px; text-transform:uppercase; }
-.badge-std { background:rgba(0,229,255,.1); color:var(--cyan); border:1px solid rgba(0,229,255,.25); }
-.badge-prem { background:rgba(123,94,167,.15); color:var(--accent); border:1px solid rgba(123,94,167,.3); }
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(4,4,7,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.topbar-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.12em;color:#fff;}
+.topbar-logo span{color:var(--cyan);}
+.topbar-back{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:2px;transition:all .2s;letter-spacing:.06em;}
+.topbar-back:hover{color:var(--cyan);border-color:rgba(0,229,255,.3);}
+.topbar-left{display:flex;align-items:center;gap:16px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.badge{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;padding:5px 12px;border-radius:2px;text-transform:uppercase;}
+.badge-std{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.25);}
 
 /* LAYOUT */
-.community-layout {
-  display:flex; padding-top:60px; min-height:100vh;
-}
+.community-layout{display:flex;padding-top:60px;min-height:100vh;}
 
 /* SIDEBAR */
-.community-sidebar {
-  width:240px; min-width:240px;
-  background:var(--surface); border-right:1px solid var(--border);
-  height:calc(100vh - 60px); position:sticky; top:60px; overflow-y:auto;
-  padding:16px 0;
-}
-.sb-section {
-  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.12em;
-  text-transform:uppercase; color:var(--muted); padding:0 16px 10px;
-}
-.leader-item {
-  display:flex; align-items:center; gap:10px; padding:10px 16px;
-  border-bottom:1px solid var(--border); transition:background .15s;
-}
-.leader-item:hover { background:rgba(255,255,255,.02); }
-.leader-rank { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:var(--muted); min-width:22px; }
-.leader-rank.gold { color:#FFD700; }
-.leader-rank.silver { color:#C0C0C0; }
-.leader-rank.bronze { color:#CD7F32; }
-.leader-info { flex:1; min-width:0; }
-.leader-alias { font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.leader-stats { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); margin-top:2px; }
+.community-sidebar{width:240px;min-width:240px;background:var(--surface);border-right:1px solid var(--border);height:calc(100vh - 60px);position:sticky;top:60px;overflow-y:auto;padding:16px 0;}
+.sb-section{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 16px 10px;}
+.leader-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;}
+.leader-item:hover{background:rgba(255,255,255,.02);}
+.leader-rank{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--muted);min-width:22px;}
+.leader-rank.gold{color:#FFD700;} .leader-rank.silver{color:#C0C0C0;} .leader-rank.bronze{color:#CD7F32;}
+.leader-info{flex:1;min-width:0;}
+.leader-alias{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.leader-stats{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
 
 /* MAIN */
-.community-main { flex:1; padding:36px 44px; max-width:900px; }
+.community-main{flex:1;padding:36px 44px;max-width:900px;}
 
 /* HEADER */
-.community-header {
-  display:flex; justify-content:space-between; align-items:flex-start;
-  margin-bottom:28px; gap:20px;
-}
-.home-greeting { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
-.home-title { font-family:'Syne',sans-serif; font-weight:800; font-size:28px; color:#fff; margin-bottom:6px; line-height:1.2; }
-.home-title span { background:linear-gradient(135deg,var(--cyan),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.home-sub { font-size:14px; color:var(--muted); }
-.btn-publish {
-  padding:12px 24px; white-space:nowrap; align-self:flex-start; margin-top:8px;
-  background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(255,60,172,0.15));
-  border:1px solid rgba(0,229,255,0.3); color:var(--cyan);
-  font-family:'Space Mono',monospace; font-size:11px; font-weight:700;
-  letter-spacing:.08em; cursor:pointer; border-radius:2px; transition:all .2s;
-}
-.btn-publish:hover { background:linear-gradient(135deg,rgba(0,229,255,0.25),rgba(255,60,172,0.25)); }
+.community-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:20px;}
+.home-greeting{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.home-title{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#fff;margin-bottom:6px;line-height:1.2;}
+.home-title span{background:linear-gradient(135deg,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.home-sub{font-size:14px;color:var(--muted);}
+.btn-publish{padding:12px 24px;white-space:nowrap;align-self:flex-start;margin-top:8px;background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(255,60,172,0.15));border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:2px;transition:all .2s;}
+.btn-publish:hover{background:linear-gradient(135deg,rgba(0,229,255,0.25),rgba(255,60,172,0.25));}
+
+/* SEARCH BAR */
+.search-wrap{margin-bottom:16px;}
+.search-input{width:100%;padding:11px 16px 11px 40px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;border-radius:2px;outline:none;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236B6B80' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.868-3.833zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:14px center;}
+.search-input:focus{border-color:rgba(0,229,255,.3);}
+.search-input::placeholder{color:var(--muted);}
+.search-results{display:none;background:var(--surface);border:1px solid var(--border);border-top:none;max-height:300px;overflow-y:auto;}
+.search-result-item{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);}
+.search-result-item:hover{background:var(--surface2);}
+.search-result-item:last-child{border-bottom:none;}
+.sr-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--pink));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.sr-info{flex:1;}
+.sr-name{font-size:13px;font-weight:500;color:var(--text);}
+.sr-alias{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
 
 /* FILTRES */
-.feed-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
-.filter-btn {
-  padding:7px 16px; background:var(--surface); border:1px solid var(--border);
-  color:var(--muted); font-family:'Space Mono',monospace; font-size:10px;
-  cursor:pointer; border-radius:2px; transition:all .2s;
-  text-transform:uppercase; letter-spacing:.06em;
-}
-.filter-btn:hover, .filter-btn.active {
-  background:rgba(0,229,255,0.08); border-color:rgba(0,229,255,.25); color:var(--cyan);
-}
+.feed-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.filter-btn{padding:7px 16px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;transition:all .2s;text-transform:uppercase;letter-spacing:.06em;}
+.filter-btn:hover,.filter-btn.active{background:rgba(0,229,255,0.08);border-color:rgba(0,229,255,.25);color:var(--cyan);}
 
 /* POST CARD */
-.post-card {
-  background:var(--surface); border:1px solid var(--border);
-  padding:20px 22px; margin-bottom:14px; cursor:pointer;
-  transition:border-color .2s, background .2s;
-}
-.post-card:hover { border-color:rgba(0,229,255,.2); background:var(--surface2); }
-.post-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
-.post-type-badge {
-  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:.1em; padding:3px 9px;
-  border-radius:2px; text-transform:uppercase;
-  background:rgba(123,94,167,.15); color:var(--accent); border:1px solid rgba(123,94,167,.25);
-}
-.post-author { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); }
-.post-title { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:#fff; margin-bottom:8px; line-height:1.3; }
-.post-desc {
-  font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:14px;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-}
-.post-actions { display:flex; align-items:center; gap:10px; }
-.action-btn {
-  display:flex; align-items:center; gap:6px; padding:6px 14px;
-  background:transparent; border:1px solid var(--border); color:var(--muted);
-  font-family:'Space Mono',monospace; font-size:10px; cursor:pointer;
-  border-radius:2px; transition:all .2s; text-transform:uppercase; letter-spacing:.04em;
-}
-.action-btn:hover { background:rgba(255,255,255,.04); color:var(--text); }
-.action-btn.rocketed { background:rgba(0,229,255,.08); border-color:rgba(0,229,255,.25); color:var(--cyan); }
-.action-btn.saved { background:rgba(245,200,66,.08); border-color:rgba(245,200,66,.25); color:var(--warn); }
-.post-date { margin-left:auto; font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
+.post-card{background:var(--surface);border:1px solid var(--border);padding:20px 22px;margin-bottom:14px;cursor:pointer;transition:border-color .2s,background .2s;position:relative;}
+.post-card:hover{border-color:rgba(0,229,255,.2);background:var(--surface2);}
+.post-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;}
+.post-type-badge{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;padding:3px 9px;border-radius:2px;text-transform:uppercase;background:rgba(123,94,167,.15);color:var(--accent);border:1px solid rgba(123,94,167,.25);flex-shrink:0;}
+.post-lock-badge{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;padding:3px 8px;border-radius:2px;background:rgba(245,200,66,.1);color:var(--warn);border:1px solid rgba(245,200,66,.2);flex-shrink:0;}
+.post-author{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);cursor:pointer;transition:color .15s;text-decoration:underline;text-underline-offset:2px;}
+.post-author:hover{color:var(--cyan);}
+.post-author-wrap{display:flex;align-items:center;gap:8px;}
+.post-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;margin-bottom:8px;line-height:1.3;}
+.post-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.post-actions{display:flex;align-items:center;gap:10px;}
+.action-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;transition:all .2s;text-transform:uppercase;letter-spacing:.04em;}
+.action-btn:hover{background:rgba(255,255,255,.04);color:var(--text);}
+.action-btn.rocketed{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.25);color:var(--cyan);}
+.action-btn.saved{background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.25);color:var(--warn);}
+.post-date{margin-left:auto;font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
 
-/* FEED EMPTY */
-.feed-empty { text-align:center; padding:60px 20px; }
-.feed-loading { padding:40px; text-align:center; font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); }
+/* EMPTY / LOADING */
+.feed-empty{text-align:center;padding:60px 20px;}
+.feed-loading{padding:40px;text-align:center;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
 
 /* MODAL OVERLAY */
-.modal-overlay {
-  position:fixed; inset:0; z-index:1000;
-  background:rgba(4,4,7,0.88); backdrop-filter:blur(10px);
-  display:flex; align-items:center; justify-content:center;
-}
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(4,4,7,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;}
 
 /* PUBLISH MODAL */
-.publish-modal {
-  background:var(--surface); border:1px solid var(--border);
-  padding:32px 36px; width:600px; max-width:95vw;
-  max-height:85vh; overflow-y:auto;
-}
-.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
-.modal-header h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:#fff; }
-.modal-close {
-  background:transparent; border:none; color:var(--muted);
-  font-size:16px; cursor:pointer; padding:4px 8px; line-height:1;
-}
-.modal-close:hover { color:var(--text); }
-.form-group { margin-bottom:18px; }
-.form-group label {
-  display:block; font-family:'Space Mono',monospace; font-size:10px;
-  letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;
-}
-.form-group input, .form-group textarea {
-  width:100%; padding:12px 14px; background:var(--surface2);
-  border:1px solid var(--border); color:var(--text);
-  font-family:'DM Sans',sans-serif; font-size:13px; border-radius:2px;
-  outline:none; resize:vertical; transition:border-color .2s;
-}
-.form-group input:focus, .form-group textarea:focus { border-color:rgba(0,229,255,.3); }
-.type-selector { display:flex; gap:8px; flex-wrap:wrap; }
-.type-btn {
-  padding:7px 16px; background:var(--surface2); border:1px solid var(--border);
-  color:var(--muted); font-family:'Space Mono',monospace; font-size:10px;
-  cursor:pointer; border-radius:2px; transition:all .2s;
-}
-.type-btn.active { background:rgba(0,229,255,.08); border-color:rgba(0,229,255,.3); color:var(--cyan); }
-.modal-footer { display:flex; gap:12px; justify-content:flex-end; margin-top:8px; }
-.btn-cancel-modal {
-  padding:10px 22px; background:transparent; border:1px solid var(--border);
-  color:var(--muted); font-family:'Space Mono',monospace; font-size:10px; cursor:pointer; border-radius:2px;
-}
-.btn-submit-post {
-  padding:11px 24px; background:linear-gradient(135deg,var(--cyan),var(--pink));
-  border:none; color:#000; font-family:'Space Mono',monospace;
-  font-size:11px; font-weight:700; letter-spacing:.08em; cursor:pointer; border-radius:2px;
-}
-.cant-post-banner {
-  padding:16px 20px; background:rgba(123,94,167,.1); border:1px solid rgba(123,94,167,.25);
-  border-radius:4px; font-size:13px; color:var(--accent); margin-bottom:20px; text-align:center;
-}
+.publish-modal{background:var(--surface);border:1px solid var(--border);padding:32px 36px;width:600px;max-width:95vw;max-height:85vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.modal-header h2{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#fff;}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:4px 8px;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.form-group input,.form-group textarea{width:100%;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;border-radius:2px;outline:none;resize:vertical;transition:border-color .2s;}
+.form-group input:focus,.form-group textarea:focus{border-color:rgba(0,229,255,.3);}
+.type-selector,.visibility-selector{display:flex;gap:8px;flex-wrap:wrap;}
+.type-btn,.vis-btn{padding:7px 16px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;transition:all .2s;}
+.type-btn.active,.vis-btn.active{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.3);color:var(--cyan);}
+.vis-btn-priv.active{background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.3);color:var(--warn);}
+.modal-footer{display:flex;gap:12px;justify-content:flex-end;margin-top:8px;}
+.btn-cancel-modal{padding:10px 22px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;}
+.btn-submit-post{padding:11px 24px;background:linear-gradient(135deg,var(--cyan),var(--pink));border:none;color:#000;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:2px;}
+.cant-post-banner{padding:16px 20px;background:rgba(123,94,167,.1);border:1px solid rgba(123,94,167,.25);border-radius:4px;font-size:13px;color:var(--accent);margin-bottom:20px;text-align:center;}
 
 /* POST DETAIL MODAL */
-.post-detail-modal {
-  background:var(--surface); border:1px solid var(--border);
-  padding:32px 36px; width:700px; max-width:95vw;
-  max-height:85vh; overflow-y:auto; position:relative;
-}
-.modal-close-top {
-  display:flex; align-items:center; gap:8px; margin-bottom:20px;
-  background:transparent; border:1px solid var(--border); color:var(--muted);
-  font-family:'Space Mono',monospace; font-size:10px; padding:7px 14px;
-  cursor:pointer; border-radius:2px; transition:all .2s; letter-spacing:.06em;
-}
-.modal-close-top:hover { border-color:var(--border); color:var(--text); }
+.post-detail-modal{background:var(--surface);border:1px solid var(--border);padding:32px 36px;width:700px;max-width:95vw;max-height:85vh;overflow-y:auto;position:relative;}
+.modal-close-top{display:flex;align-items:center;gap:8px;margin-bottom:20px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;padding:7px 14px;cursor:pointer;border-radius:2px;transition:all .2s;letter-spacing:.06em;}
+.modal-close-top:hover{color:var(--text);}
+
+/* PROFILE MODAL */
+.profile-modal{background:var(--surface);border:1px solid var(--border);padding:36px;width:480px;max-width:95vw;max-height:85vh;overflow-y:auto;}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--pink));display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px;border:2px solid rgba(123,94,167,.3);}
+.profile-displayname{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#fff;text-align:center;margin-bottom:4px;}
+.profile-alias{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px;}
+.profile-bio{font-size:13px;color:rgba(255,255,255,.6);text-align:center;line-height:1.65;margin-bottom:20px;min-height:20px;}
+.profile-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.pstat{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 18px;text-align:center;min-width:80px;}
+.pstat-val{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--cyan);}
+.pstat-lbl{font-size:11px;color:var(--muted);margin-top:3px;}
+.profile-actions{display:flex;gap:10px;justify-content:center;margin-bottom:24px;}
+.btn-follow{padding:10px 28px;background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(255,60,172,.15));border:1px solid rgba(0,229,255,.3);color:var(--cyan);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:2px;transition:all .2s;}
+.btn-follow:hover{background:linear-gradient(135deg,rgba(0,229,255,.25),rgba(255,60,172,.25));}
+.btn-follow.following{background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.3);color:var(--warn);}
+.btn-edit-profile{padding:10px 20px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;transition:all .2s;letter-spacing:.06em;}
+.btn-edit-profile:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+.profile-posts-title{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.profile-post-item{padding:12px;background:var(--surface2);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:background .15s;border-radius:2px;}
+.profile-post-item:hover{background:rgba(255,255,255,.04);}
+.profile-post-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.profile-post-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);display:flex;gap:10px;align-items:center;}
+
+/* EDIT PROFILE */
+.edit-profile-form{margin-top:16px;}
+.edit-profile-form input,.edit-profile-form textarea{width:100%;padding:10px 13px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;border-radius:2px;outline:none;transition:border-color .2s;margin-bottom:10px;resize:none;}
+.edit-profile-form input:focus,.edit-profile-form textarea:focus{border-color:rgba(0,229,255,.3);}
+.btn-save-profile{padding:10px 24px;background:linear-gradient(135deg,var(--cyan),var(--pink));border:none;color:#000;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;border-radius:2px;}
 
 /* TOAST */
-@keyframes slideInToast { from { transform:translateY(10px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+@keyframes slideInToast{from{transform:translateY(10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
 </style>
 </head>
 <body>
@@ -240,7 +179,7 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
     <div class="topbar-logo">NEXUM<span>//</span>AI</div>
   </div>
   <div class="topbar-right">
-    <span class="badge badge-std" id="user-badge" style="display:none"></span>
+    <span class="badge badge-std" id="user-badge" style="display:none;cursor:pointer" onclick="openOwnProfile()"></span>
   </div>
 </nav>
 
@@ -262,11 +201,16 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
       <div>
         <div class="home-greeting">Partagez · Inspirez · Progressez</div>
         <h1 class="home-title">Communauté <span>Nexum</span></h1>
-        <p class="home-sub">Partagez vos projets, prompts et expériences avec la communauté.</p>
+        <p class="home-sub">Partagez vos projets, prompts et expériences.</p>
       </div>
-      <button class="btn-publish" id="btn-publish" onclick="openPublishModal()">
-        + Publier un projet
-      </button>
+      <button class="btn-publish" onclick="openPublishModal()">+ Publier</button>
+    </div>
+
+    <!-- RECHERCHE PROFILS -->
+    <div class="search-wrap">
+      <input class="search-input" id="search-input" type="text" placeholder="Rechercher un membre par nom..."
+        oninput="onSearchInput(this.value)" autocomplete="off">
+      <div class="search-results" id="search-results"></div>
     </div>
 
     <!-- FILTRES -->
@@ -289,26 +233,31 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 </div>
 
 <!-- MODAL PUBLICATION -->
-<div class="modal-overlay" id="publish-modal" style="display:none">
+<div class="modal-overlay" id="publish-modal" style="display:none" onclick="if(event.target===this)closePublishModal()">
   <div class="publish-modal">
     <div class="modal-header">
       <h2>Publier un projet</h2>
       <button class="modal-close" onclick="closePublishModal()">✕</button>
     </div>
     <div id="cant-post-msg" style="display:none">
-      <div class="cant-post-banner">
-        🔒 Tu pourras publier une fois toutes les leçons terminées. Continue ta formation !
-      </div>
-      <div style="text-align:center"><button class="btn-cancel-modal" onclick="closePublishModal()">Fermer</button></div>
+      <div class="cant-post-banner">🔒 Tu pourras publier une fois toutes les leçons terminées.</div>
+      <div style="text-align:center;margin-top:12px"><button class="btn-cancel-modal" onclick="closePublishModal()">Fermer</button></div>
     </div>
     <div id="publish-form">
       <div class="form-group">
-        <label>Type de publication</label>
+        <label>Type</label>
         <div class="type-selector">
           <button class="type-btn active" onclick="selectType('code',this)">💻 Code</button>
           <button class="type-btn" onclick="selectType('projet',this)">🎯 Projet</button>
           <button class="type-btn" onclick="selectType('experience',this)">💡 Expérience</button>
           <button class="type-btn" onclick="selectType('feedback',this)">📝 Feedback</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Visibilité</label>
+        <div class="visibility-selector">
+          <button class="vis-btn active" onclick="selectVisibility('public',this)">🌍 Public</button>
+          <button class="vis-btn vis-btn-priv" onclick="selectVisibility('subscribers',this)">🔒 Abonnés seulement</button>
         </div>
       </div>
       <div class="form-group">
@@ -339,22 +288,70 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
   </div>
 </div>
 
+<!-- MODAL PROFIL -->
+<div class="modal-overlay" id="profile-modal" style="display:none" onclick="if(event.target===this)closeProfileModal()">
+  <div class="profile-modal">
+    <button class="modal-close-top" onclick="closeProfileModal()">✕ Fermer</button>
+    <div id="profile-modal-content"></div>
+  </div>
+</div>
+
 <script>
 // ── ÉTAT ─────────────────────────────────────────────────────
 const userKey    = localStorage.getItem('nx_key');
+const safeUser   = userKey ? userKey.replace(/\./g,'_') : null;
 let allPosts     = [];
+let allProfiles  = {};   // { safeKey: { displayName, bio, joinedAt } }
+let myFollows    = {};   // { safeKey: true } — comptes que je suis
 let currentSort  = 'recent';
 let currentType  = null;
 let selectedType = 'code';
+let selectedVis  = 'public';
 
-// ── ALIAS ANONYME ────────────────────────────────────────────
+// ── ALIAS & AVATAR ────────────────────────────────────────────
 function getUserAlias(key) {
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    hash = ((hash << 5) - hash) + key.charCodeAt(i);
-    hash |= 0;
+  let h = 0;
+  for (let i = 0; i < key.length; i++) { h = ((h << 5) - h) + key.charCodeAt(i); h |= 0; }
+  return 'Membre #' + (Math.abs(h) % 9999 + 1);
+}
+function getAvatarEmoji(alias) {
+  const emojis = ['🦊','🐺','🦁','🐯','🦅','🦋','🐉','🌙','⚡','🔮','🎯','🚀'];
+  let h = 0;
+  for (let i = 0; i < alias.length; i++) { h = ((h << 5) - h) + alias.charCodeAt(i); h |= 0; }
+  return emojis[Math.abs(h) % emojis.length];
+}
+function getDisplayName(safeKey, alias) {
+  return (allProfiles[safeKey] && allProfiles[safeKey].displayName) || alias;
+}
+
+// ── INIT DATA ────────────────────────────────────────────────
+async function loadMyData() {
+  if (!safeUser) return;
+  // Charger mon profil
+  const pSnap = await db.ref('profiles/' + safeUser).get();
+  if (pSnap.exists()) {
+    const p = pSnap.val();
+    allProfiles[safeUser] = p;
+  } else {
+    // Créer le profil si inexistant
+    const alias = getUserAlias(userKey);
+    const newProfile = { displayName: alias, bio: '', joinedAt: Date.now(), alias };
+    await db.ref('profiles/' + safeUser).set(newProfile);
+    allProfiles[safeUser] = newProfile;
   }
-  return 'Membre #' + (Math.abs(hash) % 9999 + 1);
+  // Charger mes follows
+  const fSnap = await db.ref('follows/' + safeUser).get();
+  myFollows = fSnap.exists() ? (fSnap.val() || {}) : {};
+}
+
+// ── CHARGEMENT POSTS ─────────────────────────────────────────
+function loadPosts() {
+  db.ref('community').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    allPosts = Object.values(data).sort((a,b) => b.createdAt - a.createdAt);
+    renderPosts();
+    renderLeaderboard();
+  });
 }
 
 // ── ACCÈS PUBLICATION ────────────────────────────────────────
@@ -367,28 +364,15 @@ async function canPost() {
   } catch(e) { return false; }
 }
 
-// ── CHARGEMENT ───────────────────────────────────────────────
-function loadPosts() {
-  db.ref('community').on('value', (snapshot) => {
-    const data = snapshot.val() || {};
-    allPosts = Object.values(data).sort((a,b) => b.createdAt - a.createdAt);
-    renderPosts();
-    renderLeaderboard();
-  });
-}
-
 // ── FILTRES ──────────────────────────────────────────────────
 function setFilter(sort, btn) {
-  currentSort = sort;
-  currentType = null;
+  currentSort = sort; currentType = null;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   renderPosts();
 }
-
 function setTypeFilter(type, btn) {
-  currentType = type;
-  currentSort = 'recent';
+  currentType = type; currentSort = 'recent';
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   renderPosts();
@@ -397,17 +381,26 @@ function setTypeFilter(type, btn) {
 // ── RENDU POSTS ──────────────────────────────────────────────
 function renderPosts() {
   let posts = [...allPosts];
+
+  // Filtrer les posts privés : visible si je suis l'auteur ou c'est mon post
+  posts = posts.filter(p => {
+    if (p.visibility !== 'subscribers') return true;
+    if (!safeUser) return false;
+    const safeAuthor = p.authorKey ? p.authorKey.replace(/\./g,'_') : null;
+    return safeAuthor === safeUser || myFollows[safeAuthor];
+  });
+
   if (currentType) posts = posts.filter(p => p.type === currentType);
-  if (currentSort === 'top') posts.sort((a,b) => (b.rockets||0) - (a.rockets||0));
-  else if (currentSort === 'copied') posts.sort((a,b) => (b.copies||0) - (a.copies||0));
+  if (currentSort === 'top') posts.sort((a,b) => (b.rockets||0)-(a.rockets||0));
+  else if (currentSort === 'copied') posts.sort((a,b) => (b.copies||0)-(a.copies||0));
   else posts.sort((a,b) => b.createdAt - a.createdAt);
 
   const feed = document.getElementById('posts-feed');
-  if (posts.length === 0) {
+  if (!posts.length) {
     feed.innerHTML = `<div class="feed-empty">
       <div style="font-size:36px;margin-bottom:12px">🚀</div>
       <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;margin-bottom:6px">Aucun post pour l'instant</div>
-      <div style="font-size:13px;color:var(--muted)">Sois le premier à partager un projet !</div>
+      <div style="font-size:13px;color:var(--muted)">Sois le premier à partager !</div>
     </div>`;
     return;
   }
@@ -417,15 +410,20 @@ function renderPosts() {
 const TYPE_LABELS = { code:'💻 Code', projet:'🎯 Projet', experience:'💡 Expérience', feedback:'📝 Feedback' };
 
 function renderPostCard(post) {
-  const safeKey    = userKey ? userKey.replace(/\./g,'_') : null;
-  const isRocketed = safeKey && post.rocketedBy && post.rocketedBy[safeKey];
-  const isSaved    = safeKey && post.savedBy    && post.savedBy[safeKey];
-  const date       = new Date(post.createdAt).toLocaleDateString('fr-FR', {day:'numeric',month:'short'});
+  const isRocketed  = safeUser && post.rocketedBy && post.rocketedBy[safeUser];
+  const isSaved     = safeUser && post.savedBy    && post.savedBy[safeUser];
+  const isPrivate   = post.visibility === 'subscribers';
+  const safeAuthor  = post.authorKey ? post.authorKey.replace(/\./g,'_') : null;
+  const displayName = getDisplayName(safeAuthor, post.authorAlias || 'Membre');
+  const date        = new Date(post.createdAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
   return `
     <div class="post-card" onclick="openPostDetail('${esc(post.id)}')">
       <div class="post-card-top">
-        <span class="post-type-badge">${TYPE_LABELS[post.type]||post.type}</span>
-        <span class="post-author">${esc(post.authorAlias)}</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="post-type-badge">${TYPE_LABELS[post.type]||post.type}</span>
+          ${isPrivate ? '<span class="post-lock-badge">🔒 Abonnés</span>' : ''}
+        </div>
+        <span class="post-author" onclick="event.stopPropagation();openProfile('${esc(safeAuthor||'')}')">${esc(displayName)}</span>
       </div>
       <div class="post-title">${esc(post.title)}</div>
       <div class="post-desc">${esc(post.description)}</div>
@@ -441,35 +439,28 @@ function renderPostCard(post) {
 // ── INTERACTIONS ─────────────────────────────────────────────
 async function toggleRocket(postId) {
   if (!userKey) return showToast('Connecte-toi pour réagir');
-  const post    = allPosts.find(p => p.id === postId);
-  if (!post) return;
-  const safeKey = userKey.replace(/\./g,'_');
-  const ref     = db.ref('community/' + postId);
-  if (post.rocketedBy && post.rocketedBy[safeKey]) {
-    await ref.update({ rockets: Math.max(0,(post.rockets||1)-1), ['rocketedBy/'+safeKey]: null });
+  const post = allPosts.find(p => p.id === postId); if (!post) return;
+  const ref  = db.ref('community/' + postId);
+  if (post.rocketedBy && post.rocketedBy[safeUser]) {
+    await ref.update({ rockets: Math.max(0,(post.rockets||1)-1), ['rocketedBy/'+safeUser]: null });
   } else {
-    await ref.update({ rockets: (post.rockets||0)+1, ['rocketedBy/'+safeKey]: true });
+    await ref.update({ rockets: (post.rockets||0)+1, ['rocketedBy/'+safeUser]: true });
   }
 }
-
 async function copyPostContent(postId) {
   const post = allPosts.find(p => p.id === postId);
   if (!post || !post.content) return showToast('Aucun contenu à copier');
   try {
     await navigator.clipboard.writeText(post.content);
-    const safeKey = userKey ? userKey.replace(/\./g,'_') : 'anon';
-    await db.ref('community/' + postId).update({ copies: (post.copies||0)+1, ['copiedBy/'+safeKey]: true });
+    await db.ref('community/'+postId).update({ copies:(post.copies||0)+1, ['copiedBy/'+(safeUser||'anon')]:true });
     showToast('Copié ! 📋');
   } catch(e) { showToast('Erreur de copie'); }
 }
-
 async function toggleSave(postId) {
-  if (!userKey) return showToast('Connecte-toi pour sauvegarder');
-  const post    = allPosts.find(p => p.id === postId);
-  if (!post) return;
-  const safeKey = userKey.replace(/\./g,'_');
-  const isSaved = post.savedBy && post.savedBy[safeKey];
-  await db.ref('community/' + postId).update({ ['savedBy/'+safeKey]: isSaved ? null : true });
+  if (!userKey) return showToast('Connecte-toi');
+  const post = allPosts.find(p => p.id === postId); if (!post) return;
+  const isSaved = post.savedBy && post.savedBy[safeUser];
+  await db.ref('community/'+postId).update({ ['savedBy/'+safeUser]: isSaved ? null : true });
   showToast(isSaved ? 'Retiré des favoris' : 'Sauvegardé ⭐');
 }
 
@@ -480,88 +471,255 @@ async function openPublishModal() {
   document.getElementById('publish-form').style.display  = ok ? 'block' : 'none';
   document.getElementById('cant-post-msg').style.display = ok ? 'none'  : 'block';
 }
-
-function closePublishModal() {
-  document.getElementById('publish-modal').style.display = 'none';
-}
-
+function closePublishModal() { document.getElementById('publish-modal').style.display = 'none'; }
 function selectType(type, btn) {
   selectedType = type;
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 }
-
+function selectVisibility(vis, btn) {
+  selectedVis = vis;
+  document.querySelectorAll('.vis-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
 async function submitPost() {
-  const title       = document.getElementById('post-title').value.trim();
-  const description = document.getElementById('post-description').value.trim();
-  const content     = document.getElementById('post-content').value.trim();
-  if (!title)       { showToast('Titre requis'); return; }
-  if (!description) { showToast('Description requise'); return; }
+  const title = document.getElementById('post-title').value.trim();
+  const desc  = document.getElementById('post-description').value.trim();
+  const cont  = document.getElementById('post-content').value.trim();
+  if (!title) { showToast('Titre requis'); return; }
+  if (!desc)  { showToast('Description requise'); return; }
   if (!(await canPost())) return;
-
+  const alias  = allProfiles[safeUser]?.displayName || getUserAlias(userKey);
   const postId = 'post_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
-  await db.ref('community/' + postId).set({
-    id: postId,
-    authorKey:   userKey,
-    authorAlias: getUserAlias(userKey),
-    title, description, content,
-    type:      selectedType,
-    createdAt: Date.now(),
-    rockets:   0, copies: 0,
-    rocketedBy: {}, savedBy: {}, copiedBy: {}
+  await db.ref('community/'+postId).set({
+    id: postId, authorKey: userKey, authorAlias: alias,
+    title, description: desc, content: cont,
+    type: selectedType, visibility: selectedVis,
+    createdAt: Date.now(), rockets:0, copies:0,
+    rocketedBy:{}, savedBy:{}, copiedBy:{}
   });
   closePublishModal();
-  showToast('Publié ! 🚀');
+  showToast(selectedVis === 'subscribers' ? 'Publié pour tes abonnés 🔒' : 'Publié ! 🚀');
   document.getElementById('post-title').value = '';
   document.getElementById('post-description').value = '';
   document.getElementById('post-content').value = '';
+  selectedVis = 'public';
+  document.querySelectorAll('.vis-btn').forEach((b,i) => b.classList.toggle('active', i===0));
 }
 
 // ── DETAIL POST ──────────────────────────────────────────────
 function openPostDetail(postId) {
-  const post = allPosts.find(p => p.id === postId);
-  if (!post) return;
-  const date    = new Date(post.createdAt).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
-  const safeKey = userKey ? userKey.replace(/\./g,'_') : null;
+  const post = allPosts.find(p => p.id === postId); if (!post) return;
+  const safeAuthor = post.authorKey ? post.authorKey.replace(/\./g,'_') : null;
+  const dName  = getDisplayName(safeAuthor, post.authorAlias||'Membre');
+  const date   = new Date(post.createdAt).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
   document.getElementById('post-detail-content').innerHTML = `
     <div style="margin-bottom:20px">
-      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
         <span class="post-type-badge">${TYPE_LABELS[post.type]||post.type}</span>
-        <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">${esc(post.authorAlias)} · ${date}</span>
+        ${post.visibility==='subscribers'?'<span class="post-lock-badge">🔒 Abonnés</span>':''}
+        <span class="post-author" onclick="closePostDetail();openProfile('${esc(safeAuthor||'')}')">${esc(dName)}</span>
+        <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">${date}</span>
       </div>
       <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#fff;margin-bottom:10px">${esc(post.title)}</h2>
       <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px">${esc(post.description)}</p>
     </div>
-    ${post.content ? `
-      <div style="margin-bottom:24px">
-        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Contenu</div>
-        <pre style="background:var(--surface2);border:1px solid var(--border);padding:16px 18px;overflow-x:auto;font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;color:var(--text);white-space:pre-wrap;word-break:break-all">${esc(post.content)}</pre>
-      </div>` : ''}
+    ${post.content?`<div style="margin-bottom:24px">
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Contenu</div>
+      <pre style="background:var(--surface2);border:1px solid var(--border);padding:16px 18px;overflow-x:auto;font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;color:var(--text);white-space:pre-wrap;word-break:break-all">${esc(post.content)}</pre>
+    </div>`:''}
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="action-btn ${post.rocketedBy&&safeKey&&post.rocketedBy[safeKey]?'rocketed':''}" onclick="toggleRocket('${esc(post.id)}')">🚀 ${post.rockets||0}</button>
+      <button class="action-btn ${post.rocketedBy&&safeUser&&post.rocketedBy[safeUser]?'rocketed':''}" onclick="toggleRocket('${esc(post.id)}')">🚀 ${post.rockets||0}</button>
       <button class="action-btn" onclick="copyPostContent('${esc(post.id)}')">📋 Copier (${post.copies||0})</button>
     </div>`;
   document.getElementById('post-detail-modal').style.display = 'flex';
 }
+function closePostDetail() { document.getElementById('post-detail-modal').style.display = 'none'; }
 
-function closePostDetail() {
-  document.getElementById('post-detail-modal').style.display = 'none';
+// ── PROFILS ──────────────────────────────────────────────────
+function openOwnProfile() { if (safeUser) openProfile(safeUser); }
+
+async function openProfile(safeKey) {
+  if (!safeKey) return;
+  // Charger le profil si pas en cache
+  if (!allProfiles[safeKey]) {
+    const snap = await db.ref('profiles/'+safeKey).get();
+    if (snap.exists()) allProfiles[safeKey] = snap.val();
+  }
+  const profile   = allProfiles[safeKey] || {};
+  const alias     = profile.alias || getUserAlias(safeKey);
+  const dName     = profile.displayName || alias;
+  const bio       = profile.bio || '';
+  const avatar    = getAvatarEmoji(alias);
+  const isOwn     = safeKey === safeUser;
+  const isFollowing = !isOwn && myFollows[safeKey];
+
+  // Stats
+  const userPosts   = allPosts.filter(p => p.authorKey && p.authorKey.replace(/\./g,'_') === safeKey);
+  const visiblePosts = userPosts.filter(p => {
+    if (p.visibility !== 'subscribers') return true;
+    return isOwn || isFollowing;
+  });
+  const totalRockets = userPosts.reduce((s,p) => s+(p.rockets||0), 0);
+
+  // Followers count
+  const fSnap = await db.ref('follows/'+safeKey).get();
+  const followersCount = fSnap.exists() ? Object.keys(fSnap.val()||{}).length : 0;
+
+  const container = document.getElementById('profile-modal-content');
+  container.innerHTML = `
+    <div class="profile-avatar">${avatar}</div>
+    <div class="profile-displayname">${esc(dName)}</div>
+    <div class="profile-alias">${esc(alias)}</div>
+    <div class="profile-bio" id="profile-bio-text">${bio ? esc(bio) : '<span style="color:var(--muted);font-style:italic">Aucune bio</span>'}</div>
+    <div class="profile-stats">
+      <div class="pstat"><div class="pstat-val">${visiblePosts.length}</div><div class="pstat-lbl">Posts</div></div>
+      <div class="pstat"><div class="pstat-val" style="color:var(--cyan)">${followersCount}</div><div class="pstat-lbl">Abonnés</div></div>
+      <div class="pstat"><div class="pstat-val" style="color:var(--pink)">${totalRockets}</div><div class="pstat-lbl">🚀 reçus</div></div>
+    </div>
+    <div class="profile-actions">
+      ${isOwn
+        ? `<button class="btn-edit-profile" onclick="showEditProfile('${esc(safeKey)}')">✏️ Modifier mon profil</button>`
+        : `<button class="btn-follow ${isFollowing?'following':''}" id="follow-btn-${esc(safeKey)}"
+            onclick="toggleFollow('${esc(safeKey)}')">
+            ${isFollowing ? '✓ Abonné' : '+ S\'abonner'}
+          </button>`
+      }
+    </div>
+    ${visiblePosts.length ? `
+      <div class="profile-posts-title">Publications (${visiblePosts.length})</div>
+      ${visiblePosts.slice(0,5).map(p => `
+        <div class="profile-post-item" onclick="closeProfileModal();openPostDetail('${esc(p.id)}')">
+          <div class="profile-post-title">${esc(p.title)}</div>
+          <div class="profile-post-meta">
+            <span>${TYPE_LABELS[p.type]||p.type}</span>
+            ${p.visibility==='subscribers'?'<span style="color:var(--warn)">🔒</span>':''}
+            <span>🚀 ${p.rockets||0}</span>
+          </div>
+        </div>`).join('')}
+    ` : `<div style="text-align:center;padding:20px;font-size:13px;color:var(--muted)">Aucune publication visible.</div>`}
+    <div id="edit-profile-section"></div>`;
+
+  document.getElementById('profile-modal').style.display = 'flex';
 }
+
+function closeProfileModal() { document.getElementById('profile-modal').style.display = 'none'; }
+
+function showEditProfile(safeKey) {
+  const profile = allProfiles[safeKey] || {};
+  document.getElementById('edit-profile-section').innerHTML = `
+    <div style="border-top:1px solid var(--border);padding-top:20px;margin-top:16px">
+      <div class="profile-posts-title">Modifier mon profil</div>
+      <div class="edit-profile-form">
+        <input type="text" id="edit-displayname" placeholder="Nom affiché (ex: Jean-Pierre)" maxlength="40" value="${esc(profile.displayName||'')}">
+        <textarea id="edit-bio" placeholder="Bio courte (140 chars max)" maxlength="140" rows="3">${esc(profile.bio||'')}</textarea>
+        <button class="btn-save-profile" onclick="saveProfile('${esc(safeKey)}')">Enregistrer →</button>
+      </div>
+    </div>`;
+}
+
+async function saveProfile(safeKey) {
+  const displayName = document.getElementById('edit-displayname').value.trim();
+  const bio         = document.getElementById('edit-bio').value.trim();
+  if (!displayName) { showToast('Nom requis'); return; }
+  await db.ref('profiles/'+safeKey).update({ displayName, bio });
+  allProfiles[safeKey] = { ...(allProfiles[safeKey]||{}), displayName, bio };
+  // Mettre à jour badge topbar
+  const badge = document.getElementById('user-badge');
+  if (badge && safeKey === safeUser) badge.textContent = displayName.slice(0,14) + (displayName.length>14?'…':'');
+  closeProfileModal();
+  showToast('Profil mis à jour ✓');
+  renderPosts();
+}
+
+// ── FOLLOW / UNFOLLOW ────────────────────────────────────────
+async function toggleFollow(safeKey) {
+  if (!safeUser) return showToast('Connecte-toi');
+  if (safeKey === safeUser) return;
+  const isFollowing = !!myFollows[safeKey];
+  if (isFollowing) {
+    delete myFollows[safeKey];
+    await db.ref('follows/'+safeUser+'/'+safeKey).remove();
+    showToast('Désabonné');
+  } else {
+    myFollows[safeKey] = true;
+    await db.ref('follows/'+safeUser+'/'+safeKey).set(true);
+    showToast('Abonné ✓');
+  }
+  // Mettre à jour le bouton dans la modal
+  const btn = document.getElementById('follow-btn-'+safeKey);
+  if (btn) {
+    btn.textContent = myFollows[safeKey] ? '✓ Abonné' : '+ S\'abonner';
+    btn.className = 'btn-follow' + (myFollows[safeKey] ? ' following' : '');
+  }
+  // Re-filtrer le feed (les posts privés peuvent changer de visibilité)
+  renderPosts();
+}
+
+// ── RECHERCHE PROFILS ────────────────────────────────────────
+let _searchTimeout = null;
+function onSearchInput(query) {
+  clearTimeout(_searchTimeout);
+  const results = document.getElementById('search-results');
+  if (!query.trim()) { results.style.display = 'none'; return; }
+  _searchTimeout = setTimeout(() => searchProfiles(query.trim()), 200);
+}
+
+async function searchProfiles(query) {
+  const results = document.getElementById('search-results');
+  // Charger tous les profils depuis Firebase
+  const snap = await db.ref('profiles').get();
+  const data  = snap.exists() ? snap.val() : {};
+  const lq    = query.toLowerCase();
+  const matches = Object.entries(data).filter(([sk, p]) => {
+    const name  = (p.displayName || '').toLowerCase();
+    const alias = (p.alias || getUserAlias(sk)).toLowerCase();
+    return name.includes(lq) || alias.includes(lq);
+  }).slice(0, 6);
+
+  if (!matches.length) {
+    results.style.display = 'block';
+    results.innerHTML = '<div class="search-result-item" style="cursor:default"><span style="font-size:12px;color:var(--muted)">Aucun résultat</span></div>';
+    return;
+  }
+
+  results.style.display = 'block';
+  results.innerHTML = matches.map(([sk, p]) => {
+    const alias  = p.alias || getUserAlias(sk);
+    const dName  = p.displayName || alias;
+    const avatar = getAvatarEmoji(alias);
+    return `<div class="search-result-item" onclick="closeSearch();openProfile('${esc(sk)}')">
+      <div class="sr-avatar">${avatar}</div>
+      <div class="sr-info">
+        <div class="sr-name">${esc(dName)}</div>
+        <div class="sr-alias">${esc(alias)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function closeSearch() {
+  document.getElementById('search-results').style.display = 'none';
+  document.getElementById('search-input').value = '';
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) closeSearch();
+});
 
 // ── LEADERBOARD ──────────────────────────────────────────────
 function renderLeaderboard() {
   const scores = {};
   allPosts.forEach(post => {
-    const key = post.authorKey || post.authorAlias;
-    if (!scores[key]) scores[key] = { alias: post.authorAlias, rockets:0, copies:0, posts:0 };
-    scores[key].rockets += post.rockets || 0;
-    scores[key].copies  += post.copies  || 0;
-    scores[key].posts++;
+    const sk = post.authorKey ? post.authorKey.replace(/\./g,'_') : null;
+    if (!sk) return;
+    if (!scores[sk]) scores[sk] = { sk, alias: post.authorAlias||'Membre', rockets:0, copies:0, posts:0 };
+    scores[sk].rockets += post.rockets||0;
+    scores[sk].copies  += post.copies||0;
+    scores[sk].posts++;
   });
-
   const sorted = Object.values(scores)
-    .map(s => ({ ...s, score: s.rockets*3 + s.copies*2 + s.posts }))
-    .sort((a,b) => b.score - a.score).slice(0,10);
+    .map(s => ({ ...s, score: s.rockets*3+s.copies*2+s.posts }))
+    .sort((a,b) => b.score-a.score).slice(0,10);
 
   const container = document.getElementById('leaderboard-list');
   if (!container) return;
@@ -569,26 +727,24 @@ function renderLeaderboard() {
     container.innerHTML = '<div style="padding:16px;font-size:11px;color:var(--muted);text-align:center">Aucun classement</div>';
     return;
   }
-
   const rankCls = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
   const rankSym = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1);
-  container.innerHTML = sorted.map((m,i) => `
-    <div class="leader-item">
+  container.innerHTML = sorted.map((m,i) => {
+    const dName = getDisplayName(m.sk, m.alias);
+    return `<div class="leader-item" onclick="openProfile('${esc(m.sk)}')">
       <div class="leader-rank ${rankCls(i)}">${rankSym(i)}</div>
       <div class="leader-info">
-        <div class="leader-alias">${esc(m.alias)}</div>
+        <div class="leader-alias">${esc(dName)}</div>
         <div class="leader-stats">🚀${m.rockets} · 📋${m.copies} · ${m.posts} post${m.posts>1?'s':''}</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ── UTILITAIRES ──────────────────────────────────────────────
 function esc(str) {
-  return String(str||'')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
-
 function showToast(msg) {
   const t = document.createElement('div');
   t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;font-family:\'Space Mono\',monospace;font-size:11px;border-radius:2px;animation:slideInToast .2s ease;';
@@ -598,10 +754,15 @@ function showToast(msg) {
 }
 
 // ── INIT ─────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (userKey) {
+    await loadMyData();
     const badge = document.getElementById('user-badge');
-    if (badge) { badge.textContent = userKey.slice(0,14) + '…'; badge.style.display = 'inline'; }
+    if (badge) {
+      const dName = allProfiles[safeUser]?.displayName || getUserAlias(userKey);
+      badge.textContent = dName.slice(0,14) + (dName.length>14?'…':'');
+      badge.style.display = 'inline';
+    }
   }
   loadPosts();
 });
