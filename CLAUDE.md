@@ -36,7 +36,7 @@
 | **Co-développeur** | `Hhhsimo — développement technique dashboard` |
 | **Statut** | `🟡 En cours` |
 | **Démarré le** | `2026-04-08` |
-| **Dernière mise à jour** | `2026-04-21 — Session 5` |
+| **Dernière mise à jour** | `2026-04-22 — Session 6` |
 
 ---
 
@@ -345,6 +345,42 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 > Toutes les sessions sont archivées ici. Ne jamais supprimer. Ajouter au-dessus (la plus récente en premier).
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
+
+### Session 6 — 2026-04-22
+**Durée estimée** : 3h  
+**Objectif de la session** : Débugger la navigation des leçons + stabiliser le dashboard
+
+**✅ Réalisé :**
+- Pull du commit de l'associé (`fix: restauration MODULES + redesign ARIA`) + résolution de 3 conflits (CLAUDE.md, css/dashboard.css, js/aria-exercise-runner.js)
+- Fix critique : `data-content.js` avait des balises `<lottie-player src="/brain.json" ...>` avec guillemets imbriqués dans des strings JS → SyntaxError silencieuse qui cassait tout le chargement des leçons
+- Fix critique : suppression du verrou séquentiel (`seqLocked`) — toutes les leçons désormais accessibles librement
+- Fix critique : `onclick` inline sur `.mod-header` et `.les-item` (les `addEventListener` étaient perdus au re-render de la sidebar)
+- Vanta.NET remis sur la sidebar avec `mouseControls:false` — l'option `mouseControls:true` interceptait tous les clics
+- Lottie player `pointer-events:none` pour que les clics passent bien au parent `.sb-logo`
+- Scrollbars supprimées globalement (`*::-webkit-scrollbar { display:none }`)
+- Bouton "Débloquer toutes les leçons (mode test)" supprimé définitivement
+- Cache-busting `?v=2` ajouté sur tous les scripts JS dans dashboard.html
+- Assets locaux pushés : Book.json, alphaeon.json, bg-loop.json, brain.json, chatbot.json, chip.png, vanta.net.min.js, nexum-logo.png
+
+**🔧 Modifié / Créé :**
+- `js/app.js` — suppression seqLocked, onclick inline sidebar, suppression toggleFreeAccess/freeAccess button
+- `js/data-content.js` — suppression balises lottie-player dans les titles (fix syntaxe)
+- `css/dashboard.css` — scrollbars supprimées globalement, sidebar en flex-column, `.sidebar canvas { pointer-events:none }`
+- `dashboard.html` — Vanta remis (mouseControls:false), lottie 96px, cache-busting ?v=2, assets Three.js + vanta
+- `CLAUDE.md` — sessions 5 + 5b + 6 archivées
+
+**⚠️ Points en suspens :**
+- Push GitHub bloqué (compte `labriquehtt` sans droits) → à faire manuellement avec `git push origin main`
+- Tester le runner ARIA ("Lancer les exercices") en navigation réelle
+- Vérifier progression Firebase après fin de leçon
+- Module 08 Premium : vérifier lock pour comptes Standard
+
+**💡 Décisions prises :**
+- Verrou séquentiel supprimé pour tous les utilisateurs (friction inutile au MVP)
+- `onclick` inline dans les templates HTML plutôt que `addEventListener` sur éléments dynamiques
+- `mouseControls:false` sur Vanta pour conserver l'animation sans bloquer les clics
+
+---
 
 ### Session 5 — 2026-04-21
 **Durée estimée** : 1h  
