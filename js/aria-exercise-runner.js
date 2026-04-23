@@ -466,6 +466,18 @@ function arValidate() {
   if (!ex) return;
 
   const result = _arRunValidate(ex, exId);
+
+  // Aucune réponse donnée → bloquer, afficher avertissement, ne pas avancer
+  if (result.ok === null) {
+    const fb = document.getElementById('ar-feedback');
+    if (fb) {
+      fb.textContent = result.msg || 'Tu dois répondre avant de continuer.';
+      fb.className = 'ar-feedback ar-feedback-show ar-feedback-warn';
+      fb.style.display = 'block';
+    }
+    return;
+  }
+
   _ar.answered = true;
   if (result.ok !== false) _ar.passed++;
 
@@ -636,6 +648,7 @@ function _arValChecklist(c) {
   const items = document.querySelectorAll('.ar-ck-item');
   const checked = [...items].filter(el => el.dataset.on === '1').length;
   const total = items.length;
+  if (checked === 0) return { ok: null, msg: 'Coche au moins un élément avant de valider.' };
   const t = c.feedback_thresholds ? c.feedback_thresholds.find(t => checked >= t.min && checked <= t.max) : null;
   const msg = t ? `${checked}/${total} cochés. ${t.message}` : `${checked}/${total} cochés.`;
   const ok = checked >= Math.ceil(total * 0.7);

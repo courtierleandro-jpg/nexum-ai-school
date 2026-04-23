@@ -1065,6 +1065,7 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 .ar-feedback-show{display:block}
 .ar-feedback-ok{background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.22);color:var(--success)}
 .ar-feedback-ko{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#f87171}
+.ar-feedback-warn{background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.25);color:var(--warn);font-weight:500}
 
 /* True / False */
 .ar-tf-item{padding:15px 16px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:11px;margin-bottom:8px;transition:border-color .2s}
