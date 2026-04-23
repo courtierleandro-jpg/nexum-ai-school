@@ -11,6 +11,8 @@ let _ar = {
   skipped: 0
 };
 
+let _arRankingMoved = false;
+
 // ── Messages ARIA ────────────────────────────────────────────────────────
 
 const _AR_INTROS = [
@@ -353,6 +355,7 @@ function _arRankingBody(c) {
 function _arInitRanking() {
   const list = document.getElementById('ar-rank-list');
   if (!list) return;
+  _arRankingMoved = false;
   let dragSrc = null;
   list.querySelectorAll('.ar-rank-item').forEach(item => {
     item.addEventListener('dragstart', e => {
@@ -373,6 +376,7 @@ function _arInitRanking() {
         const tgtIdx = items.indexOf(item);
         if (srcIdx < tgtIdx) item.after(dragSrc);
         else item.before(dragSrc);
+        _arRankingMoved = true;
         _arUpdateRankNumbers();
       }
     });
@@ -619,6 +623,7 @@ function _arValMatching(c) {
 function _arValRanking(c) {
   const list = document.getElementById('ar-rank-list');
   if (!list) return { ok: null, msg: '' };
+  if (!_arRankingMoved) return { ok: null, msg: 'Glisse les éléments pour les réorganiser avant de valider.' };
   const order = [...list.querySelectorAll('.ar-rank-item')].map(el => el.dataset.id);
   // Disable dragging
   list.querySelectorAll('.ar-rank-item').forEach(el => el.setAttribute('draggable', 'false'));
@@ -676,6 +681,7 @@ function arSkip() {
 function arNext() {
   _ar.idx++;
   _ar.answered = false;
+  _arRankingMoved = false;
   _arMatchSel = { a: null, b: null };
   _arMatchPairs = {};
   if (_ar.idx >= _ar.ids.length) {
