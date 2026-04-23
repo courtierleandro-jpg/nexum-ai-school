@@ -65,11 +65,15 @@ async function submitLogin() {
 }
 
 async function grantAccess(key, plan, progress) {
-  S.plan    = plan;
-  S.done    = progress.done;
-  S.open    = progress.open;
-  S.exDone  = progress.exDone || JSON.parse(localStorage.getItem('nx_exdone')||'[]');
-  S.stars   = (progress.stars !== undefined && progress.stars !== null) ? progress.stars : 3;
+  const currentMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+  S.plan      = plan;
+  S.done      = progress.done;
+  S.open      = progress.open;
+  S.exDone    = progress.exDone || JSON.parse(localStorage.getItem('nx_exdone')||'[]');
+  // Reset étoiles si nouveau mois calendaire
+  const savedMonth = progress.starMonth || null;
+  S.stars     = (savedMonth === currentMonth && progress.stars !== undefined && progress.stars !== null) ? progress.stars : 5;
+  S.starMonth = currentMonth;
   S.adminMode = !!ADMIN_KEYS[key];
   localStorage.setItem('nx_plan', plan);
   await loadExerciseOverrides();
@@ -90,6 +94,7 @@ async function saveToFirebase() {
       open:       S.open,
       exDone:     S.exDone,
       stars:      S.stars,
+      starMonth:  S.starMonth,
       updated_at: Date.now()
     });
   } catch(e) {
@@ -120,7 +125,7 @@ function logout() {
     if (snap.exists()) {
       currentUserKey = savedKey;
       const data = snap.val();
-      await grantAccess(savedKey, data.plan, { done: data.done || [], open: data.open || [1], stars: data.stars, exDone: data.exDone || [] });
+      await grantAccess(savedKey, data.plan, { done: data.done || [], open: data.open || [1], stars: data.stars, starMonth: data.starMonth, exDone: data.exDone || [] });
     } else {
       localStorage.removeItem('nx_key');
       showLogin();
@@ -150,7 +155,8 @@ const S = {
   discordUrl:        '#',
   gumroadPremium:    'https://courtierleandro.gumroad.com/l/lcwubf',
   exerciseOverrides: {},
-  stars:             3, // étoiles pour passer les exercices difficiles
+  stars:             5, // étoiles mensuelles pour passer les exercices difficiles
+  starMonth:         null, // mois courant (YYYY-MM) pour reset mensuel
 };
 function save() {
   localStorage.setItem('nx_plan', S.plan);
@@ -1922,8 +1928,8 @@ function updateStarsDisplay() {
 
   wrap.style.display = 'flex';
   const n = S.stars;
-  const filled = '<span class="stars-filled">★</span>'.repeat(Math.max(0, n));
-  const empty  = '<span class="stars-empty">★</span>'.repeat(Math.max(0, 3 - n));
+  const filled = '⭐'.repeat(Math.max(0, n));
+  const empty  = '<span class="stars-empty">★</span>'.repeat(Math.max(0, 5 - n));
   if (iconsEl) iconsEl.innerHTML = filled + empty;
   if (countEl) countEl.textContent = n;
   // Griser le bloc si plus d'étoiles
@@ -1933,11 +1939,11 @@ function updateStarsDisplay() {
 function renderStarSkipButton(lesId) {
   if (S.adminMode) return ''; // admin n'a pas besoin
   const n = S.stars;
-  const starsStr = '★'.repeat(n) + '☆'.repeat(3 - n);
+  const starsStr = '⭐'.repeat(n) + '★'.repeat(5 - n);
   return `<div class="star-skip-box" id="star-skip-zone">
     <div class="star-skip-info">
-      <div class="star-skip-title">Passer cet exercice (${n} étoile${n !== 1 ? 's' : ''} restante${n !== 1 ? 's' : ''})</div>
-      <div class="star-skip-sub">Tu bloques sur cet exercice ? Utilise une étoile pour valider la leçon et continuer.<br>Chaque abonnement donne 3 étoiles — à utiliser sans modération sur les parties difficiles.</div>
+      <div class="star-skip-title">⭐ Passer cet exercice (${n} étoile${n !== 1 ? 's' : ''} restante${n !== 1 ? 's' : ''})</div>
+      <div class="star-skip-sub">Tu bloques sur cet exercice ? Utilise une étoile pour valider la leçon et continuer.<br>Tu as 5 étoiles par mois — elles se rechargent le 1er de chaque mois.</div>
     </div>
     <button class="star-skip-btn" id="star-skip-btn" onclick="useStarSkip('${lesId}')"
       ${n === 0 ? 'disabled' : ''}>
@@ -1990,8 +1996,8 @@ function renderFormationComplete() {
   window.scrollTo(0, 0);
   const totalLessons = MODULES.flatMap(m => m.lessons).length;
   const doneLessons  = S.done.length;
-  const starsUsed    = 3 - S.stars;
-  const plan         = S.plan === 'premium' ? 'Premium' : 'Standard';
+  const starsUsed    = 5 - S.stars;
+  const plan         = S.plan === 'premium' ? 'Premium 👑' : 'Standard';
 
   document.getElementById('main').innerHTML = `
   <div class="formation-complete">
