@@ -165,6 +165,20 @@ function save() {
 function isDone(id) { return S.done.includes(id); }
 function totalDone() { return S.done.length; }
 
+function showToastApp(msg) {
+  let t = document.getElementById('app-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'app-toast';
+    t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;padding:11px 22px;border-radius:24px;font-family:Space Mono,monospace;font-size:11px;letter-spacing:.04em;white-space:nowrap;background:#0a0a1e;border:1px solid rgba(0,229,255,.25);color:#00E5FF;box-shadow:0 8px 32px rgba(0,229,255,.12);transition:opacity .3s;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
+}
+
 // Vérifie si une leçon est accessible (la précédente dans le module doit être terminée)
 function isLessonAccessible(lesId, modId) {
   if (S.adminMode || S.freeAccess) return true;
@@ -746,12 +760,17 @@ function renderSidebar() {
       const done = isDone(l.id);
       const active = S.cur && S.cur.lesId === l.id;
       const premLocked = mod.premium && S.plan === 'standard';
-      const clickHandler = premLocked ? `window.open('${S.gumroadPremium}','_blank')` : `openLesson(${mod.id},'${l.id}')`;
-      return `<div class="les-item${active?' active':''}" onclick="${clickHandler}">
+      const seqLocked = !premLocked && !isLessonAccessible(l.id, mod.id);
+      const clickHandler = premLocked
+        ? `window.open('${S.gumroadPremium}','_blank')`
+        : `openLesson(${mod.id},'${l.id}')`;
+      return `<div class="les-item${active?' active':''}${seqLocked?' les-seq-locked':''}" onclick="${clickHandler}" title="${seqLocked?'Termine la leçon précédente pour débloquer':''}">
         ${premLocked
           ? `<span class="les-lock">·</span>`
-          : `<div class="les-check${done?' done':''}">${done?'✓':''}</div>`}
-        <span class="les-name">${l.title}</span>
+          : seqLocked
+            ? `<span class="les-lock" style="opacity:.5">🔒</span>`
+            : `<div class="les-check${done?' done':''}">${done?'✓':''}</div>`}
+        <span class="les-name"${seqLocked?' style="opacity:.45"':''}>${l.title}</span>
         <span class="les-dur">${l.dur}</span>
       </div>`;
     }).join('');
@@ -1435,6 +1454,15 @@ function openLesson(modId, lesId) {
   if (!mod) return;
   const les = mod.lessons.find(l => l.id === lesId);
   if (!les) return;
+
+  // Vérifier le verrou séquentiel (admins exempt)
+  if (!isLessonAccessible(lesId, modId)) {
+    const mod2 = MODULES.find(m => m.id === modId);
+    const idx = mod2.lessons.findIndex(l => l.id === lesId);
+    const prev = mod2.lessons[idx - 1];
+    showToastApp(`🔒 Termine d'abord "${prev?.title || 'la leçon précédente'}" avec 50% de bonnes réponses.`);
+    return;
+  }
 
   S.cur = { modId, lesId };
   S.qcmSel = null;

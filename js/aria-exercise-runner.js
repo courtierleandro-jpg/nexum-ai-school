@@ -193,15 +193,18 @@ function _arExBody(ex, exId) {
 // ── True / False ─────────────────────────────────────────────────────────
 
 function _arTFBody(c) {
-  return c.statements.map((s, i) => `
+  return c.statements.map((s, i) => {
+    const correct = s.answer !== undefined ? s.answer : s.value; // supporte .answer ET .value
+    return `
     <div class="ar-tf-item" id="ar-tf-${i}">
       <div class="ar-tf-text">${s.text}</div>
       <div class="ar-tf-btns">
-        <button class="ar-tf-btn ar-tf-v" onclick="arTFClick(this,${i},${s.answer},true,'${escJs(s.explanation)}')">VRAI</button>
-        <button class="ar-tf-btn ar-tf-f" onclick="arTFClick(this,${i},${s.answer},false,'${escJs(s.explanation)}')">FAUX</button>
+        <button class="ar-tf-btn ar-tf-v" onclick="arTFClick(this,${i},${correct},true,'${escJs(s.explanation||s.feedback||'')}')">VRAI</button>
+        <button class="ar-tf-btn ar-tf-f" onclick="arTFClick(this,${i},${correct},false,'${escJs(s.explanation||s.feedback||'')}')">FAUX</button>
       </div>
-      <div class="ar-tf-expl" id="ar-tf-expl-${i}" style="display:none">${escHtml(s.explanation)}</div>
-    </div>`).join('');
+      <div class="ar-tf-expl" id="ar-tf-expl-${i}" style="display:none">${escHtml(s.explanation||s.feedback||'')}</div>
+    </div>`;
+  }).join('');
 }
 
 function arTFClick(btn, idx, correct, userAnswer, expl) {
@@ -219,7 +222,8 @@ function arTFClick(btn, idx, correct, userAnswer, expl) {
 
 function _arQCMBody(c) {
   const letters = ['A','B','C','D','E'];
-  return `<div class="ar-qcm-q">${c.question}</div>
+  const questionHtml = c.question ? `<div class="ar-qcm-q">${c.question}</div>` : '';
+  return `${questionHtml}
   <div class="ar-qcm-opts" id="ar-qcm-opts">
     ${c.options.map((o, i) => `
       <div class="ar-qcm-opt" id="ar-qcm-${i}" onclick="arQCMSelect(${i})">
@@ -245,14 +249,19 @@ function _arFreetextBody(c) {
 // ── Prompt Lab ───────────────────────────────────────────────────────────
 
 function _arPromptlabBody(c) {
-  return `<div class="ar-pl-box">
-    <div class="ar-pl-top">Prompt à copier dans Claude</div>
-    <div class="ar-pl-prompt" id="ar-pl-prompt">${escHtml(c.prompt_to_copy)}</div>
+  const promptText = c.prompt_to_copy || c.example_prompt || '';
+  const promptLabel = c.prompt_to_copy ? 'Prompt à copier dans Claude' : 'Exemple de prompt (adapte-le)';
+  const contextHtml = c.context ? `<div class="ar-pl-context">${escHtml(c.context)}</div>` : '';
+  const minLen = c.min_length || 50;
+  return `${contextHtml}
+  <div class="ar-pl-box">
+    <div class="ar-pl-top">${promptLabel}</div>
+    <div class="ar-pl-prompt" id="ar-pl-prompt">${escHtml(promptText)}</div>
     <button class="ar-pl-copy" onclick="arPLCopy(this)">Copier le prompt</button>
   </div>
-  <div class="ar-pl-field-label">${escHtml(c.field_label || 'Colle ici ta réponse')}</div>
-  <textarea class="ar-textarea" id="ar-textarea" placeholder="Colle ici ta réponse..." rows="5"></textarea>
-  <div class="ar-charcount" id="ar-charcount">0 / ${c.min_length} min.</div>`;
+  <div class="ar-pl-field-label">${escHtml(c.field_label || 'Colle ici ta réponse obtenue dans Claude')}</div>
+  <textarea class="ar-textarea" id="ar-textarea" placeholder="Lance le prompt dans Claude et colle ta réponse ici..." rows="5"></textarea>
+  <div class="ar-charcount" id="ar-charcount">0 / ${minLen} min.</div>`;
 }
 
 function arPLCopy(btn) {
