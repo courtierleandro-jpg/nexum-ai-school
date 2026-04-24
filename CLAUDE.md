@@ -1,4 +1,4 @@
-# 🧠 CLAUDE.md — Mémoire vivante du projet
+﻿# 🧠 CLAUDE.md — Mémoire vivante du projet
 
 > **Instructions pour Claude** :  
 > Ce fichier est ta mémoire persistante. Tu dois le lire **au début de chaque session** et le mettre à jour **à la fin de chaque session** en suivant le protocole défini dans la section `## 🔄 Protocole de session`. Ne jamais supprimer l'historique existant. Toujours ajouter, jamais écraser.
@@ -36,7 +36,7 @@
 | **Co-développeur** | `Hhhsimo — développement technique dashboard` |
 | **Statut** | `🟡 En cours` |
 | **Démarré le** | `2026-04-08` |
-| **Dernière mise à jour** | `2026-04-24 — Session 9` |
+| **Dernière mise à jour** | `2026-04-24 — Session 10` |
 
 ---
 
@@ -381,6 +381,42 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 > Toutes les sessions sont archivées ici. Ne jamais supprimer. Ajouter au-dessus (la plus récente en premier).
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
+
+### Session 10 — 2026-04-24
+**Durée estimée** : 4h
+**Objectif de la session** : Refonte complète de la landing page avant push GitHub
+
+**✅ Réalisé :**
+- Ajout effet **voltage-button** (foudre électrique cyan/jaune) sur les 4 boutons bleus
+- Remplacement nav + bouton premium par **Uiverse button** (pill animé avec triple flèche)
+- Ajout **sweep button** sur "Accéder à la Formation →" (remplissage diagonal au hover)
+- Suppression section CTA final (bouton redondant en bas de page)
+- Prix Premium mis à jour : `197€ → 92€` — lien Gumroad mis à jour vers `iruxgt`
+- Logo Nexum (removebg PNG) en overlay fixe sur le réseau de neurones (`mix-blend-mode: screen`, `opacity: 0.40`)
+- **AnimatedContent** vanilla JS : slide horizontal sur toutes les cards, re-trigger scroll ↑↓ avec stagger
+- Hero redesigné en **deux blocs 3D** style CoD BO3 (`rotateY ±23deg`, `perspective: 900px`, `translateZ` sur les textes)
+- **Texte rotatif** sur "IA FIRST" → "REDOUTABLE" → "PIONNIER" (stagger lettre par lettre, vanilla JS)
+- Pull des modifications de Hhhsimo (`community.html`, `make-scenario-2.json`, updates dashboard)
+- **Viewport mobile** fixé à `width=400` pour rendu identique PC sur tous appareils
+- Centrage complet mobile avec reset de tous les transforms 3D (`max-width: 450px`)
+- Push GitHub effectué avec succès
+
+**🔧 Modifié / Créé :**
+- `index.html` — refonte complète : boutons animés, hero 3D, logo overlay, AnimatedContent, rotating text, responsive mobile
+- `nexum-logo-hero.png` — créé · logo Nexum fond transparent pour overlay sur canvas réseau de neurones
+
+**⚠️ Points en suspens :**
+- Tester la landing sur plusieurs appareils réels (iPhone, Android différentes tailles)
+- Vérifier le lien Gumroad `iruxgt` en condition réelle d'achat
+- Bot ARIA toujours en local (non hébergé)
+
+**💡 Décisions prises :**
+- Viewport mobile fixé (`width=400`) plutôt que responsive classique → même rendu que PC garanti
+- Hero en deux blocs 3D uniquement desktop, colonne centrée sur mobile (breakpoint 950px)
+- Rotating text en vanilla JS (pas React/Framer Motion — stack 100% statique maintenu)
+- Boutons : 3 styles différents coexistent (voltage, uiverse pill, sweep) selon emplacement
+
+---
 
 ### Session 9 — 2026-04-24
 **Durée estimée** : 1h
