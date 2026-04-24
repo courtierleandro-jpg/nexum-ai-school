@@ -846,7 +846,7 @@ function renderHome() {
           <h1 class="home-banner-title">Maîtrise Claude &<br><span>Bâtis ton Empire.</span></h1>
           <p class="home-banner-sub">8 modules · ${TOTAL} leçons · Accès à vie.<br>Chaque leçon = une compétence directement applicable dans ton business.</p>
         </div>
-        <lottie-player src="/bg-loop.json" background="transparent" speed="1" style="width:300px;height:300px;flex-shrink:0;margin-top:-20px" autoplay loop></lottie-player>
+        <lottie-player src="bg-loop.json" background="transparent" speed="1" style="width:300px;height:300px;flex-shrink:0;margin-top:-20px" autoplay loop></lottie-player>
       </div>
     </div>
 
@@ -867,7 +867,7 @@ function renderHome() {
         <text x="50" y="63" class="ring-label" font-size="9" fill="#6B6B80">COMPLET</text>
       </svg>
       <div class="ring-info">
-        <div class="ring-info-title" style="display:flex;align-items:center;gap:8px;"><lottie-player src="/brain.json" background="transparent" speed="1" style="width:32px;height:32px;flex-shrink:0" autoplay loop></lottie-player>${done} leçon${done > 1 ? 's' : ''} terminée${done > 1 ? 's' : ''} sur ${TOTAL}</div>
+        <div class="ring-info-title" style="display:flex;align-items:center;gap:8px;"><lottie-player src="brain.json" background="transparent" speed="1" style="width:32px;height:32px;flex-shrink:0" autoplay loop></lottie-player>${done} leçon${done > 1 ? 's' : ''} terminée${done > 1 ? 's' : ''} sur ${TOTAL}</div>
         <div class="ring-info-sub">${streakMsg}</div>
         <div class="ring-badges">
           <span class="ring-badge ring-badge-cyan">${TOTAL - done} restantes</span>
@@ -875,7 +875,7 @@ function renderHome() {
           ${done >= 4 ? '<span class="ring-badge ring-badge-green">✓ M01 débloqué</span>' : ''}
         </div>
       </div>
-      <lottie-player src="/alphaeon.json" background="transparent" speed="1" style="width:160px;height:160px;flex-shrink:0;margin-left:auto;" autoplay loop></lottie-player>
+      <lottie-player src="alphaeon.json" background="transparent" speed="1" style="width:160px;height:160px;flex-shrink:0;margin-left:auto;" autoplay loop></lottie-player>
     </div>
 
     <div class="milestone-strip">${milestoneHTML}</div>
