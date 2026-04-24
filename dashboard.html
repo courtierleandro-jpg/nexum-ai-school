@@ -97,7 +97,7 @@
       <div class="sb-discord-title">Discord communauté</div>
       <p>Pose tes questions dans #module-XX</p>
     </a>
-    <a href="community.html" class="sb-community">
+    <a href="community.html" class="sb-community" onclick="transitionTo(event,'community.html')">
       <div class="sb-community-title">🏆 Communauté</div>
       <p>Projets · Classement · Partages</p>
     </a>
@@ -132,6 +132,53 @@
       showDots: true
     });
   });
+</script>
+
+<!-- ── TRANSITION OVERLAY ─────────────────────────── -->
+<style>
+#nxt-overlay{
+  position:fixed;inset:0;z-index:9999;background:#030307;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  opacity:0;pointer-events:none;
+  transition:opacity .22s ease;
+}
+#nxt-overlay.show{opacity:1;pointer-events:all;}
+.nxt-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);
+  background-size:44px 44px;pointer-events:none;
+}
+.nxt-dots{display:flex;gap:8px;margin-bottom:4px;}
+.nxt-dot{width:7px;height:7px;border-radius:50%;background:#00E5FF;box-shadow:0 0 10px #00E5FF;animation:nxtDot 1s ease-in-out infinite;}
+.nxt-dot:nth-child(2){animation-delay:.2s;background:#7B5EA7;box-shadow:0 0 10px #7B5EA7;}
+.nxt-dot:nth-child(3){animation-delay:.4s;background:#FF3CAC;box-shadow:0 0 10px #FF3CAC;}
+@keyframes nxtDot{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(.4);opacity:.3;}}
+.nxt-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:.14em;color:#fff;}
+.nxt-logo span{color:#00E5FF;}
+.nxt-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.22em;color:rgba(232,232,240,.4);text-transform:uppercase;}
+.nxt-bar-wrap{width:180px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-top:4px;}
+.nxt-bar{height:100%;width:0;background:linear-gradient(90deg,#00E5FF,#FF3CAC);border-radius:2px;transition:width .65s cubic-bezier(.4,0,.2,1);}
+</style>
+<div id="nxt-overlay">
+  <div class="nxt-grid"></div>
+  <div class="nxt-dots">
+    <div class="nxt-dot"></div>
+    <div class="nxt-dot"></div>
+    <div class="nxt-dot"></div>
+  </div>
+  <div class="nxt-logo">NEXUM<span>//</span>AI</div>
+  <div class="nxt-sub">Neural Community</div>
+  <div class="nxt-bar-wrap"><div class="nxt-bar" id="nxt-bar"></div></div>
+</div>
+<script>
+function transitionTo(e, href) {
+  e.preventDefault();
+  const overlay = document.getElementById('nxt-overlay');
+  const bar = document.getElementById('nxt-bar');
+  overlay.classList.add('show');
+  requestAnimationFrame(() => { bar.style.width = '100%'; });
+  setTimeout(() => { window.location.href = href; }, 750);
+}
 </script>
 </body>
 </html>

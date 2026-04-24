@@ -1279,7 +1279,85 @@ document.addEventListener('DOMContentLoaded',async()=>{
     if(pill) pill.style.display='flex';
   }
   loadPosts();
+
+  // ── Sortie : animation sur le lien retour dashboard
+  const backLink = document.querySelector('.nav-back');
+  if (backLink) {
+    backLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      const href = this.href;
+      showPageOut(() => { window.location.href = href; });
+    });
+  }
 });
+
+// ── ANIMATIONS DE PAGE ────────────────────────────────────────
+function showPageOut(cb) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#030307;opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .22s ease;';
+  overlay.innerHTML = `
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;"></div>
+    <div style="display:flex;gap:8px;margin-bottom:4px;">
+      <div class="po-dot" style="width:7px;height:7px;border-radius:50%;background:#00E5FF;box-shadow:0 0 10px #00E5FF;animation:nxtDot 1s .0s ease-in-out infinite;"></div>
+      <div class="po-dot" style="width:7px;height:7px;border-radius:50%;background:#7B5EA7;box-shadow:0 0 10px #7B5EA7;animation:nxtDot 1s .2s ease-in-out infinite;"></div>
+      <div class="po-dot" style="width:7px;height:7px;border-radius:50%;background:#FF3CAC;box-shadow:0 0 10px #FF3CAC;animation:nxtDot 1s .4s ease-in-out infinite;"></div>
+    </div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:.14em;color:#fff;">NEXUM<span style="color:#00E5FF;">//</span>AI</div>
+    <div style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.22em;color:rgba(232,232,240,.4);text-transform:uppercase;">Retour au dashboard</div>
+    <div style="width:180px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-top:4px;">
+      <div id="po-bar" style="height:100%;width:0;background:linear-gradient(90deg,#00E5FF,#FF3CAC);border-radius:2px;transition:width .65s cubic-bezier(.4,0,.2,1);"></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+    const bar = overlay.querySelector('#po-bar');
+    if (bar) requestAnimationFrame(() => { bar.style.width = '100%'; });
+  });
+  setTimeout(cb, 750);
+}
+
+// ── Styles pour les dots de l'animation de sortie
+(function(){
+  if (document.getElementById('nxt-dot-style')) return;
+  const s = document.createElement('style');
+  s.id = 'nxt-dot-style';
+  s.textContent = '@keyframes nxtDot{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(.4);opacity:.3;}}';
+  document.head.appendChild(s);
+})();
 </script>
+
+<!-- ── ANIMATION D'ENTRÉE ────────────────────────────────────── -->
+<style>
+#page-enter{
+  position:fixed;inset:0;z-index:9998;background:#030307;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  pointer-events:none;
+  animation:pageEnterFadeOut .5s ease .9s forwards;
+}
+.pe-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;}
+.pe-dots{display:flex;gap:8px;margin-bottom:4px;}
+.pe-dot{width:7px;height:7px;border-radius:50%;animation:nxtDot 1s ease-in-out infinite;}
+.pe-dot:nth-child(1){background:#00E5FF;box-shadow:0 0 10px #00E5FF;animation-delay:0s;}
+.pe-dot:nth-child(2){background:#7B5EA7;box-shadow:0 0 10px #7B5EA7;animation-delay:.2s;}
+.pe-dot:nth-child(3){background:#FF3CAC;box-shadow:0 0 10px #FF3CAC;animation-delay:.4s;}
+.pe-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:.14em;color:#fff;}
+.pe-logo span{color:#00E5FF;}
+.pe-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.22em;color:rgba(232,232,240,.4);text-transform:uppercase;}
+.pe-bar-wrap{width:180px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-top:4px;}
+.pe-bar{height:100%;background:linear-gradient(90deg,#00E5FF,#FF3CAC);border-radius:2px;animation:peBarFill .75s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes peBarFill{from{width:0;}to{width:100%;}}
+@keyframes pageEnterFadeOut{from{opacity:1;}to{opacity:0;visibility:hidden;}}
+</style>
+<div id="page-enter">
+  <div class="pe-grid"></div>
+  <div class="pe-dots">
+    <div class="pe-dot"></div>
+    <div class="pe-dot"></div>
+    <div class="pe-dot"></div>
+  </div>
+  <div class="pe-logo">NEXUM<span>//</span>AI</div>
+  <div class="pe-sub">Neural Community</div>
+  <div class="pe-bar-wrap"><div class="pe-bar"></div></div>
+</div>
 </body>
 </html>
