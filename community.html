@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
@@ -34,14 +35,22 @@ button{cursor:pointer;border:none;background:none;font-family:inherit;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px;}
 
-/* ══ NEURAL CANVAS ══════════════════════════════════════════ */
-#neural-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;}
+/* ══ BG CANVAS (Three.js) ═══════════════════════════════════ */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
 /* ══ SCANLINES ══════════════════════════════════════════════ */
 body::after{
   content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px);
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.05) 3px,rgba(0,0,0,.05) 4px);
 }
+
+/* ══ 3D CARD TILT ════════════════════════════════════════════ */
+.post-card{transform-style:preserve-3d;will-change:transform;}
+.card-shine{
+  position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  opacity:0;transition:opacity .25s;z-index:3;
+}
+.post-card:hover .card-shine{opacity:1;}
 
 /* ══ 3-COLUMN GRID ══════════════════════════════════════════ */
 .colony{position:relative;z-index:2;display:grid;grid-template-columns:var(--nav) 1fr var(--side);min-height:100vh;max-width:1400px;margin:0 auto;}
@@ -392,7 +401,7 @@ code[class*="language-"]{font-family:'Space Mono',monospace!important;}
 </head>
 <body>
 
-<canvas id="neural-canvas"></canvas>
+<canvas id="bg-canvas"></canvas>
 
 <div class="colony">
 
@@ -629,38 +638,160 @@ code[class*="language-"]{font-family:'Space Mono',monospace!important;}
 
 <script>
 // ═══════════════════════════════════════════════════════════
-// NEURAL CANVAS BACKGROUND
+// THREE.JS — GALAXIE 3D + FORMES FLOTTANTES + PARALLAXE
 // ═══════════════════════════════════════════════════════════
-(function(){
-  const canvas=document.getElementById('neural-canvas');
-  const ctx=canvas.getContext('2d');
-  let W,H,pts=[];
-  const N=55,MAX_D=130;
-  const resize=()=>{W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;};
-  window.addEventListener('resize',resize);resize();
-  for(let i=0;i<N;i++) pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.2+.4});
-  const draw=()=>{
-    ctx.clearRect(0,0,W,H);
-    for(let i=0;i<N;i++){
-      for(let j=i+1;j<N;j++){
-        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<MAX_D){
-          const a=(1-d/MAX_D)*.12;
-          ctx.beginPath();ctx.strokeStyle=`rgba(0,229,255,${a})`;ctx.lineWidth=.7;
-          ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();
-        }
-      }
+(function initGalaxy(){
+  if(typeof THREE==='undefined') return;
+
+  const canvas=document.getElementById('bg-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setClearColor(0x000000,0);
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(65,window.innerWidth/window.innerHeight,.1,1000);
+  camera.position.set(0,10,38);
+  camera.lookAt(0,0,0);
+
+  // ── Lumière ambiante douce
+  scene.add(new THREE.AmbientLight(0x00E5FF,0.3));
+
+  // ── GALAXIE SPIRALE ──────────────────────────────────────
+  const COUNT=8000;
+  const pos=new Float32Array(COUNT*3);
+  const col=new Float32Array(COUNT*3);
+  const ARMS=3;
+  const PALETTE=[
+    new THREE.Color('#00E5FF'),new THREE.Color('#7B5EA7'),
+    new THREE.Color('#FF3CAC'),new THREE.Color('#ffffff'),
+    new THREE.Color('#00E5A0'),new THREE.Color('#a78bfa'),
+    new THREE.Color('#00cfff'),new THREE.Color('#ff6ef7'),
+  ];
+
+  for(let i=0;i<COUNT;i++){
+    const arm=i%ARMS;
+    const baseAngle=(arm/ARMS)*Math.PI*2;
+    const r=Math.pow(Math.random(),.55)*60+1;
+    const spin=r*.28;
+    const spread=(Math.random()-.5)*2.8;
+    const angle=baseAngle+spin+spread;
+    pos[i*3]=Math.cos(angle)*r+(Math.random()-.5)*3;
+    pos[i*3+1]=(Math.random()-.5)*7;
+    pos[i*3+2]=Math.sin(angle)*r+(Math.random()-.5)*3;
+    const c=PALETTE[Math.floor(Math.random()*PALETTE.length)];
+    col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+  }
+  // Noyau brillant
+  for(let i=COUNT-300;i<COUNT;i++){
+    pos[i*3]=(Math.random()-.5)*10;pos[i*3+1]=(Math.random()-.5)*5;pos[i*3+2]=(Math.random()-.5)*10;
+    col[i*3]=.85;col[i*3+1]=1;col[i*3+2]=1;
+  }
+
+  const geoG=new THREE.BufferGeometry();
+  geoG.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geoG.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const matG=new THREE.PointsMaterial({size:.2,vertexColors:true,transparent:true,opacity:.88,sizeAttenuation:true,depthWrite:false});
+  const galaxy=new THREE.Points(geoG,matG);
+  scene.add(galaxy);
+
+  // ── FORMES WIREFRAME FLOTTANTES ─────────────────────────
+  const shapes=[];
+  const shapeDefs=[
+    {g:new THREE.IcosahedronGeometry(2.4,0),   p:[-24,7,-6],  c:0x00E5FF, s:[.005,.004,.002]},
+    {g:new THREE.OctahedronGeometry(2.0,0),    p:[26,-5,-10], c:0xFF3CAC, s:[.003,.006,.002]},
+    {g:new THREE.TetrahedronGeometry(2.2,0),   p:[18,15,-14], c:0x00E5A0, s:[.004,.003,.006]},
+    {g:new THREE.TorusGeometry(2.8,.15,8,32),  p:[-14,-13,3], c:0x7B5EA7, s:[.007,.002,.004]},
+    {g:new THREE.TorusGeometry(1.6,.2,8,24),   p:[10,18,-8],  c:0xa78bfa, s:[.003,.008,.003]},
+    {g:new THREE.IcosahedronGeometry(1.6,1),   p:[-8,-18,-5], c:0xFF3CAC, s:[.006,.003,.005]},
+  ];
+  shapeDefs.forEach(d=>{
+    const m=new THREE.MeshBasicMaterial({color:d.c,wireframe:true,transparent:true,opacity:.18});
+    const mesh=new THREE.Mesh(d.g,m);
+    mesh.position.set(...d.p);
+    scene.add(mesh);
+    shapes.push({mesh,s:d.s});
+  });
+
+  // ── ANNEAUX NÉBULEUSE ───────────────────────────────────
+  [[0x00E5FF,18,.06,0,.5],[0x7B5EA7,28,.05,.4,.8],[0xFF3CAC,40,.04,.8,1.2]].forEach(([c,r,o,rx,rz])=>{
+    const ring=new THREE.Mesh(
+      new THREE.TorusGeometry(r,.04,4,90),
+      new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o})
+    );
+    ring.rotation.x=Math.PI/2+rx;ring.rotation.z=rz;
+    scene.add(ring);
+    shapes.push({mesh:ring,s:[.001,.0005,.0008]});
+  });
+
+  // ── ÉTOILES DE FOND ─────────────────────────────────────
+  const starPos=new Float32Array(3000*3);
+  for(let i=0;i<3000;i++){
+    starPos[i*3]=(Math.random()-.5)*400;
+    starPos[i*3+1]=(Math.random()-.5)*400;
+    starPos[i*3+2]=(Math.random()-.5)*400-100;
+  }
+  const starGeo=new THREE.BufferGeometry();
+  starGeo.setAttribute('position',new THREE.BufferAttribute(starPos,3));
+  scene.add(new THREE.Points(starGeo,new THREE.PointsMaterial({size:.25,color:0xffffff,transparent:true,opacity:.35})));
+
+  // ── PARALLAXE SOURIS ────────────────────────────────────
+  let tX=0,tY=0,cX=0,cY=0;
+  window.addEventListener('mousemove',e=>{
+    tX=(e.clientX/window.innerWidth-.5)*8;
+    tY=(e.clientY/window.innerHeight-.5)*4;
+  });
+
+  window.addEventListener('resize',()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+
+  // ── BOUCLE D'ANIMATION ──────────────────────────────────
+  let t=0;
+  (function animate(){
+    requestAnimationFrame(animate);
+    t+=.004;
+    galaxy.rotation.y=t*.07;
+    shapes.forEach(o=>{o.mesh.rotation.x+=o.s[0];o.mesh.rotation.y+=o.s[1];o.mesh.rotation.z+=o.s[2];});
+    cX+=(tX-cX)*.035;cY+=(tY-cY)*.035;
+    camera.position.x=cX;camera.position.y=10-cY;
+    camera.lookAt(0,0,0);
+    renderer.render(scene,camera);
+  })();
+})();
+
+// ═══════════════════════════════════════════════════════════
+// 3D CARD TILT + SHINE AU SURVOL
+// ═══════════════════════════════════════════════════════════
+(function initTilt(){
+  const MAX=11;
+  function resetCard(card){
+    card.style.transition='transform .6s cubic-bezier(.2,0,.2,1)';
+    card.style.transform='perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+    const sh=card.querySelector('.card-shine');
+    if(sh) sh.style.opacity='0';
+  }
+  document.addEventListener('mousemove',e=>{
+    const card=e.target.closest?.('.post-card');
+    if(!card) return;
+    const r=card.getBoundingClientRect();
+    const x=e.clientX-r.left,y=e.clientY-r.top;
+    const cx=x/r.width-.5,cy=y/r.height-.5;
+    card.style.transition='none';
+    card.style.transform=`perspective(1200px) rotateX(${-cy*MAX}deg) rotateY(${cx*MAX}deg) translateZ(12px)`;
+    card.style.zIndex='5';
+    const sh=card.querySelector('.card-shine');
+    if(sh){
+      sh.style.opacity='1';
+      sh.style.background=`radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,.13) 0%, transparent 65%)`;
     }
-    pts.forEach(p=>{
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(0,229,255,.45)';ctx.fill();
-      p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-    });
-    requestAnimationFrame(draw);
-  };
-  draw();
+  });
+  document.addEventListener('mouseleave',e=>{const c=e.target.closest?.('.post-card');if(c)resetCard(c);},true);
+  document.addEventListener('mouseout',e=>{
+    if(!e.relatedTarget?.closest?.('.post-card')){const c=e.target.closest?.('.post-card');if(c)resetCard(c);}
+  });
 })();
 
 // ═══════════════════════════════════════════════════════════
@@ -906,6 +1037,7 @@ function renderPostCard(post){
   const tc=TYPE_CLASS[post.type]||'code';
   const preview=post.content?`<div class="post-code-preview">${esc(post.content.slice(0,120))}${post.content.length>120?'…':''}</div>`:'';
   return`<div class="post-card type-${tc}" onclick="openPostDetail('${esc(post.id)}')">
+    <div class="card-shine"></div>
     <div class="post-card-inner">
       <div class="post-author-row">
         <div class="post-author-left">
@@ -1293,27 +1425,42 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
 // ── ANIMATIONS DE PAGE ────────────────────────────────────────
 function showPageOut(cb) {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#030307;opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .22s ease;';
-  overlay.innerHTML = `
-    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;"></div>
-    <div style="display:flex;gap:8px;margin-bottom:4px;">
-      <div class="po-dot" style="width:7px;height:7px;border-radius:50%;background:#00E5FF;box-shadow:0 0 10px #00E5FF;animation:nxtDot 1s .0s ease-in-out infinite;"></div>
-      <div class="po-dot" style="width:7px;height:7px;border-radius:50%;background:#7B5EA7;box-shadow:0 0 10px #7B5EA7;animation:nxtDot 1s .2s ease-in-out infinite;"></div>
-      <div class="po-dot" style="width:7px;height:7px;border-radius:50%;background:#FF3CAC;box-shadow:0 0 10px #FF3CAC;animation:nxtDot 1s .4s ease-in-out infinite;"></div>
-    </div>
-    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:.14em;color:#fff;">NEXUM<span style="color:#00E5FF;">//</span>AI</div>
-    <div style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.22em;color:rgba(232,232,240,.4);text-transform:uppercase;">Retour au dashboard</div>
-    <div style="width:180px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-top:4px;">
-      <div id="po-bar" style="height:100%;width:0;background:linear-gradient(90deg,#00E5FF,#FF3CAC);border-radius:2px;transition:width .65s cubic-bezier(.4,0,.2,1);"></div>
-    </div>`;
-  document.body.appendChild(overlay);
-  requestAnimationFrame(() => {
-    overlay.style.opacity = '1';
-    const bar = overlay.querySelector('#po-bar');
-    if (bar) requestAnimationFrame(() => { bar.style.width = '100%'; });
-  });
-  setTimeout(cb, 750);
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#030307;';
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height, cx = W/2, cy = H/2;
+  const STARS = Array.from({length:280},()=>({
+    x:(Math.random()-.5)*W*2,y:(Math.random()-.5)*H*2,
+    z:Math.random()*W,pz:0,
+    hue:Math.random()>.7?300:(Math.random()>.5?200:180),
+  }));
+  let frame=0; const TOTAL=50;
+  function draw(){
+    const speed=5+frame*4.5;
+    ctx.fillStyle=frame<4?`rgba(3,3,7,${frame/4})`:'rgba(3,3,7,.18)';
+    ctx.fillRect(0,0,W,H);
+    for(const s of STARS){
+      s.pz=s.z;s.z-=speed;if(s.z<=0){s.z=W;s.pz=W;}
+      const sx=(s.x/s.z)*W+cx,sy=(s.y/s.z)*H+cy;
+      const px=(s.x/s.pz)*W+cx,py=(s.y/s.pz)*H+cy;
+      const size=Math.max(.5,(1-s.z/W)*2.8);
+      const alpha=Math.min(1,1-s.z/W+.15);
+      const g=ctx.createLinearGradient(px,py,sx,sy);
+      g.addColorStop(0,`hsla(${s.hue},100%,70%,0)`);
+      g.addColorStop(1,`hsla(${s.hue},100%,80%,${alpha})`);
+      ctx.strokeStyle=g;ctx.lineWidth=size;
+      ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(sx,sy);ctx.stroke();
+    }
+    const glow=ctx.createRadialGradient(cx,cy,0,cx,cy,80);
+    glow.addColorStop(0,`rgba(0,229,255,${(frame/TOTAL)*.5})`);glow.addColorStop(1,'rgba(0,229,255,0)');
+    ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+    frame++;
+    if(frame<TOTAL) requestAnimationFrame(draw);
+    else cb();
+  }
+  draw();
 }
 
 // ── Styles pour les dots de l'animation de sortie
