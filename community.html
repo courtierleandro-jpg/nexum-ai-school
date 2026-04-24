@@ -241,6 +241,8 @@ body::after{
 .act-num{font-family:'Space Mono',monospace;font-size:9px;}
 .act-spacer{flex:1;}
 .act-date{font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);padding-right:2px;}
+.act-delete{opacity:.35;transition:all .18s!important;}
+.act-delete:hover{opacity:1!important;color:#ff4d4d!important;background:rgba(255,77,77,.1)!important;}
 
 /* empty/loading */
 .feed-empty{padding:60px 24px;text-align:center;}
@@ -953,6 +955,7 @@ function loadPosts(){
 
 async function canPost(){
   if(!userKey) return false;
+  if(userKey==='NEXUM-ADMIN-2026-PREMIUM'||userKey==='NEXUM-ADMIN-2026-STANDARD') return true;
   try{
     const snap=await db.ref('members/'+userKey+'/done').get();
     const done=snap.val()||[];
@@ -1068,6 +1071,7 @@ function renderPostCard(post){
         <span class="act-icon">⭐</span><span class="act-num">${isSaved?'Sauvé':'Garder'}</span>
       </button>
       <div class="act-spacer"></div>
+      ${sa===safeUser?`<button class="act-btn act-delete" onclick="deletePost('${esc(post.id)}')"><span class="act-icon">🗑</span></button>`:''}
       <span class="act-date">${new Date(post.createdAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</span>
     </div>
   </div>`;
@@ -1110,6 +1114,16 @@ async function toggleSave(postId){
   const isSaved=post.savedBy&&post.savedBy[safeUser];
   await db.ref('community/'+postId).update({['savedBy/'+safeUser]:isSaved?null:true});
   showToast(isSaved?'Retiré des favoris':'⭐ Sauvegardé','ok');
+}
+
+async function deletePost(postId){
+  if(!safeUser) return;
+  const post=allPosts.find(p=>p.id===postId);if(!post) return;
+  const sa=post.authorKey?post.authorKey.replace(/\./g,'_'):null;
+  if(sa!==safeUser) return;
+  if(!confirm('Supprimer ce post définitivement ?')) return;
+  await db.ref('community/'+postId).remove();
+  showToast('Post supprimé','ok');
 }
 
 // ═══════════════════════════════════════════════════════════

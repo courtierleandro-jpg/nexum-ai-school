@@ -1,6 +1,67 @@
-# Make.com — Scénario 1 Complet : Achat Gumroad → Accès Automatique
+# Make.com — Scénarios Nexum AI School
 
-## Vue d'ensemble du flux
+---
+
+## Scénario 2 (actuel) : Abonnement Gumroad → Firebase → Gmail
+> **Fichier blueprint** : `make-scenario-2.json`
+
+### Vue d'ensemble du flux
+```
+Gumroad Webhook (tous événements)
+    ↓
+Make.com Webhook
+    ↓
+[Router]
+  ├── A : resource_name = "sale"
+  │       → PATCH Firebase (créer membre, status: active)
+  │       → Gmail email de bienvenue avec clé NEXUM-{sale_id}
+  │
+  ├── B : resource_name = "recurring_purchase"
+  │       → PATCH Firebase { status: "active", updated_at: now }
+  │
+  └── C : resource_name = "subscription_cancelled" OU "subscription_ended"
+          → PATCH Firebase { status: "cancelled", updated_at: now }
+```
+
+### Structure Firebase cible
+```
+members/NEXUM-{sale_id}/
+  ├── plan: "standard"
+  ├── email: "acheteur@email.com"
+  ├── done: []
+  ├── open: [1]
+  ├── status: "active" | "cancelled"
+  └── updated_at: timestamp
+```
+
+### Import dans Make.com
+1. Make.com → **Create a new scenario**
+2. Menu ⋮ → **Import Blueprint** → coller le contenu de `make-scenario-2.json`
+3. **Remplacer tous les `{{FIREBASE_SECRET}}`** par le vrai secret Firebase (JlMmeYzc...)
+4. Onglet Gmail (module 4) → **reconnect** ton compte `httdigital8@gmail.com`
+5. Dans Gumroad → Settings → Integrations → Webhooks : **ajouter le même webhook URL** pour les 4 événements :
+   - `sale`
+   - `recurring_purchase`
+   - `subscription_cancelled`
+   - `subscription_ended`
+
+### ⚠️ Point critique : sale_id dans les événements de renouvellement
+Gumroad génère un **nouveau `sale_id`** pour chaque renouvellement mensuel.
+Les branches B et C utilisent `{{1.sale_id}}` — ce qui cible `NEXUM-[nouveau_id]`, pas `NEXUM-[id_original]`.
+
+**À vérifier en testant un webhook `recurring_purchase` réel :**
+- Ouvrir Make.com → le scénario → "Run once"
+- Déclencher un webhook de test Gumroad (subscription_cancelled par exemple)
+- Inspecter le bundle reçu dans Make : chercher le champ qui contient l'**ID de la vente originale**
+
+Si Gumroad envoie l'ID original dans `sale_id` → pas de changement nécessaire.
+Si Gumroad envoie un nouveau `sale_id` → remplacer `{{1.sale_id}}` par le bon champ dans les branches B et C (probablement `{{1.subscription_id}}` ou un champ similaire, mais nécessite de stocker ce champ dans Firebase à la création du membre).
+
+---
+
+## Scénario 1 (ancien, archivé) : Achat Gumroad → Accès Automatique
+
+### Vue d'ensemble du flux
 ```
 Gumroad Sale
     ↓

@@ -1,0 +1,154 @@
+{
+  "name": "Nexum — Gumroad Abonnement v2 (Sale + Recurring + Cancel)",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "parameters": {
+        "hook": 1,
+        "maxResults": 1
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {"x": 0, "y": 0},
+        "restore": {},
+        "parameters": [{"name": "hook", "type": "hook:gateway_generic", "label": "Webhook"}]
+      }
+    },
+    {
+      "id": 2,
+      "module": "builtin:BasicRouter",
+      "version": 1,
+      "parameters": {},
+      "mapper": {},
+      "metadata": {
+        "designer": {"x": 300, "y": 0}
+      },
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 3,
+              "module": "http:ActionSendData",
+              "version": 3,
+              "parameters": {"handleErrors": false},
+              "mapper": {
+                "url": "https://ia-school-83571-default-rtdb.europe-west1.firebasedatabase.app/members/NEXUM-{{1.sale_id}}.json?auth={{FIREBASE_SECRET}}",
+                "serializeUrl": false,
+                "method": "patch",
+                "headers": [
+                  {"name": "content-type", "value": "application/json"}
+                ],
+                "bodyType": "raw",
+                "contentType": "application/json",
+                "data": "{\"plan\":\"standard\",\"email\":\"{{1.email}}\",\"done\":[],\"open\":[1],\"status\":\"active\",\"updated_at\":\"{{now}}\"}"
+              },
+              "metadata": {
+                "designer": {"x": 600, "y": -350},
+                "restore": {},
+                "parameters": [{"name": "handleErrors", "type": "boolean", "label": "Allow storing incomplete bundles"}]
+              }
+            },
+            {
+              "id": 4,
+              "module": "gmail:ActionSendEmail",
+              "version": 1,
+              "parameters": {"account": 1},
+              "mapper": {
+                "to": "{{1.email}}",
+                "subject": "Bienvenue dans Nexum AI School — Voici ta clé d'accès",
+                "content": "<p>Bonjour {{1.full_name}},</p><p>Ton abonnement mensuel à <strong>Nexum AI School</strong> est confirmé !</p><p><strong>Ta clé d'accès personnelle :</strong></p><p style='font-size:18px;background:#f0f0f0;padding:12px;border-radius:6px;font-family:monospace;'><strong>NEXUM-{{1.sale_id}}</strong></p><p><a href='https://courtierleandro-jpg.github.io/nexum-ai-school/dashboard.html' style='background:#7B5EA7;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;margin:8px 0;'>Accéder à mon espace membre →</a></p><p>Entre cette clé sur la page de connexion. Elle est valable tant que ton abonnement est actif.</p><p>À très vite,<br><strong>Leandro</strong><br>Nexum AI School</p>",
+                "contentType": "html"
+              },
+              "metadata": {
+                "designer": {"x": 900, "y": -350}
+              }
+            }
+          ],
+          "label": "A — Nouveau membre (sale)",
+          "filter": {
+            "name": "Est une vente initiale",
+            "conditions": [[
+              {"a": "{{1.resource_name}}", "b": "sale", "o": "text:equal"}
+            ]]
+          }
+        },
+        {
+          "flow": [
+            {
+              "id": 5,
+              "module": "http:ActionSendData",
+              "version": 3,
+              "parameters": {"handleErrors": false},
+              "mapper": {
+                "url": "https://ia-school-83571-default-rtdb.europe-west1.firebasedatabase.app/members/NEXUM-{{1.sale_id}}.json?auth={{FIREBASE_SECRET}}",
+                "serializeUrl": false,
+                "method": "patch",
+                "headers": [
+                  {"name": "content-type", "value": "application/json"}
+                ],
+                "bodyType": "raw",
+                "contentType": "application/json",
+                "data": "{\"status\":\"active\",\"updated_at\":\"{{now}}\"}"
+              },
+              "metadata": {
+                "designer": {"x": 600, "y": 0}
+              }
+            }
+          ],
+          "label": "B — Renouvellement (recurring_purchase)",
+          "filter": {
+            "name": "Est un renouvellement",
+            "conditions": [[
+              {"a": "{{1.resource_name}}", "b": "recurring_purchase", "o": "text:equal"}
+            ]]
+          }
+        },
+        {
+          "flow": [
+            {
+              "id": 6,
+              "module": "http:ActionSendData",
+              "version": 3,
+              "parameters": {"handleErrors": false},
+              "mapper": {
+                "url": "https://ia-school-83571-default-rtdb.europe-west1.firebasedatabase.app/members/NEXUM-{{1.sale_id}}.json?auth={{FIREBASE_SECRET}}",
+                "serializeUrl": false,
+                "method": "patch",
+                "headers": [
+                  {"name": "content-type", "value": "application/json"}
+                ],
+                "bodyType": "raw",
+                "contentType": "application/json",
+                "data": "{\"status\":\"cancelled\",\"updated_at\":\"{{now}}\"}"
+              },
+              "metadata": {
+                "designer": {"x": 600, "y": 350}
+              }
+            }
+          ],
+          "label": "C — Annulation / Expiration",
+          "filter": {
+            "name": "Annulation ou expiration",
+            "conditions": [
+              [{"a": "{{1.resource_name}}", "b": "subscription_cancelled", "o": "text:equal"}],
+              [{"a": "{{1.resource_name}}", "b": "subscription_ended", "o": "text:equal"}]
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false
+    }
+  }
+}

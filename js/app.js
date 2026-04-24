@@ -83,11 +83,19 @@ async function grantAccess(key, plan, progress) {
   renderHome();
   renderSidebar();
   updateProgressBar();
+  renderDashProfileCard();
+  loadDashProfile();
 }
 
 async function saveToFirebase() {
-  localStorage.setItem('nx_exdone', JSON.stringify(S.exDone));
-  if (!currentUserKey || ADMIN_KEYS[currentUserKey]) return;
+  if (!currentUserKey) return;
+  // Toujours sauvegarder dans localStorage
+  localStorage.setItem('nx_exdone',    JSON.stringify(S.exDone));
+  localStorage.setItem('nx_done',      JSON.stringify(S.done));
+  localStorage.setItem('nx_open',      JSON.stringify(S.open));
+  localStorage.setItem('nx_stars',     String(S.stars));
+  localStorage.setItem('nx_starMonth', S.starMonth || '');
+  // Sauvegarder dans Firebase pour tous les comptes (admin inclus)
   try {
     await db.ref('members/' + currentUserKey).update({
       done:       S.done,
@@ -103,9 +111,108 @@ async function saveToFirebase() {
 }
 
 function logout() {
-  localStorage.removeItem('nx_key');
-  localStorage.removeItem('nx_plan');
+  ['nx_key','nx_plan','nx_done','nx_open','nx_exdone','nx_stars','nx_starMonth','nx_profile'].forEach(k => localStorage.removeItem(k));
   location.reload();
+}
+
+// ═══════════════════════════════════════════════
+// PROFIL DASHBOARD
+// ═══════════════════════════════════════════════
+let _dashProfile = {};
+
+function _profAlias(key) {
+  let h = 0;
+  for (let i = 0; i < key.length; i++) { h = ((h << 5) - h) + key.charCodeAt(i); h |= 0; }
+  return 'Membre #' + (Math.abs(h) % 9999 + 1);
+}
+function _profEmoji(alias) {
+  const e = ['🦊','🐺','🦁','🐯','🦅','🦋','🐉','🌙','⚡','🔮','🎯','🚀','🎨','🔥','🌊'];
+  let h = 0;
+  for (let i = 0; i < alias.length; i++) { h = ((h << 5) - h) + alias.charCodeAt(i); h |= 0; }
+  return e[Math.abs(h) % e.length];
+}
+function _profGrad(alias) {
+  const g = ['linear-gradient(135deg,#00E5FF,#7B5EA7)','linear-gradient(135deg,#FF3CAC,#7B5EA7)','linear-gradient(135deg,#00E5A0,#00E5FF)','linear-gradient(135deg,#F5C842,#FF3CAC)','linear-gradient(135deg,#7B5EA7,#FF3CAC)','linear-gradient(135deg,#00E5FF,#00E5A0)'];
+  let h = 0;
+  for (let i = 0; i < alias.length; i++) { h = ((h << 5) - h) + alias.charCodeAt(i); h |= 0; }
+  return g[Math.abs(h) % g.length];
+}
+
+async function loadDashProfile() {
+  if (!currentUserKey) return;
+  const safeKey = currentUserKey.replace(/\./g, '_');
+  // Charger depuis localStorage en premier (instantané)
+  const cached = localStorage.getItem('nx_profile');
+  if (cached) { try { _dashProfile = JSON.parse(cached); } catch(e) {} }
+  renderDashProfileCard();
+  // Puis synchroniser avec Firebase
+  try {
+    const snap = await db.ref('profiles/' + safeKey).get();
+    if (snap.exists()) {
+      _dashProfile = snap.val();
+      localStorage.setItem('nx_profile', JSON.stringify(_dashProfile));
+    } else {
+      const alias = _profAlias(currentUserKey);
+      if (!_dashProfile.alias) _dashProfile = { displayName: alias, bio: '', alias, joinedAt: Date.now() };
+      try {
+        await db.ref('profiles/' + safeKey).set(_dashProfile);
+        localStorage.setItem('nx_profile', JSON.stringify(_dashProfile));
+      } catch(e) {}
+    }
+  } catch(e) {
+    if (!_dashProfile.alias) _dashProfile = { displayName: _profAlias(currentUserKey), bio: '', alias: _profAlias(currentUserKey) };
+  }
+  renderDashProfileCard();
+}
+
+function renderDashProfileCard() {
+  const card = document.getElementById('sb-profile-card');
+  if (!card || !currentUserKey) return;
+  const alias = (_dashProfile && _dashProfile.alias) || _profAlias(currentUserKey);
+  const dName = (_dashProfile && _dashProfile.displayName) || alias;
+  const av = document.getElementById('sb-prof-av');
+  const nm = document.getElementById('sb-prof-name');
+  if (av) { av.textContent = _profEmoji(alias); av.style.background = _profGrad(alias); }
+  if (nm) nm.textContent = dName.length > 18 ? dName.slice(0, 18) + '…' : dName;
+  card.style.cssText = 'display:flex;margin:8px 14px 0';
+}
+
+function openDashProfile() {
+  const alias = _dashProfile.alias || _profAlias(currentUserKey || '');
+  const dName = _dashProfile.displayName || alias;
+  const bio   = _dashProfile.bio || '';
+  const av    = document.getElementById('dpm-av');
+  if (av) { av.textContent = _profEmoji(alias); av.style.background = _profGrad(alias); }
+  const el = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  el('dpm-name',  dName);
+  el('dpm-alias', alias);
+  el('dpm-bio',   bio || 'Aucune bio pour l\'instant…');
+  const inp = document.getElementById('dpm-input-name');
+  const ta  = document.getElementById('dpm-input-bio');
+  if (inp) inp.value = dName;
+  if (ta)  ta.value  = bio;
+  document.getElementById('dash-profile-modal').style.display = 'flex';
+}
+
+function closeDashProfile() {
+  document.getElementById('dash-profile-modal').style.display = 'none';
+}
+
+async function saveDashProfile() {
+  const dn  = (document.getElementById('dpm-input-name').value || '').trim();
+  const bio = (document.getElementById('dpm-input-bio').value  || '').trim();
+  if (!dn) return;
+  const safeKey = currentUserKey.replace(/\./g, '_');
+  const alias = _dashProfile.alias || _profAlias(currentUserKey);
+  _dashProfile.displayName = dn;
+  _dashProfile.bio = bio;
+  _dashProfile.alias = alias;
+  localStorage.setItem('nx_profile', JSON.stringify(_dashProfile));
+  try { await db.ref('profiles/' + safeKey).update({ displayName: dn, bio, alias }); } catch(e) {}
+  renderDashProfileCard();
+  document.getElementById('dpm-name').textContent = dn;
+  document.getElementById('dpm-bio').textContent  = bio || 'Aucune bio pour l\'instant…';
+  closeDashProfile();
 }
 
 
@@ -116,7 +223,21 @@ function logout() {
 
   if (ADMIN_KEYS[savedKey]) {
     currentUserKey = savedKey;
-    await grantAccess(savedKey, ADMIN_KEYS[savedKey], { done: [], open: [1] });
+    try {
+      const snap = await db.ref('members/' + savedKey).get();
+      if (snap.exists()) {
+        const data = snap.val();
+        await grantAccess(savedKey, ADMIN_KEYS[savedKey], { done: data.done || [], open: data.open || [1], exDone: data.exDone || [], stars: data.stars, starMonth: data.starMonth });
+        return;
+      }
+    } catch(e) {}
+    // Fallback localStorage si Firebase inaccessible
+    const savedDone      = JSON.parse(localStorage.getItem('nx_done')   || '[]');
+    const savedOpen      = JSON.parse(localStorage.getItem('nx_open')   || '[1]');
+    const savedExDone    = JSON.parse(localStorage.getItem('nx_exdone') || '[]');
+    const savedStars     = localStorage.getItem('nx_stars') !== null ? Number(localStorage.getItem('nx_stars')) : 5;
+    const savedStarMonth = localStorage.getItem('nx_starMonth') || null;
+    await grantAccess(savedKey, ADMIN_KEYS[savedKey], { done: savedDone, open: savedOpen, exDone: savedExDone, stars: savedStars, starMonth: savedStarMonth });
     return;
   }
 

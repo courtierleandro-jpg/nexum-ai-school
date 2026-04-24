@@ -36,7 +36,7 @@
 | **Co-développeur** | `Hhhsimo — développement technique dashboard` |
 | **Statut** | `🟡 En cours` |
 | **Démarré le** | `2026-04-08` |
-| **Dernière mise à jour** | `2026-04-23 — Session 7` |
+| **Dernière mise à jour** | `2026-04-24 — Session 9` |
 
 ---
 
@@ -55,15 +55,18 @@ L'objectif est d'atteindre 22 ventes/mois (~1 900€ net) grâce à une stack gr
 ## 🏗️ Architecture
 
 ```
-Acheteur (Gumroad — courtierleandro)
+Acheteur (Gumroad — courtierleandro — abonnement 92€/mois)
     ↓ Webhook automatique → Make.com (scénario ON ✅)
-    ↓ → Email de bienvenue Gmail avec clé unique (NEXUM-{sale_id})
-    ↓ → Création membre dans Firebase Realtime Database
+    ↓ [Router sur resource_name]
+      ├── sale → Email bienvenue Gmail + Firebase PATCH (créer membre, status:active)
+      ├── recurring_purchase → Firebase PATCH (status:active, updated_at)
+      └── subscription_cancelled / subscription_ended → Firebase PATCH (status:cancelled, updated_at)
     ↓ → [futur] Rôle Discord automatique (nécessite Discord ID de l'élève)
 
 Espace membre (dashboard.html — GitHub Pages)
     ↓ Login par clé unique (NEXUM-{sale_id})
     ↓ Vérification clé dans Firebase → plan Standard ou Premium
+    ↓ [TODO] Vérifier status:cancelled → afficher message abonnement expiré
     ↓ 30 leçons texte interactives (QCM + freetext)
     ↓ Progression sauvegardée dans Firebase (per-user, multi-device)
     ↓ Module 08 verrouillé pour Standard → redirect Gumroad Premium
@@ -71,7 +74,7 @@ Espace membre (dashboard.html — GitHub Pages)
 
 Firebase Realtime Database
     ↓ Collection : members/{NEXUM-sale_id}
-    ↓ Champs : plan, email, done[], open[], updated_at
+    ↓ Champs : plan, email, done[], open[], status, updated_at
     ↓ Accès public en lecture/écriture (test mode)
 
 Discord (serveur Nexum existant — catégorie NEXUM AI SCHOOL)
@@ -88,8 +91,17 @@ Discord (serveur Nexum existant — catégorie NEXUM AI SCHOOL)
 nexum-ai-school/
 ├── index.html                  ← Landing page (live GitHub Pages) ✅
 ├── dashboard.html              ← Espace membre post-paiement ✅
-├── make-scenario-1.json        ← Scénario Make.com (import direct)
+├── community.html              ← Page communauté (Firebase temps réel) ✅
+├── make-scenario-1.json        ← Ancien scénario Make.com (archivé)
+├── make-scenario-2.json        ← Scénario Make.com actuel avec Router (Session 9)
 ├── CLAUDE.md                   ← ce fichier
+├── css/
+│   └── dashboard.css           ← Styles dashboard + profil sidebar + modal profil
+├── js/
+│   ├── app.js                  ← Logique principale + auth + profil dashboard
+│   ├── data-content.js         ← Contenu des 22 leçons
+│   ├── data-exercises.js       ← 91 exercices QCM (0 freetext, 0 completion)
+│   └── aria-exercise-runner.js ← Runner exercices ARIA
 ├── bot/
 │   ├── bot.js                  ← Bot ARIA Discord (réponses prédéfinies)
 │   └── package.json            ← dépendances discord.js
@@ -182,8 +194,19 @@ git push origin main
 - [x] Branding strict : #040407 · #00E5FF · #FF3CAC · #7B5EA7 · Syne 800 · Space Mono · DM Sans
 - [x] Ne jamais commiter de clés API ou tokens dans ce repo (public)
 - [x] Commits en français, préfixe conventionnel : `feat:` `fix:` `style:` `docs:`
-- [x] La progression des élèves est en localStorage (pas de BDD)
+- [x] La progression des élèves est en **Firebase + localStorage** (double persistance)
+- [x] Clés admin sauvegardent aussi dans Firebase (même chemin que membres normaux)
 - [x] Module 08 (Prompt Engineering Avancé) = Premium uniquement
+- [x] Profils synchronisés entre dashboard et communauté via Firebase `profiles/{safeKey}`
+
+---
+
+## 🔧 À faire
+
+- [ ] **Gumroad** — Mettre à jour les URLs produit dans `dashboard.html` et `index.html` (abonnement 92€/mois — 1 seul plan)
+- [ ] **dashboard.html** — Vérifier `status` dans Firebase au login : si `"cancelled"` → afficher message abonnement expiré
+- [x] ~~**Make.com** — Router 3 branches (sale / recurring / cancelled) — **fait Session 9**~~
+- [x] ~~**Firebase** — Champ `status: "active" | "cancelled"` — **fait Session 9**~~
 
 ---
 
@@ -238,15 +261,28 @@ members/
     ├── email: "acheteur@email.com"
     ├── done: ["01.01", "01.02", ...]   ← leçons terminées
     ├── open: [1, 2, ...]               ← modules ouverts dans sidebar
+    ├── status: "active" | "cancelled"  ← géré par Make.com (Session 9)
     └── updated_at: timestamp
 ```
 
-### Make.com — URL Firebase (HTTP module)
+### Make.com — Scénario (Router 3 branches, ID 5264946)
 
 ```
-URL    : https://ia-school-83571-default-rtdb.europe-west1.firebasedatabase.app/members/NEXUM-{{1.sale_id}}.json?auth=<SECRET>
-Method : PATCH
-Body   : { "plan": "standard", "email": "{{1.email}}", "done": [], "open": [1] }
+Branche A (sale)
+  URL    : .../members/NEXUM-{{1.sale_id}}.json?auth=<SECRET>
+  Method : PATCH
+  Body   : { "plan": "standard", "email": "{{1.email}}", "done": [], "open": [1], "status": "active", "updated_at": "{{now}}" }
+  + Email Gmail bienvenue avec clé NEXUM-{{1.sale_id}}
+
+Branche B (recurring_purchase)
+  URL    : .../members/NEXUM-{{1.sale_id}}.json?auth=<SECRET>
+  Method : PATCH
+  Body   : { "status": "active", "updated_at": "{{now}}" }
+
+Branche C (subscription_cancelled | subscription_ended)
+  URL    : .../members/NEXUM-{{1.sale_id}}.json?auth=<SECRET>
+  Method : PATCH
+  Body   : { "status": "cancelled", "updated_at": "{{now}}" }
 ```
 
 ---
@@ -345,6 +381,81 @@ Quand l'utilisateur dit `"fin de session"`, `"update CLAUDE"`, `"log session"` o
 > Toutes les sessions sont archivées ici. Ne jamais supprimer. Ajouter au-dessus (la plus récente en premier).
 
 <!-- LES SESSIONS S'AJOUTENT ICI -->
+
+### Session 9 — 2026-04-24
+**Durée estimée** : 1h
+**Objectif de la session** : Mettre à jour Make.com pour gérer les événements d'abonnement Gumroad
+
+**✅ Réalisé :**
+- Connexion à l'API Make.com via les credentials MCP (API Key + zone eu1 + team 1461928)
+- Récupération du blueprint existant du scénario "Integration Gumroad" (ID 5264946) via API
+- Ajout d'un Router (`builtin:BasicRouter`) avec 3 branches filtrées sur `{{1.resource_name}}` :
+  - Branche A (`sale`) : Firebase PATCH créer membre avec `status:"active"` + Gmail email bienvenue
+  - Branche B (`recurring_purchase`) : Firebase PATCH `{ status:"active", updated_at }`
+  - Branche C (`subscription_cancelled` OU `subscription_ended`) : Firebase PATCH `{ status:"cancelled", updated_at }`
+- Découverte du format API Make.com : les filtres de route se placent sur le **premier module du flow**, pas sur la route elle-même
+- Push du blueprint via `PATCH /api/v2/scenarios/5264946` avec blueprint stringifié
+- Tests des 3 branches via curl → Firebase confirme les 3 écritures successives ✅
+- Scénario activé (ON) dans Make.com
+- Création du fichier `make-scenario-2.json` (blueprint local de référence)
+- Mise à jour de `docs/make-full-scenario.md`
+
+**🔧 Modifié / Créé :**
+- `Make.com scénario 5264946` — Router + 3 branches modifié directement via API
+- `make-scenario-2.json` — créé · blueprint local du nouveau scénario
+- `docs/make-full-scenario.md` — documentation Scénario 2 ajoutée en tête
+- `CLAUDE.md` — Session 9 + architecture + structure Firebase + À faire
+
+**⚠️ Points en suspens :**
+- `dashboard.html` — vérifier `status:"cancelled"` au login → afficher message abonnement expiré
+- Gumroad URLs à mettre à jour dans `dashboard.html` et `index.html` (1 seul plan à 92€/mois)
+- Nettoyer le membre test `NEXUM-TEST-CURL-001` dans Firebase quand plus utile
+
+**💡 Décisions prises :**
+- Filtres Router Make.com (API) : se posent sur le premier module du flow de chaque route (propriété `filter` du module), pas sur la route elle-même
+- Tous les événements Gumroad arrivent sur le même webhook URL — le champ `resource_name` discrimine le type
+- Un seul plan désormais : "standard" (92€/mois, abonnement)
+
+---
+
+### Session 8 — 2026-04-24
+**Durée estimée** : 3h  
+**Objectif de la session** : Profil dashboard synchronisé + persistence Firebase + admin communauté + Make.com MCP
+
+**✅ Réalisé :**
+- Pull des modifications de l'associé depuis GitHub (avant la session)
+- Fix admin : les clés `NEXUM-ADMIN-2026-PREMIUM` et `NEXUM-ADMIN-2026-STANDARD` peuvent désormais publier dans `community.html` sans avoir terminé 22 leçons
+- Ajout bouton suppression de ses propres posts dans `community.html` (🗑 visible uniquement sur ses posts, confirmation avant suppression)
+- Ajout carte profil cliquable dans la sidebar du dashboard (sous le lien communauté)
+- Ajout modal profil dashboard (nom affiché, bio courte, avatar généré déterministiquement)
+- Synchronisation des profils entre dashboard et communauté via Firebase `profiles/{safeKey}` — même avatar, même nom
+- Fix couleur avatar : dashboard utilisait `#00C4DD`, communauté `#00E5FF` → harmonisé sur `#00E5FF`
+- Fix persistance progression des leçons : `saveToFirebase()` ne bypassait plus les clés admin → toutes les clés sauvegardent dans Firebase
+- Implémentation double persistance : localStorage (instantané) + Firebase (multi-device)
+- Chargement profil : localStorage d'abord (affichage immédiat), puis Firebase (sync)
+- `logout()` nettoie tous les localStorage : nx_key, nx_plan, nx_done, nx_open, nx_exdone, nx_stars, nx_starMonth, nx_profile
+- Ajout du MCP server Make.com dans `~/.claude/settings.json`
+
+**🔧 Modifié / Créé :**
+- `community.html` — bypass admin dans `canPost()`, bouton delete + fonction `deletePost()`, style `.act-delete`
+- `dashboard.html` — carte profil HTML, modal profil HTML, cache-busting `?v=3`
+- `css/dashboard.css` — `.sb-profile-card`, `.sb-prof-*`, `.dash-prof-*` (modal overlay + box + inputs)
+- `js/app.js` — `loadDashProfile()`, `renderDashProfileCard()`, `openDashProfile()`, `closeDashProfile()`, `saveDashProfile()`, `_profAlias()`, `_profEmoji()`, `_profGrad()`, fix `saveToFirebase()`, fix `logout()`
+- `~/.claude/settings.json` — ajout MCP `make` (Make.com)
+
+**⚠️ Points en suspens :**
+- Gumroad : produit passé en abonnement mensuel → URLs à mettre à jour dans `dashboard.html` et `index.html`
+- Make.com : ajouter Router dans le scénario pour `recurring_purchase`, `subscription_cancelled`, `subscription_ended`
+- dashboard.html : vérifier `status: "cancelled"` au login → afficher message abonnement expiré
+- Firebase : ajouter champ `status: "active" | "cancelled"` dans `members/`
+- Push Session 8 sur GitHub (en attente de validation)
+
+**💡 Décisions prises :**
+- Carte profil toujours visible dans le DOM (pas de `display:none` en HTML) — évite les problèmes de timing async Firebase
+- Clés admin traitées exactement comme les membres normaux dans Firebase (même chemin, même structure)
+- Profils partagés entre dashboard et communauté via une seule collection Firebase `profiles/`
+
+---
 
 ### Session 7 — 2026-04-23
 **Durée estimée** : 1h  
